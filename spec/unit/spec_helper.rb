@@ -1,5 +1,6 @@
 require 'rspec'
 require 'bmg'
+require 'path'
 
 module SpecHelper
 
