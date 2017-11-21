@@ -14,5 +14,9 @@ module Bmg
       Relation.new Operator::Autowrap.new(@operand, options)
     end
 
+    def rename(renaming = {})
+      Relation.new Operator::Rename.new(@operand, renaming)
+    end
+
   end # class Relation
 end # module Bmg

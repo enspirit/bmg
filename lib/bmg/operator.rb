@@ -8,3 +8,4 @@ module Bmg
   end
 end
 require_relative 'operator/autowrap'
+require_relative 'operator/rename'

@@ -15,7 +15,7 @@ module Bmg
         Relation.new([
           { a: 1, b_x: 2, b_y: 3 },
           { a: 2, b_x: 4, b_y: 1 }
-        ])        
+        ])
       }
 
       subject {
@@ -35,6 +35,28 @@ module Bmg
         expect(relation.autowrap(split: ".").to_a).to eql([
           { a: 1, b_x: 2, b_y: 3 },
           { a: 2, b_x: 4, b_y: 1 }
+        ])
+      end
+    end
+
+    describe 'rename' do
+      let(:relation) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 2, b: 4 }
+        ])
+      }
+
+      subject {
+        relation.rename(b: :c)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, c: 2 },
+          { a: 2, c: 4 }
         ])
       end
     end
