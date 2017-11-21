@@ -18,6 +18,10 @@ module Bmg
       Relation.new Operator::Autowrap.new(@operand, options)
     end
 
+    def autosummarize(by = [], summarization = {})
+      Relation.new Operator::Autosummarize.new(@operand, by, summarization)
+    end
+
     def project(attrlist = [])
       Relation.new Operator::Project.new(@operand, attrlist)
     end

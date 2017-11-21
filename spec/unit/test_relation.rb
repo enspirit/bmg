@@ -33,6 +33,27 @@ module Bmg
       end
     end
 
+    describe 'autosummarize' do
+      let(:relation) {
+        Relation.new([
+          { a: 1, x: 2 },
+          { a: 1, x: 4 }
+        ])
+      }
+
+      subject {
+        relation.autosummarize([:a], x: Operator::Autosummarize::DistinctList.new)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, x: [2, 4] }
+        ])
+      end
+    end
+
     describe 'autowrap' do
       let(:relation) {
         Relation.new([
