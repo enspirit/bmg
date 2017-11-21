@@ -10,6 +10,29 @@ module Bmg
 
     end
 
+    describe 'allbut' do
+      let(:relation) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 1, b: 4 },
+          { a: 3, b: 4 }
+        ])
+      }
+
+      subject {
+        relation.allbut([:b])
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1 },
+          { a: 3 }
+        ])
+      end
+    end
+
     describe 'autowrap' do
       let(:relation) {
         Relation.new([

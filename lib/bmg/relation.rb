@@ -10,6 +10,10 @@ module Bmg
       @operand.each(&bl)
     end
 
+    def allbut(butlist = [])
+      Relation.new Operator::Allbut.new(@operand, butlist)
+    end
+
     def autowrap(options = {})
       Relation.new Operator::Autowrap.new(@operand, options)
     end
