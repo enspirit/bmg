@@ -18,6 +18,10 @@ module Bmg
       Relation.new Operator::Autowrap.new(@operand, options)
     end
 
+    def project(attrlist = [])
+      Relation.new Operator::Project.new(@operand, attrlist)
+    end
+
     def rename(renaming = {})
       Relation.new Operator::Rename.new(@operand, renaming)
     end

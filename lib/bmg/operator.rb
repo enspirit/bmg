@@ -9,4 +9,5 @@ module Bmg
 end
 require_relative 'operator/allbut'
 require_relative 'operator/autowrap'
+require_relative 'operator/project'
 require_relative 'operator/rename'
