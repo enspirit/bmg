@@ -6,6 +6,11 @@ module Bmg
   end
   module_function :csv
 
+  def excel(path, options = {})
+    Relation.new Reader::Excel.new path, options
+  end
+  module_function :excel
+
 end
 require_relative 'bmg/version'
 require_relative 'bmg/operator'
