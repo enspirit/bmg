@@ -14,7 +14,7 @@ module Bmg
 
       def each
         require 'roo'
-        xlsx = Roo::Spreadsheet.open(@path)
+        xlsx = Roo::Spreadsheet.open(@path, @options)
         headers = nil
         xlsx.sheet(0)
           .each
