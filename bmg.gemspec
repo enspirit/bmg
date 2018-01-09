@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = "Bmg is Alf's relational algebra for ruby, but much simpler and lighter than Alf itself"
   s.authors     = ["Bernard Lambeau"]
   s.email       = 'blambeau@gmail.com'
-  s.files       = Dir['LICENSE.md', 'Gemfile','Rakefile', '{bin,lib,spec,tasks,examples}/**/*', 'README*'] & `git ls-files -z`.split("\0")
+  s.files       = Dir['LICENSE.md', 'Gemfile','Rakefile', '{bin,lib,tasks,examples}/**/*', 'README*'] & `git ls-files -z`.split("\0")
   s.homepage    = 'http://github.com/enspirit/bmg'
   s.license     = 'MIT'
 
