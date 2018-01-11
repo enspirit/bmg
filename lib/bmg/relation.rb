@@ -22,6 +22,10 @@ module Bmg
       Relation.new Operator::Autosummarize.new(@operand, by, summarization)
     end
 
+    def extend(extension = {})
+      Relation.new Operator::Extend.new(@operand, extension)
+    end
+
     def project(attrlist = [])
       Relation.new Operator::Project.new(@operand, attrlist)
     end

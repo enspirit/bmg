@@ -83,6 +83,30 @@ module Bmg
       end
     end
 
+    describe 'extend' do
+      let(:relation) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 1, b: 4 },
+          { a: 3, b: 4 }
+        ])
+      }
+
+      subject {
+        relation.extend(c: ->(t){ t[:a] + t[:b] })
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the expected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, b: 2, c: 3 },
+          { a: 1, b: 4, c: 5 },
+          { a: 3, b: 4, c: 7 }
+        ])
+      end
+    end
+
     describe 'project' do
       let(:relation) {
         Relation.new([
