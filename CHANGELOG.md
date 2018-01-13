@@ -1,7 +1,10 @@
 # 0.2.0
 
-* Add the Extend operator: extends operand tuples with attributes
-resulting from specified computations.
+* Add the Extend operator: extends operand tuples with attributes resulting from specified
+  computations.
+
+* Add Relation#one (and Relation#one_or_nil), that returns the tuple of a singleton or raises
+  an error (or returns nil).
 
 # 0.1.1
 

@@ -13,6 +13,7 @@ module Bmg
 
 end
 require_relative 'bmg/version'
+require_relative 'bmg/error'
 require_relative 'bmg/operator'
 require_relative 'bmg/relation'
 require_relative 'bmg/reader'

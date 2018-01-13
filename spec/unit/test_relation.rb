@@ -10,6 +10,48 @@ module Bmg
 
     end
 
+    describe 'one' do
+
+      it "returns the only tuple of a singleton" do
+        tuple = { a: 1, b: 2 }
+        one = Relation.new([tuple]).one
+        expect(one).to be(tuple)
+      end
+
+      it 'raises an exception if the relation is empty' do
+        expect{
+          Relation.new([]).one
+        }.to raise_error(OneError, "Relation is empty")
+      end
+
+      it 'raises an exception if the relation has more than one tuple' do
+        expect{
+          Relation.new([{a: 1},{a: 2}]).one
+        }.to raise_error(OneError, "Relation has more than one tuple")
+      end
+
+    end
+
+    describe 'one_or_nil' do
+
+      it "returns the only tuple of a singleton" do
+        tuple = { a: 1, b: 2 }
+        one = Relation.new([tuple]).one_or_nil
+        expect(one).to be(tuple)
+      end
+
+      it 'returns nil if the relation is empty' do
+        expect(Relation.new([]).one_or_nil).to be_nil
+      end
+
+      it 'raises an exception if the relation has more than one tuple' do
+        expect{
+          Relation.new([{a: 1},{a: 2}]).one_or_nil
+        }.to raise_error(OneError, "Relation has more than one tuple")
+      end
+
+    end
+
     describe 'allbut' do
       let(:relation) {
         Relation.new([
