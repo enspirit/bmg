@@ -2,11 +2,13 @@ module Bmg
   class Leaf
     include Relation
 
-    def initialize(operand)
+    def initialize(type, operand)
       @operand = operand
+      @type = type
     end
+    attr_reader :type
 
-  private
+  protected
 
     attr_reader :operand
 

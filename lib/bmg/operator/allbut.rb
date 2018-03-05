@@ -17,10 +17,18 @@ module Bmg
     class Allbut
       include Operator
 
-      def initialize(operand, butlist)
+      def initialize(type, operand, butlist)
+        @type = type
         @operand = operand
         @butlist = butlist
       end
+      attr_reader :type
+
+    protected
+
+      attr_reader :operand, :butlist
+
+    public
 
       def each
         seen = {}

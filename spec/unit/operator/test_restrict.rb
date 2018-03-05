@@ -11,7 +11,7 @@ module Bmg
       }
 
       subject {
-        Restrict.new data, Predicate.gt(:a, 10)
+        Restrict.new Type::ANY, data, Predicate.gt(:a, 10)
       }
 
       it 'works' do

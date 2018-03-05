@@ -17,11 +17,19 @@ module Bmg
         all: false
       }
 
-      def initialize(left, right, options = {})
+      def initialize(type, left, right, options = {})
+        @type = type
         @left = left
         @right = right
         @options = DEFAULT_OPTIONS.merge(options)
       end
+      attr_reader :type
+
+    protected
+
+      attr_reader :left, :right, :options
+
+    public
 
       def all?
         @options[:all]

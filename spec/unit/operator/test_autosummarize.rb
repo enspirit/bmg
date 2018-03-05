@@ -8,7 +8,7 @@ module Bmg
         let(:sums){ {} }
 
         it 'filters same tuples' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { a: 1 },
             { a: 1 }
           ], by, sums
@@ -21,7 +21,7 @@ module Bmg
         let(:sums){ {} }
 
         it 'applies Same to every unknown dependent' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { a: 1, b: 2 },
             { a: 1, b: 2 },
             { a: 2, b: 2 },
@@ -38,7 +38,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::DistinctList.new } }
 
         it 'groups as expected' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: 1 },
             { id: 1, a: 2 },
             { id: 2, a: 1 },
@@ -51,7 +51,7 @@ module Bmg
         end
 
         it 'ignores nulls' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: 1   },
             { id: 1, a: nil }
           ], by, sums
@@ -61,7 +61,7 @@ module Bmg
         end
 
         it 'can be used to mimic the Group operator' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: { x: 1, y: 2 } },
             { id: 1, a: { x: 2, y: 2 } },
             { id: 2, a: { x: 1, y: 2 } },
@@ -74,7 +74,7 @@ module Bmg
         end
 
         it 'supports the :group shortcut' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: 1 },
             { id: 1, a: 2 },
             { id: 2, a: 1 },
@@ -93,7 +93,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::DistinctList.new{|x,y| y <=> x } } }
 
         it 'groups as expected' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: 1 },
             { id: 1, a: 2 },
             { id: 2, a: 1 },
@@ -111,7 +111,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::YByX.new(:y, :x) } }
 
         it 'groups as expected and ignores nulls' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: { x: "foo", y: "bar" } },
             { id: 1, a: { x: "foo", y: "baz" } },
             { id: 1, a: { x: "gri", y: "gra" } },
@@ -129,7 +129,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::YByX.new(:y, :x, true) } }
 
         it 'groups as expected and ignores nulls' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: { x: "foo", y: "bar" } },
             { id: 1, a: { x: "foo", y: "baz" } },
             { id: 1, a: { x: "gri", y: "gra" } },
@@ -147,7 +147,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::YsByX.new(:y, :x) } }
 
         it 'filters same tuples' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: { x: 1, y: 3 } },
             { id: 1, a: { x: 1, y: 2 } },
             { id: 2, a: { x: 1, y: 1 } },
@@ -165,7 +165,7 @@ module Bmg
         let(:sums){ { :a => Autosummarize::YsByX.new(:y, :x){|u,v| u[:y] <=> v[:y] } } }
 
         it 'filters same tuples' do
-          autosummarize = Autosummarize.new [
+          autosummarize = Autosummarize.new Type::ANY, [
             { id: 1, a: { x: 1, y: 3 } },
             { id: 1, a: { x: 1, y: 2 } },
             { id: 2, a: { x: 1, y: 1 } },

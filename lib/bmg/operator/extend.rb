@@ -13,10 +13,18 @@ module Bmg
     class Extend
       include Operator
 
-      def initialize(operand, extension)
+      def initialize(type, operand, extension)
+        @type = type
         @operand = operand
         @extension = extension
       end
+      attr_reader :type
+
+    protected
+
+      attr_reader :operand, :extension
+
+    public
 
       def each
         @operand.each do |tuple|

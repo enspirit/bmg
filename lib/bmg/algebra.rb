@@ -2,35 +2,43 @@ module Bmg
   module Algebra
 
     def allbut(butlist = [])
-      Operator::Allbut.new(self, butlist)
+      type = self.type.allbut(butlist)
+      Operator::Allbut.new(type, self, butlist)
     end
 
     def autowrap(options = {})
-      Operator::Autowrap.new(self, options)
+      type = self.type.autowrap(options)
+      Operator::Autowrap.new(type, self, options)
     end
 
     def autosummarize(by = [], summarization = {})
-      Operator::Autosummarize.new(self, by, summarization)
+      type = self.type.autosummarize(by, summarization)
+      Operator::Autosummarize.new(type, self, by, summarization)
     end
 
     def extend(extension = {})
-      Operator::Extend.new(self, extension)
+      type = self.type.extend(extension)
+      Operator::Extend.new(type, self, extension)
     end
 
     def project(attrlist = [])
-      Operator::Project.new(self, attrlist)
+      type = self.type.project(attrlist)
+      Operator::Project.new(type, self, attrlist)
     end
 
     def rename(renaming = {})
-      Operator::Rename.new(self, renaming)
+      type = self.type.rename(renaming)
+      Operator::Rename.new(type, self, renaming)
     end
 
     def restrict(predicate)
-      Operator::Restrict.new(self, Predicate.coerce(predicate))
+      type = self.type.restrict(predicate)
+      Operator::Restrict.new(type, self, Predicate.coerce(predicate))
     end
 
     def union(other)
-      Operator::Union.new(self, other)
+      type = self.type.union(other.type)
+      Operator::Union.new(type, self, other)
     end
 
   end # module Algebra
