@@ -194,5 +194,34 @@ module Bmg
       end
     end
 
+    describe 'union' do
+      let(:left) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 2, b: 4 }
+        ])
+      }
+      let(:right) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 3, b: 4 }
+        ])
+      }
+
+      subject {
+        left.union(right)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, b: 2 },
+          { a: 2, b: 4 },
+          { a: 3, b: 4 }
+        ])
+      end
+    end
+
   end # describe Relation
 end # module Bmg

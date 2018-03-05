@@ -62,5 +62,9 @@ module Bmg
       Relation.new Operator::Rename.new(@operand, renaming)
     end
 
+    def union(other)
+      Relation.new Operator::Union.new(@operand, other)
+    end
+
   end # class Relation
 end # module Bmg
