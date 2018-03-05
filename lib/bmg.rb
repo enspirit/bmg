@@ -16,6 +16,7 @@ end
 require_relative 'bmg/version'
 require_relative 'bmg/error'
 require_relative 'bmg/algebra'
+require_relative 'bmg/type'
 require_relative 'bmg/relation'
 require_relative 'bmg/leaf'
 require_relative 'bmg/operator'

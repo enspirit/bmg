@@ -4,7 +4,7 @@ module Bmg
     describe Rename do
 
       it 'works' do
-        rename = Rename.new [{ a: 1, b: 2 }], :a => :x
+        rename = Rename.new Type::ANY, [{ a: 1, b: 2 }], :a => :x
         expect(rename.to_a).to eql([{ x: 1, b: 2 }])
       end
 

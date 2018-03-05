@@ -16,10 +16,17 @@ module Bmg
     class Rename
       include Operator
 
-      def initialize(operand, renaming)
+      def initialize(type, operand, renaming)
+        @type = type
         @operand = operand
         @renaming = renaming
       end
+
+    private
+
+      attr_reader :type, :operand, :renaming
+
+    public
 
       def each
         @operand.each do |tuple|

@@ -25,11 +25,18 @@ module Bmg
         :split => "_"
       }
 
-      def initialize(operand, options = {})
+      def initialize(type, operand, options = {})
+        @type = type
         @operand = operand
         @options = DEFAULT_OPTIONS.merge(options)
         @options[:postprocessor] = NoLeftJoinNoise.new(@options[:postprocessor])
       end
+
+    private
+
+      attr_reader :type, :operand, :options
+
+    public
 
       def each
         @operand.each do |tuple|

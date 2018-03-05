@@ -11,11 +11,18 @@ module Bmg
     class Autosummarize
       include Operator
 
-      def initialize(operand, by, sums)
+      def initialize(type, operand, by, sums)
+        @type = type
         @operand = operand
         @by = by
         @sums = sums.each_with_object({}){|(k,v),h| h[k] = to_summarizer(v) }
       end
+
+    protected
+
+      attr_reader :type, :operand, :by, :sums
+
+    public
 
       def each(&bl)
         h = {}

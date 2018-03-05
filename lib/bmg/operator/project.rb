@@ -16,10 +16,17 @@ module Bmg
     class Project
       include Operator
 
-      def initialize(operand, attrlist)
+      def initialize(type, operand, attrlist)
+        @type = type
         @operand = operand
         @attrlist = attrlist
       end
+
+    private
+
+      attr_reader :type, :operand, :attrlist
+
+    public
 
       def each
         seen = {}

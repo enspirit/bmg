@@ -3,8 +3,8 @@ module Bmg
     include Enumerable
     include Algebra
 
-    def self.new(operand)
-      operand.is_a?(Relation) ? operand : Leaf.new(operand)
+    def self.new(operand, type = Type::ANY)
+      operand.is_a?(Relation) ? operand : Leaf.new(type, operand)
     end
 
     # Private helper to implement `one` and `one_or_nil`

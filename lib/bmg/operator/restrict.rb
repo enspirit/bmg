@@ -9,14 +9,15 @@ module Bmg
     class Restrict
       include Operator
 
-      def initialize(operand, predicate)
+      def initialize(type, operand, predicate)
+        @type = type
         @operand = operand
         @predicate = predicate
       end
 
-    private
+    protected
 
-      attr_reader :operand,  :predicate
+      attr_reader :type, :operand, :predicate
 
     public
 
@@ -27,7 +28,8 @@ module Bmg
       end
 
       def restrict(predicate)
-        Restrict.new(@operand, @predicate & predicate)
+        type = self.type.restrict(predicate)
+        Restrict.new(type, @operand, @predicate & predicate)
       end
 
     end # class Restrict
