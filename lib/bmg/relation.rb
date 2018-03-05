@@ -62,6 +62,10 @@ module Bmg
       Relation.new Operator::Rename.new(@operand, renaming)
     end
 
+    def restrict(predicate = Predicate.tautology)
+      Relation.new Operator::Restrict.new(@operand, Predicate.coerce(predicate))
+    end
+
     def union(other)
       Relation.new Operator::Union.new(@operand, other)
     end

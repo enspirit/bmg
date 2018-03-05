@@ -1,4 +1,5 @@
 require 'path'
+require 'predicate'
 module Bmg
 
   def csv(path, options = {})

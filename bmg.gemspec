@@ -13,6 +13,8 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/enspirit/bmg'
   s.license     = 'MIT'
 
+  s.add_dependency "predicate", "~> 1.1"
+
   s.add_development_dependency "rake", "~> 10"
   s.add_development_dependency "rspec", "~> 3.6"
   s.add_development_dependency "path", ">= 1.3"

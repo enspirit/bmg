@@ -1,5 +1,8 @@
 # 0.3.0 - March 5st, 2018
 
+* Add the Restrict operator: restrict filters the operand tuples to those for which a predicate
+  evaluates to true.
+
 * Add the Union operator: union returns both the tuples from left and right operands, but
   strips the duplicates, if any.
 
