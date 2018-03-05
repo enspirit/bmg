@@ -14,10 +14,20 @@ module Bmg
         @predicate = predicate
       end
 
+    private
+
+      attr_reader :operand,  :predicate
+
+    public
+
       def each
         @operand.each do |tuple|
           yield(tuple) if @predicate.evaluate(tuple)
         end
+      end
+
+      def restrict(predicate)
+        Restrict.new(@operand, @predicate & predicate)
       end
 
     end # class Restrict

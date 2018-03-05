@@ -1,9 +1,6 @@
 module Bmg
   module Operator
-
-    def to_a
-      to_enum(:each).to_a
-    end
+    include Relation
 
   end
 end

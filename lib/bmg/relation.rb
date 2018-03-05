@@ -1,15 +1,10 @@
 module Bmg
-  class Relation
+  module Relation
     include Enumerable
+    include Algebra
 
-    def initialize(operand)
-      @operand = operand
-    end
-
-    ## Consumption methods
-
-    def each(&bl)
-      @operand.each(&bl)
+    def self.new(operand)
+      operand.is_a?(Relation) ? operand : Leaf.new(operand)
     end
 
     # Private helper to implement `one` and `one_or_nil`
@@ -36,39 +31,5 @@ module Bmg
       one_or_yield{ nil }
     end
 
-    ## Relational algebra
-
-    def allbut(butlist = [])
-      Relation.new Operator::Allbut.new(@operand, butlist)
-    end
-
-    def autowrap(options = {})
-      Relation.new Operator::Autowrap.new(@operand, options)
-    end
-
-    def autosummarize(by = [], summarization = {})
-      Relation.new Operator::Autosummarize.new(@operand, by, summarization)
-    end
-
-    def extend(extension = {})
-      Relation.new Operator::Extend.new(@operand, extension)
-    end
-
-    def project(attrlist = [])
-      Relation.new Operator::Project.new(@operand, attrlist)
-    end
-
-    def rename(renaming = {})
-      Relation.new Operator::Rename.new(@operand, renaming)
-    end
-
-    def restrict(predicate = Predicate.tautology)
-      Relation.new Operator::Restrict.new(@operand, Predicate.coerce(predicate))
-    end
-
-    def union(other)
-      Relation.new Operator::Union.new(@operand, other)
-    end
-
-  end # class Relation
+  end # module Relation
 end # module Bmg

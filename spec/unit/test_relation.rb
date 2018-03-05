@@ -10,6 +10,16 @@ module Bmg
 
     end
 
+    describe 'new' do
+
+      it "accepts arrays but enclosed them as Leafs" do
+        tuple = { a: 1, b: 2 }
+        rel = Relation.new([tuple])
+        expect(rel).to be_a(Leaf)
+      end
+
+    end
+
     describe 'one' do
 
       it "returns the only tuple of a singleton" do
