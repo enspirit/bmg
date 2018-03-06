@@ -12,6 +12,10 @@
 * Add the Union operator: union returns both the tuples from left and right operands, but
   strips the duplicates, if any.
 
+* Add connectivity to real SQL database, through Sequel. require 'bmg/sequel' is needed first.
+  It contributes a `Bmg.sequel(dataset)` method that returns relation instances over Sequel
+  dataset objects.
+
 # 0.2.0 - January 13st, 2018
 
 * Add the Extend operator: extends operand tuples with attributes resulting from specified
