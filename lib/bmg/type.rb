@@ -15,6 +15,10 @@ module Bmg
       ANY
     end
 
+    def constants(cs)
+      ANY
+    end
+
     def extend(extension)
       ANY
     end
