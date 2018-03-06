@@ -3,6 +3,10 @@ module Bmg
 
     ANY = Type.new
 
+    def [](attribute)
+      ANY
+    end
+
     def allbut(butlist)
       ANY
     end
@@ -20,6 +24,10 @@ module Bmg
     end
 
     def extend(extension)
+      ANY
+    end
+
+    def image(right, as, on, options)
       ANY
     end
 

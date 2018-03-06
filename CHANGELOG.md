@@ -3,6 +3,9 @@
 * Add the Constants operator: extends the operand's tuple with attributes whose values are
   known statically. This is a special case of extension where values are not Proc but constants.
 
+* Add the Image operator: extends the operand's tuple with the relational image on a right
+  operand. Unlike Alf, the join attributes are explicit for now.
+
 * Add the Restrict operator: restrict filters the operand tuples to those for which a predicate
   evaluates to true.
 

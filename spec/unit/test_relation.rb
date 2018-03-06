@@ -181,6 +181,35 @@ module Bmg
       end
     end
 
+    describe 'image' do
+      let(:left) {
+        Relation.new([
+          { a: 1, b: 2 },
+          { a: 3, b: 4 }
+        ])
+      }
+
+      let(:right) {
+        Relation.new([
+          { a: 1, c: 4 },
+          { a: 1, c: 5 }
+        ])
+      }
+
+      subject{
+        left.image(right, :image, [:a], array: true)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, b: 2, image: [{c: 4}, {c: 5}]},
+          { a: 3, b: 4, image: []},
+        ])
+      end
+    end
+
     describe 'project' do
       let(:relation) {
         Relation.new([

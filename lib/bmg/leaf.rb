@@ -6,11 +6,7 @@ module Bmg
       @operand = operand
       @type = type
     end
-    attr_reader :type
-
-  protected
-
-    attr_reader :operand
+    attr_reader :type, :operand
 
   public
 

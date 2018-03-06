@@ -26,6 +26,11 @@ module Bmg
       Operator::Extend.new(type, self, extension)
     end
 
+    def image(right, as = :image, on = [], options = {})
+      type = self.type.image(right, as, on, options)
+      Operator::Image.new(type, self, right, as, on, options)
+    end
+
     def project(attrlist = [])
       type = self.type.project(attrlist)
       Operator::Project.new(type, self, attrlist)
