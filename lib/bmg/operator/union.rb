@@ -51,11 +51,9 @@ module Bmg
         end
       end
 
-    public ### optimization
+    protected ### optimization
 
-      def restrict(predicate)
-        predicate = Predicate.coerce(predicate)
-        type = self.type.restrict(predicate)
+      def _restrict(type, predicate)
         left.restrict(predicate).union(right.restrict(predicate))
       end
 

@@ -28,8 +28,9 @@ module Bmg
         end
       end
 
-      def restrict(predicate)
-        type = self.type.restrict(predicate)
+    protected
+
+      def _restrict(type, predicate)
         Restrict.new(type, @operand, @predicate & predicate)
       end
 

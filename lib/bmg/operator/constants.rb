@@ -29,11 +29,9 @@ module Bmg
         end
       end
 
-    public ### optimization
+    protected ### optimization
 
-      def restrict(predicate)
-        predicate = Predicate.coerce(predicate)
-        type = self.type.restrict(predicate)
+      def _restrict(type, predicate)
         top_p, bottom_p = predicate.and_split(constants.keys)
         if top_p == predicate
           super

@@ -40,9 +40,9 @@ module Bmg
         end
       end
 
-    public ### optimization
+    protected ### optimization
 
-      def restrict(predicate)
+      def _restrict(type, predicate)
         operand.restrict(predicate).project(attrlist)
       end
 

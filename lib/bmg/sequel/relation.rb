@@ -19,11 +19,9 @@ module Bmg
         @dataset.each(&bl)
       end
 
-    public ### optimization
+    protected ### optimization
 
-      def restrict(predicate)
-        predicate = Predicate.coerce(predicate)
-        type = self.type.restrict(predicate)
+      def _restrict(type, predicate)
         Relation.new type, dataset.where(predicate.to_sequel)
       rescue NotImplementedError, Predicate::NotSupportedError
         super
