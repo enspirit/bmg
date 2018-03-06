@@ -16,6 +16,11 @@ module Bmg
       Operator::Autosummarize.new(type, self, by, summarization)
     end
 
+    def constants(cs = {})
+      type = self.type.constants(cs)
+      Operator::Constants.new(type, self, cs)
+    end
+
     def extend(extension = {})
       type = self.type.extend(extension)
       Operator::Extend.new(type, self, extension)

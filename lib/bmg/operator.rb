@@ -7,6 +7,7 @@ end
 require_relative 'operator/allbut'
 require_relative 'operator/autosummarize'
 require_relative 'operator/autowrap'
+require_relative 'operator/constants'
 require_relative 'operator/extend'
 require_relative 'operator/project'
 require_relative 'operator/rename'

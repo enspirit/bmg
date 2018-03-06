@@ -1,5 +1,8 @@
 # 0.3.0 - March 5st, 2018
 
+* Add the Constants operator: extends the operand's tuple with attributes whose values are
+  known statically. This is a special case of extension where values are not Proc but constants.
+
 * Add the Restrict operator: restrict filters the operand tuples to those for which a predicate
   evaluates to true.
 

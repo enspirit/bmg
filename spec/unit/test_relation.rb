@@ -135,6 +135,28 @@ module Bmg
       end
     end
 
+    describe 'constants' do
+      let(:relation) {
+        Relation.new([
+          { a: 1, b: 1 },
+          { a: 1, b: 2 }
+        ])
+      }
+
+      subject {
+        relation.constants(c: 3)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the expected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, b: 1, c: 3 },
+          { a: 1, b: 2, c: 3 }
+        ])
+      end
+    end
+
     describe 'extend' do
       let(:relation) {
         Relation.new([
