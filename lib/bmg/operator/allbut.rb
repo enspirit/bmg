@@ -33,7 +33,7 @@ module Bmg
       def each
         seen = {}
         @operand.each do |tuple|
-          allbuted = allbut(tuple)
+          allbuted = tuple_allbut(tuple)
           unless seen.has_key?(allbuted)
             yield(allbuted)
             seen[allbuted] = true
@@ -43,7 +43,7 @@ module Bmg
 
     private
 
-      def allbut(tuple)
+      def tuple_allbut(tuple)
         tuple.delete_if{|k,_| @butlist.include?(k) }
       end
 
