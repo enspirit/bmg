@@ -16,6 +16,10 @@
   It contributes a `Bmg.sequel(dataset)` method that returns relation instances over Sequel
   dataset objects.
 
+* Optimization: push restrict over allbut & project.
+
+* Optimization: convert double restrict to a predicate conjunction.
+
 # 0.2.0 - January 13st, 2018
 
 * Add the Extend operator: extends operand tuples with attributes resulting from specified

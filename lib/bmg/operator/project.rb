@@ -40,6 +40,12 @@ module Bmg
         end
       end
 
+    public ### optimization
+
+      def restrict(predicate)
+        operand.restrict(predicate).project(attrlist)
+      end
+
     private
 
       def project(tuple)

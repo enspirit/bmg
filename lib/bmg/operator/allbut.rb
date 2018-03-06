@@ -41,6 +41,12 @@ module Bmg
         end
       end
 
+    public ### optimization
+
+      def restrict(predicate)
+        operand.restrict(predicate).allbut(butlist)
+      end
+
     private
 
       def tuple_allbut(tuple)
