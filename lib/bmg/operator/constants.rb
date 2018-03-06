@@ -10,16 +10,16 @@ module Bmg
     class Constants
       include Operator
 
-      def initialize(type, operand, cs)
+      def initialize(type, operand, constants)
         @type = type
         @operand = operand
-        @cs = cs
+        @constants = constants
       end
       attr_reader :type
 
     protected
 
-      attr_reader :operand, :cs
+      attr_reader :operand, :constants
 
     public
 
@@ -29,10 +29,29 @@ module Bmg
         end
       end
 
+    public ### optimization
+
+      def restrict(predicate)
+        predicate = Predicate.coerce(predicate)
+        type = self.type.restrict(predicate)
+        top_p, bottom_p = predicate.and_split(constants.keys)
+        if top_p == predicate
+          super
+        else
+          result = operand
+          result = result.restrict(bottom_p) unless bottom_p.tautology?
+          result = result.constants(constants)
+          result = result.restrict(top_p) unless top_p.tautology?
+          result
+        end
+      rescue Predicate::NotSupportedError
+        super
+      end
+
     private
 
       def extend_it(tuple)
-        tuple.merge(@cs)
+        tuple.merge(@constants)
       end
 
     end # class Constants

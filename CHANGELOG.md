@@ -16,7 +16,7 @@
   It contributes a `Bmg.sequel(dataset)` method that returns relation instances over Sequel
   dataset objects.
 
-* Optimization: push restrict over allbut, project & union.
+* Optimization: push restrict over allbut, project, union & constants.
 
 * Optimization: convert double restrict to a predicate conjunction.
 
