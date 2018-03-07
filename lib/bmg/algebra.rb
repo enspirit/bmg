@@ -82,12 +82,12 @@ module Bmg
     end
     protected :_restrict
 
-    def union(other)
-      _union self.type.union(other.type), other
+    def union(other, options = {})
+      _union self.type.union(other.type), other, options
     end
 
-    def _union(type, other)
-      Operator::Union.new(type, self, other)
+    def _union(type, other, options)
+      Operator::Union.new(type, [self, other], options)
     end
     protected :_union
 

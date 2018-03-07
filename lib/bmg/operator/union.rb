@@ -6,6 +6,9 @@ module Bmg
     # Returns all tuples of the left operand followed by all
     # tuples from the right operand.
     #
+    # This implementation is actually a NAry-Union, since it handles
+    # an arbitrary number of operands.
+    #
     # By default, this operator strips duplicates, as of relational
     # theory. Please set the `:all` option to true to avoid this
     # behavior and save execution time.
@@ -17,17 +20,16 @@ module Bmg
         all: false
       }
 
-      def initialize(type, left, right, options = {})
+      def initialize(type, operands, options = {})
         @type = type
-        @left = left
-        @right = right
+        @operands = operands
         @options = DEFAULT_OPTIONS.merge(options)
       end
       attr_reader :type
 
     protected
 
-      attr_reader :left, :right, :options
+      attr_reader :operands, :options
 
     public
 
@@ -37,16 +39,16 @@ module Bmg
 
       def each(&bl)
         if all?
-          @left.each(&bl)
-          @right.each(&bl)
+          operands.each do |op|
+            op.each(&bl)
+          end
         else
           seen = {}
-          @left.each do |tuple|
-            yield(tuple)
-            seen[tuple] = true
-          end
-          @right.each do |tuple|
-            yield(tuple) unless seen.has_key?(tuple)
+          operands.each do |op|
+            op.each do |tuple|
+              yield(tuple) unless seen.has_key?(tuple)
+              seen[tuple] = true
+            end
           end
         end
       end
@@ -54,7 +56,19 @@ module Bmg
     protected ### optimization
 
       def _restrict(type, predicate)
-        left.restrict(predicate).union(right.restrict(predicate))
+        Union.new(type, operands.map{|op| op.restrict(predicate) }, options)
+      end
+
+      def _union(type, other, options)
+        norm_options = DEFAULT_OPTIONS.merge(options)
+        return super unless norm_options == self.options
+        case other
+        when Union
+          return super unless norm_options == other.send(:options)
+          Union.new(type, operands + other.operands, options)
+        else
+          Union.new(type, operands + [other], options)
+        end
       end
 
     end # class Union
