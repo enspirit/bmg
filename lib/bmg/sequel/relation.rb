@@ -19,6 +19,10 @@ module Bmg
         @dataset.each(&bl)
       end
 
+      def to_ast
+        [:sequel, @dataset.sql]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

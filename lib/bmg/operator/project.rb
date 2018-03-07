@@ -40,6 +40,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :project, operand.to_ast, attrlist ]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

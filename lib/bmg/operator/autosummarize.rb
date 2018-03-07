@@ -38,6 +38,10 @@ module Bmg
         h.values.each(&bl)
       end
 
+      def to_ast
+        [:autosummarize, operand.to_ast, by.dup, sums.dup]
+      end
+
     private
 
       # Returns the tuple determinant.

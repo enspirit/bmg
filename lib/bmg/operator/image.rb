@@ -50,6 +50,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :image, left.to_ast, right.to_ast, as, on, options.dup ]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

@@ -63,12 +63,16 @@ module Bmg
     end
 
     describe 'allbut' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 2 },
           { a: 1, b: 4 },
           { a: 3, b: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
       }
 
       subject {
@@ -83,18 +87,30 @@ module Bmg
           { a: 3 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:allbut, [:leaf, data], [:b]])
+      end
     end
 
     describe 'autosummarize' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, x: 2 },
           { a: 1, x: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      let(:options) {
+        { x: Operator::Autosummarize::DistinctList.new }
       }
 
       subject {
-        relation.autosummarize([:a], x: Operator::Autosummarize::DistinctList.new)
+        relation.autosummarize([:a], options)
       }
 
       it_behaves_like "an operator method"
@@ -104,14 +120,26 @@ module Bmg
           { a: 1, x: [2, 4] }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:autosummarize, [:leaf, data], [:a], options ])
+      end
     end
 
     describe 'autowrap' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b_x: 2, b_y: 3 },
           { a: 2, b_x: 4, b_y: 1 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      let(:options) {
+        { split: "." }
       }
 
       subject {
@@ -128,19 +156,27 @@ module Bmg
       end
 
       it 'passes the options' do
-        expect(relation.autowrap(split: ".").to_a).to eql([
+        expect(relation.autowrap(options).to_a).to eql([
           { a: 1, b_x: 2, b_y: 3 },
           { a: 2, b_x: 4, b_y: 1 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(relation.autowrap(options).to_ast).to eql([:autowrap, [:leaf, data], options ])
+      end
     end
 
     describe 'constants' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 1 },
           { a: 1, b: 2 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
       }
 
       subject {
@@ -155,19 +191,31 @@ module Bmg
           { a: 1, b: 2, c: 3 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:constants, [:leaf, data], {c: 3}])
+      end
     end
 
     describe 'extend' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 2 },
           { a: 1, b: 4 },
           { a: 3, b: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      let(:extension) {
+        { c: ->(t){ t[:a] + t[:b] } }
       }
 
       subject {
-        relation.extend(c: ->(t){ t[:a] + t[:b] })
+        relation.extend(extension)
       }
 
       it_behaves_like "an operator method"
@@ -179,21 +227,33 @@ module Bmg
           { a: 3, b: 4, c: 7 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:extend, [:leaf, data], extension])
+      end
     end
 
     describe 'image' do
-      let(:left) {
-        Relation.new([
+      let(:left_data) {
+        [
           { a: 1, b: 2 },
           { a: 3, b: 4 }
-        ])
+        ]
+      }
+
+      let(:left) {
+        Relation.new(left_data)
+      }
+
+      let(:right_data) {
+        [
+          { a: 1, c: 4 },
+          { a: 1, c: 5 }
+        ]
       }
 
       let(:right) {
-        Relation.new([
-          { a: 1, c: 4 },
-          { a: 1, c: 5 }
-        ])
+        Relation.new(right_data)
       }
 
       subject{
@@ -208,15 +268,23 @@ module Bmg
           { a: 3, b: 4, image: []},
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:image, [:leaf, left_data], [:leaf, right_data], :image, [:a], {array: true}])
+      end
     end
 
     describe 'project' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 2 },
           { a: 1, b: 4 },
           { a: 3, b: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
       }
 
       subject {
@@ -231,14 +299,22 @@ module Bmg
           { b: 4 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([ :project, [:leaf, data], [:b] ])
+      end
     end
 
     describe 'rename' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 2 },
           { a: 2, b: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
       }
 
       subject {
@@ -253,14 +329,22 @@ module Bmg
           { a: 2, c: 4 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:rename, [:leaf, data], {b: :c}])
+      end
     end
 
     describe 'restrict' do
-      let(:relation) {
-        Relation.new([
+      let(:data) {
+        [
           { a: 1, b: 2 },
           { a: 2, b: 4 }
-        ])
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
       }
 
       subject {
@@ -274,20 +358,33 @@ module Bmg
           { a: 1, b: 2 }
         ])
       end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:restrict, [:leaf, data], [:eq, [:identifier, :a], [:literal, 1]]])
+      end
     end
 
     describe 'union' do
-      let(:left) {
-        Relation.new([
+      let(:left_data) {
+        [
           { a: 1, b: 2 },
           { a: 2, b: 4 }
-        ])
+        ]
       }
-      let(:right) {
-        Relation.new([
+
+      let(:left) {
+        Relation.new(left_data)
+      }
+
+      let(:right_data) {
+        [
           { a: 1, b: 2 },
           { a: 3, b: 4 }
-        ])
+        ]
+      }
+
+      let(:right) {
+        Relation.new(right_data)
       }
 
       subject {
@@ -302,6 +399,10 @@ module Bmg
           { a: 2, b: 4 },
           { a: 3, b: 4 }
         ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:union, [:leaf, left_data], [:leaf, right_data], {all: false}])
       end
     end
 

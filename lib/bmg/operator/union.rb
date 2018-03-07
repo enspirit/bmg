@@ -53,6 +53,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :union ] + operands.map(&:to_ast) + [ options.dup ]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

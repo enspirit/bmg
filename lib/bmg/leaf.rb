@@ -14,5 +14,9 @@ module Bmg
       @operand.each(&bl)
     end
 
+    def to_ast
+      [:leaf, operand]
+    end
+
   end
 end

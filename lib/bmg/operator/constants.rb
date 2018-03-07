@@ -29,6 +29,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :constants, operand.to_ast, constants.dup ]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

@@ -35,6 +35,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :rename, operand.to_ast, renaming.dup ]
+      end
+
     private
 
       def rename(tuple)

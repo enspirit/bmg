@@ -28,6 +28,7 @@ module Bmg
       def initialize(type, operand, options = {})
         @type = type
         @operand = operand
+        @original_options = options
         @options = DEFAULT_OPTIONS.merge(options)
         @options[:postprocessor] = NoLeftJoinNoise.new(@options[:postprocessor])
       end
@@ -43,6 +44,10 @@ module Bmg
         @operand.each do |tuple|
           yield autowrap(tuple)
         end
+      end
+
+      def to_ast
+        [ :autowrap, operand.to_ast, @original_options.dup ]
       end
 
     private

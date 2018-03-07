@@ -32,6 +32,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :extend, operand.to_ast, extension.dup ]
+      end
+
     private
 
       def extend_it(tuple)

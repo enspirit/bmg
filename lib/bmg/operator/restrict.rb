@@ -28,6 +28,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [ :restrict, operand.to_ast, predicate.sexpr ]
+      end
+
     protected
 
       def _restrict(type, predicate)

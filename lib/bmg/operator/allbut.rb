@@ -41,6 +41,10 @@ module Bmg
         end
       end
 
+      def to_ast
+        [:allbut, operand.to_ast, butlist.dup]
+      end
+
     protected ### optimization
 
       def _restrict(type, predicate)

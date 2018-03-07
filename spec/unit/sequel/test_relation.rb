@@ -25,6 +25,10 @@ module Bmg
         expect(optimized.to_a).to be_empty
       end
 
+      it 'has the expected ast' do
+        expect(relation.to_ast).to eql([:sequel, "SELECT * FROM `suppliers`"])
+      end
+
     end
   end
 end
