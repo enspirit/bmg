@@ -18,10 +18,6 @@ module Bmg
         relation.constants(constants).restrict(predicate)
       }
 
-      let(:operand) {
-        subject.send(:operand)
-      }
-
       context 'when the predicate does not touches the constants' do
 
         let(:predicate){ Predicate.eq(a: 1) }

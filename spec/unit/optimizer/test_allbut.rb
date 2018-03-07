@@ -20,10 +20,6 @@ module Bmg
         relation.allbut(allbuted).restrict(predicate)
       }
 
-      let(:operand) {
-        subject.send(:operand)
-      }
-
       it 'optimizes by pushing the restriction down' do
         expect(subject).to be_a(Operator::Allbut)
         expect(subject.send(:butlist)).to be(allbuted)

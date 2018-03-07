@@ -20,10 +20,6 @@ module Bmg
         relation.project(projected).restrict(predicate)
       }
 
-      let(:operand) {
-        subject.send(:operand)
-      }
-
       it 'optimizes by pushing the restriction down' do
         expect(subject).to be_a(Operator::Project)
         expect(subject.send(:attrlist)).to be(projected)
