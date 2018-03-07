@@ -26,48 +26,89 @@ module Bmg
           expect(subject).to be_a(Operator::Constants)
           expect(subject.send(:constants)).to be(constants)
           expect(operand).to be_a(Operator::Restrict)
-          expect(operand.send(:predicate)).to eql(predicate)
+          expect(predicate_of(operand)).to eql(predicate)
         end
 
       end
 
       context 'when the predicate touches the constants' do
 
-        let(:predicate){ Predicate.eq(c: 3) }
+        context 'when leading to a tautology' do
 
-        it 'does not optimize' do
-          expect(subject).to be_a(Operator::Restrict)
-          expect(subject.send(:predicate)).to eql(predicate)
-          expect(operand).to be_a(Operator::Constants)
-          expect(operand.send(:constants)).to be(constants)
+          let(:predicate){ Predicate.eq(c: 3) }
+
+          it 'strips the restriction completely' do
+            expect(subject).to be_a(Operator::Constants)
+            expect(subject.send(:constants)).to be(constants)
+          end
+
+        end
+
+        context 'when leading to a contradiction' do
+
+          let(:predicate){ Predicate.eq(c: 7) }
+
+          it 'returns an empty result' do
+            expect(subject).to be_a(Leaf)
+            expect(subject.to_a).to be_empty
+          end
+
         end
 
       end
 
       context 'when the predicate can be split' do
 
-        let(:predicate){ Predicate.eq(a: 1, c: 3) }
+        context 'when the constant part leads to a tautology' do
 
-        it 'does not optimize' do
-          expect(subject).to be_a(Operator::Restrict)
-          expect(subject.send(:predicate)).to eql(Predicate.eq(c: 3))
-          expect(operand).to be_a(Operator::Constants)
-          expect(operand.send(:constants)).to be(constants)
-          expect(operand.send(:operand)).to be_a(Operator::Restrict)
-          expect(operand.send(:operand).send(:predicate)).to eql(Predicate.eq(a: 1))
+          let(:predicate){ Predicate.eq(a: 1, c: 3) }
+
+          it 'strips the constant restriction and pushes back the rest' do
+            expect(subject).to be_a(Operator::Constants)
+            expect(subject.send(:constants)).to be(constants)
+            expect(subject.send(:operand)).to be_a(Operator::Restrict)
+            expect(subject.send(:operand).send(:predicate)).to eql(Predicate.eq(a: 1))
+          end
+
+        end
+
+        context 'when the constant part leads to a contradition' do
+
+          let(:predicate){ Predicate.eq(a: 1, c: 4) }
+
+          it 'returns an empty result' do
+            expect(subject).to be_a(Leaf)
+            expect(subject.to_a).to be_empty
+          end
+
         end
 
       end
 
       context 'when the predicate cannot be split' do
 
-        let(:predicate){ Predicate.eq(a: 1) | Predicate.eq(c: 3) }
+        context 'when nothing can be pushed down' do
+          let(:predicate){ Predicate.eq(a: 1) | Predicate.eq(c: 3) }
 
-        it 'does not optimize' do
-          expect(subject).to be_a(Operator::Restrict)
-          expect(subject.send(:predicate)).to be(predicate)
-          expect(operand).to be_a(Operator::Constants)
-          expect(operand.send(:constants)).to be(constants)
+          it 'does not optimize' do
+            expect(subject).to be_a(Operator::Restrict)
+            expect(predicate_of(subject)).to be(predicate)
+            expect(operand).to be_a(Operator::Constants)
+            expect(operand.send(:constants)).to be(constants)
+          end
+        end
+
+        context 'when something can be pushed down' do
+          let(:predicate){ Predicate.eq(a: 1) & (Predicate.eq(c: 3) | Predicate.eq(d: 4)) }
+
+          it 'pushes down what can be pushed and keeps the rest' do
+            expect(subject).to be_a(Operator::Restrict)
+            expect(predicate_of(subject)).to eql(Predicate.eq(c: 3) | Predicate.eq(d: 4))
+            expect(operand).to be_a(Operator::Constants)
+            expect(operand.send(:constants)).to be(constants)
+            expect(operand(operand)).to be_a(Operator::Restrict)
+            expect(predicate_of(operand(operand))).to eql(Predicate.eq(a: 1))
+          end
         end
 
       end
@@ -78,7 +119,7 @@ module Bmg
 
         it 'does not optimize' do
           expect(subject).to be_a(Operator::Restrict)
-          expect(subject.send(:predicate)).to be(predicate)
+          expect(predicate_of(subject)).to be(predicate)
           expect(operand).to be_a(Operator::Constants)
           expect(operand.send(:constants)).to be(constants)
         end

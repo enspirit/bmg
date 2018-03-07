@@ -37,13 +37,33 @@ module Bmg
 
       def _restrict(type, predicate)
         top_p, bottom_p = predicate.and_split(constants.keys)
-        if top_p == predicate
-          super
-        else
+        if top_p.tautology?
+          # push all situation
           result = operand
           result = result.restrict(bottom_p) unless bottom_p.tautology?
           result = result.constants(constants)
-          result = result.restrict(top_p) unless top_p.tautology?
+          result
+        elsif (top_p.free_variables - constants.keys).empty?
+          # top_p applies to constants only
+          if eval = top_p.evaluate(constants)
+            result = operand
+            result = result.restrict(bottom_p) unless bottom_p.tautology?
+            result = result.constants(constants)
+            result
+          else
+            Relation.empty(type)
+          end
+        elsif bottom_p.tautology?
+          # push none situation, no optimization possible since top_p
+          # is not a tautology
+          super
+        else
+          # top_p and bottom_p are complex predicates. Let apply each
+          # of them
+          result = operand
+          result = result.restrict(bottom_p)
+          result = result.constants(constants)
+          result = result.restrict(top_p)
           result
         end
       rescue Predicate::NotSupportedError

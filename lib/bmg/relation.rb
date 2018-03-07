@@ -7,6 +7,10 @@ module Bmg
       operand.is_a?(Relation) ? operand : Leaf.new(type, operand)
     end
 
+    def self.empty(type = Type::ANY)
+      Relation.new([])
+    end
+
     # Private helper to implement `one` and `one_or_nil`
     def one_or_yield(&bl)
       first = nil
