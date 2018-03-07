@@ -8,7 +8,7 @@ module Bmg
     end
 
     def self.empty(type = Type::ANY)
-      Relation.new([])
+      Relation::Empty.new(type)
     end
 
     # Private helper to implement `one` and `one_or_nil`
@@ -62,3 +62,4 @@ module Bmg
 
   end # module Relation
 end # module Bmg
+require_relative 'relation/empty'

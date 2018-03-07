@@ -35,24 +35,65 @@ module Bmg
         Predicate.gt(:a, 10)
       }
 
-      subject{
-        union_nary([left, right, third]).restrict(predicate)
-      }
+      context 'when it does not lead to empty relations' do
+        subject{
+          union_nary([left, right, third]).restrict(predicate)
+        }
 
-      it 'works' do
-        expect(subject).to be_a(Operator::Union)
-        expect(operands.all?{|op|
-          op.is_a?(Operator::Restrict) && predicate_of(op) == predicate
-        }).to be(true)
+        it 'works' do
+          expect(subject).to be_a(Operator::Union)
+          expect(operands.all?{|op|
+            op.is_a?(Operator::Restrict) && predicate_of(op) == predicate
+          }).to be(true)
+        end
       end
+
+      context 'when it leads to empty relations' do
+
+        it 'strips them' do
+          subject = union_nary([left, Relation.empty, third]).restrict(predicate)
+          expect(subject).to be_a(Operator::Union)
+          expect(operands(subject).size).to eql(2)
+        end
+
+        it 'returns the single one if a singleton' do
+          subject = union_nary([left, Relation.empty]).restrict(predicate)
+          expect(subject).to be_a(Operator::Restrict)
+          expect(predicate_of(subject)).to eql(predicate)
+          expect(operand(subject)).to be(left)
+        end
+
+        it 'returns empty when none is kept' do
+          subject = union_nary([Relation.empty, Relation.empty]).restrict(predicate)
+          expect(subject).to be_a(Relation::Empty)
+        end
+
+      end
+
     end
 
+    let(:base_union) {
+      union_nary([left, right])
+    }
+
     context "union_nary.union when the options are compatible" do
+
+      context "when third is empty" do
+
+        subject{
+          base_union.union(Relation.empty)
+        }
+
+        it 'returns self' do
+          expect(subject).to be(base_union)
+        end
+
+      end
 
       context "when third is not a union or a union_nary" do
 
         subject{
-          union_nary([left, right]).union(third)
+          base_union.union(third)
         }
 
         it 'works' do
@@ -65,7 +106,7 @@ module Bmg
       context "when third a union" do
 
         subject{
-          union_nary([left, right]).union(third.union(fourth))
+          base_union.union(third.union(fourth))
         }
 
         it 'works' do
@@ -81,7 +122,7 @@ module Bmg
       context "when third is not a union" do
 
         subject{
-          union_nary([left, right]).union(third, all: true)
+          base_union.union(third, all: true)
         }
 
         it 'does not optimize' do
@@ -96,7 +137,7 @@ module Bmg
       context "when third is a union" do
 
         subject{
-          union_nary([left, right]).union(third.union(fourth, all: true))
+          base_union.union(third.union(fourth, all: true))
         }
 
         it 'does not optimize' do

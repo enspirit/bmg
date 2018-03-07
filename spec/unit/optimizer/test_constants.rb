@@ -49,8 +49,7 @@ module Bmg
           let(:predicate){ Predicate.eq(c: 7) }
 
           it 'returns an empty result' do
-            expect(subject).to be_a(Leaf)
-            expect(subject.to_a).to be_empty
+            expect(subject).to be_a(Relation::Empty)
           end
 
         end
@@ -77,8 +76,7 @@ module Bmg
           let(:predicate){ Predicate.eq(a: 1, c: 4) }
 
           it 'returns an empty result' do
-            expect(subject).to be_a(Leaf)
-            expect(subject.to_a).to be_empty
+            expect(subject).to be_a(Relation::Empty)
           end
 
         end

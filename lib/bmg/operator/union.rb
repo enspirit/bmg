@@ -60,10 +60,18 @@ module Bmg
     protected ### optimization
 
       def _restrict(type, predicate)
-        Union.new(type, operands.map{|op| op.restrict(predicate) }, options)
+        ops = operands
+          .map   {|op| op.restrict(predicate)    }
+          .reject{|op| op.is_a?(Relation::Empty) }
+        case ops.size
+        when 0 then Relation.empty(type)
+        when 1 then ops.first
+        else Union.new(type, ops, options)
+        end
       end
 
       def _union(type, other, options)
+        return self if other.is_a?(Relation::Empty)
         norm_options = DEFAULT_OPTIONS.merge(options)
         return super unless norm_options == self.options
         case other
