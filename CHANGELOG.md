@@ -1,4 +1,12 @@
-# 0.3.0 - March 5st, 2018
+# 0.4.0 - March 7st, 2018
+
+* Optimization: push restrictions over image & constants.
+
+* Optimization: stack subsequent unions as only one n-adic operator.
+
+* Introduce `Relation.empty` for empty relations taken into account by the optimization.
+
+# 0.3.0 - March 7st, 2018
 
 * Add the Constants operator: extends the operand's tuple with attributes whose values are
   known statically. This is a special case of extension where values are not Proc but constants.
