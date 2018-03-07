@@ -50,6 +50,24 @@ module Bmg
         end
       end
 
+    protected ### optimization
+
+      def _restrict(type, predicate)
+        on_as, rest = predicate.and_split([as])
+        if on_as == predicate
+          super
+        else
+          shared, left_only = rest.and_split(on)
+          new_left  = left.restrict(rest)
+          new_right = shared.tautology? ? right : right.restrict(shared)
+          opt = new_left.image(new_right, as, on, options)
+          opt = opt.restrict(on_as) unless on_as.tautology?
+          opt
+        end
+      rescue Predicate::NotSupportedError
+        super
+      end
+
     private
 
       def tuple_project(tuple, on)
