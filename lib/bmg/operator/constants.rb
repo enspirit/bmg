@@ -36,9 +36,11 @@ module Bmg
     protected ### optimization
 
       def _restrict(type, predicate)
+        # bottom_p makes no reference to constants, top_p possibly
+        # does...
         top_p, bottom_p = predicate.and_split(constants.keys)
         if top_p.tautology?
-          # push all situation
+          # push all situation: predicate made no reference to constants
           result = operand
           result = result.restrict(bottom_p) unless bottom_p.tautology?
           result = result.constants(constants)

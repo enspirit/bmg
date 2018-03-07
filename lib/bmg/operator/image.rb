@@ -58,14 +58,36 @@ module Bmg
 
       def _restrict(type, predicate)
         on_as, rest = predicate.and_split([as])
-        if on_as == predicate
+        if rest.tautology?
+          # push none situation: on_as is still the full predicate
           super
         else
-          shared, left_only = rest.and_split(on)
-          new_left  = left.restrict(rest)
-          new_right = shared.tautology? ? right : right.restrict(shared)
+          # rest makes no reference to `as` and can be pushed
+          # down...
+          new_left = left.restrict(rest)
+
+          # regarding right... rest possibly makes references to the
+          # join key, but also to left attributes... let split again
+          # on the join key attributes, to try to remove spurious
+          # attributes for right...
+          on_on_and_more, left_only = rest.and_split(on)
+
+          # it's not guaranteed! let now check whether the split led
+          # to a situation where the predicate on `on` attributes
+          # actually refers to no other ones...
+          if !on_on_and_more.tautology? and (on_on_and_more.free_variables - on).empty?
+            new_right = right.restrict(on_on_and_more)
+          else
+            new_right = right
+          end
+
+          # This is the image itself
           opt = new_left.image(new_right, as, on, options)
+
+          # finaly, if on_as is not a tautology, it still needs to
+          # be kept on the final node
           opt = opt.restrict(on_as) unless on_as.tautology?
+
           opt
         end
       rescue Predicate::NotSupportedError

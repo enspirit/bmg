@@ -78,7 +78,7 @@ module Bmg
         end
       end
 
-      context 'when restriction touches all attributes' do
+      context 'when restriction touches all attributes and can still be optimized' do
         let(:predicate) {
           Predicate.eq(a: 1, b: 2, image: 3)
         }
@@ -91,6 +91,21 @@ module Bmg
           expect(operand.send(:left).send(:predicate)).to eql(Predicate.eq(a: 1, b: 2))
           expect(operand.send(:right)).to be_a(Operator::Restrict)
           expect(operand.send(:right).send(:predicate)).to eql(Predicate.eq(a: 1))
+        end
+      end
+
+      context 'when restriction touches all attributes but cannot be right-optimized' do
+        let(:predicate) {
+          (Predicate.eq(a: 1) | Predicate.eq(b: 7)) & Predicate.eq(b: 2, image: 3)
+        }
+
+        it 'optimizes left, but not right' do
+          expect(subject).to be_a(Operator::Restrict)
+          expect(subject.send(:predicate)).to eql(Predicate.eq(image: 3))
+          expect(operand).to be_a(Operator::Image)
+          expect(operand.send(:left)).to be_a(Operator::Restrict)
+          expect(operand.send(:left).send(:predicate)).to eql((Predicate.eq(a: 1) | Predicate.eq(b: 7)) & Predicate.eq(b: 2))
+          expect(operand.send(:right)).to be(right)
         end
       end
 
