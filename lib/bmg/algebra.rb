@@ -74,7 +74,9 @@ module Bmg
     protected :_rename
 
     def restrict(predicate)
-      _restrict self.type.restrict(predicate), Predicate.coerce(predicate)
+      predicate = Predicate.coerce(predicate)
+      return self if predicate.tautology?
+      _restrict self.type.restrict(predicate), predicate
     end
 
     def _restrict(type, predicate)

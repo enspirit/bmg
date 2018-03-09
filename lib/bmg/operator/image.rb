@@ -84,9 +84,8 @@ module Bmg
           # This is the image itself
           opt = new_left.image(new_right, as, on, options)
 
-          # finaly, if on_as is not a tautology, it still needs to
-          # be kept on the final node
-          opt = opt.restrict(on_as) unless on_as.tautology?
+          # finaly, it still needs to be kept on the final node
+          opt = opt.restrict(on_as)
 
           opt
         end

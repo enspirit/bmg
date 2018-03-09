@@ -362,6 +362,10 @@ module Bmg
       it 'has the expected ast' do
         expect(subject.to_ast).to eql([:restrict, [:leaf, data], [:eq, [:identifier, :a], [:literal, 1]]])
       end
+
+      it 'always optimizes restrictions on tautologies' do
+        expect(relation.restrict(Predicate.tautology)).to be(relation)
+      end
     end
 
     describe 'union' do

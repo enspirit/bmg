@@ -42,14 +42,14 @@ module Bmg
         if top_p.tautology?
           # push all situation: predicate made no reference to constants
           result = operand
-          result = result.restrict(bottom_p) unless bottom_p.tautology?
+          result = result.restrict(bottom_p)
           result = result.constants(constants)
           result
         elsif (top_p.free_variables - constants.keys).empty?
           # top_p applies to constants only
           if eval = top_p.evaluate(constants)
             result = operand
-            result = result.restrict(bottom_p) unless bottom_p.tautology?
+            result = result.restrict(bottom_p)
             result = result.constants(constants)
             result
           else

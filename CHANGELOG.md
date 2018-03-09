@@ -1,3 +1,11 @@
+# 0.4.1 - March 9st, 2018
+
+* Fix Image#restrict optimization that pushed down restrictions on right attributes
+  that do not exist for it.
+
+* Optimize tautolological restrictions by always returning the operand itself. This
+  way, it is no longer necessary to use `unless p.tautology?` before using `restrict`.
+
 # 0.4.0 - March 7st, 2018
 
 * Optimization: push restrictions over image & constants.
