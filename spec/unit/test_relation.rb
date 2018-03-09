@@ -366,6 +366,10 @@ module Bmg
       it 'always optimizes restrictions on tautologies' do
         expect(relation.restrict(Predicate.tautology)).to be(relation)
       end
+
+      it 'always optimizes restrictions on contradictions' do
+        expect(relation.restrict(Predicate.contradiction)).to be_a(Relation::Empty)
+      end
     end
 
     describe 'union' do

@@ -6,6 +6,10 @@
 * Optimize tautolological restrictions by always returning the operand itself. This
   way, it is no longer necessary to use `unless p.tautology?` before using `restrict`.
 
+* Optimize contraduction restrictions by always returning an empty relation. This
+  will further optimize since many optimizations are implemented on Relation::Empty
+  itself.
+
 # 0.4.0 - March 7st, 2018
 
 * Optimization: push restrictions over image & constants.

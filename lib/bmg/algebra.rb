@@ -75,8 +75,16 @@ module Bmg
 
     def restrict(predicate)
       predicate = Predicate.coerce(predicate)
-      return self if predicate.tautology?
-      _restrict self.type.restrict(predicate), predicate
+      if predicate.tautology?
+        self
+      else
+        type = self.type.restrict(predicate)
+        if predicate.contradiction?
+          Relation.empty(type)
+        else
+          _restrict type, predicate
+        end
+      end
     end
 
     def _restrict(type, predicate)
