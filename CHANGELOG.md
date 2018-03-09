@@ -10,6 +10,8 @@
   will further optimize since many optimizations are implemented on Relation::Empty
   itself.
 
+* Predicate dependency bumped to 1.2.0 to get a few bug fixes.
+
 # 0.4.0 - March 7st, 2018
 
 * Optimization: push restrictions over image & constants.
