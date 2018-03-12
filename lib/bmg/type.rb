@@ -1,6 +1,12 @@
 module Bmg
   class Type
 
+    def initialize(predicate = Predicate.tautology)
+      @predicate = predicate
+      raise ArgumentError if @predicate.nil?
+    end
+    attr_reader :predicate
+
     ANY = Type.new
 
     def [](attribute)
@@ -20,7 +26,7 @@ module Bmg
     end
 
     def constants(cs)
-      ANY
+      Type.new(@predicate & Predicate.eq(cs))
     end
 
     def extend(extension)
@@ -36,15 +42,15 @@ module Bmg
     end
 
     def rename(renaming)
-      ANY
+      Type.new(@predicate.rename(renaming))
     end
 
     def restrict(predicate)
-      ANY
+      Type.new(@predicate & predicate)
     end
 
     def union(other)
-      ANY
+      Type.new(@predicate | other.predicate)
     end
 
   end # class Type

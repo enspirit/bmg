@@ -101,5 +101,9 @@ module Bmg
     end
     protected :_union
 
+    def cached(key_attributes, cache)
+      Relation::Cached.new(self, key_attributes, cache)
+    end
+
   end # module Algebra
 end # module Bmg
