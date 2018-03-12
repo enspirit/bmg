@@ -1,5 +1,8 @@
 # 0.5.0 - TBD
 
+* Update mechanism (insert, delete & update) is provided for operators yielding
+  no update ambiguity: allbut, constants, extend, project, rename.
+
 * Optimization: push restrictions over autosummarize, rename & restrict.
 
 * Added Relation#to_json

@@ -35,6 +35,18 @@ module Bmg
       one_or_yield{ nil }
     end
 
+    def insert(arg)
+      raise InvalidUpdateError, "Cannot insert into this Relvar"
+    end
+
+    def update(arg)
+      raise InvalidUpdateError, "Cannot update this Relvar"
+    end
+
+    def delete
+      raise InvalidUpdateError, "Cannot delete from this Relvar"
+    end
+
     # Returns a json representation
     def to_json(*args, &bl)
       to_a.to_json(*args, &bl)
