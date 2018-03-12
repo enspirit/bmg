@@ -39,6 +39,13 @@ module Bmg
         [ :rename, operand.to_ast, renaming.dup ]
       end
 
+    protected ### optimization
+
+      def _restrict(type, predicate)
+        reversed = reverse_renaming(renaming)
+        operand.restrict(predicate.rename(reversed)).rename(renaming)
+      end
+
     private
 
       def rename(tuple)
@@ -50,6 +57,10 @@ module Bmg
 
       def rename_key(k)
         @renaming[k] || k
+      end
+
+      def reverse_renaming(renaming)
+        renaming.each_with_object({}){|(k,v),h| h[v] = k }
       end
 
     end # class Rename

@@ -42,6 +42,21 @@ module Bmg
         [:autosummarize, operand.to_ast, by.dup, sums.dup]
       end
 
+    protected
+
+      def _restrict(type, predicate)
+        top, bottom = predicate.and_split(sums.keys)
+        if top == predicate
+          super
+        else
+          op = operand
+          op = op.restrict(bottom)
+          op = op.autosummarize(by, sums)
+          op = op.restrict(top)
+          op
+        end
+      end
+
     private
 
       # Returns the tuple determinant.

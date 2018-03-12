@@ -13,7 +13,7 @@ module Bmg
       [:extend, []],
       [:image, [ Relation.new([]) ]],
       [:project, []],
-      [:rename, []],
+      [:rename, [{}]],
       [:restrict, [Predicate.eq(a: 1)]]
     ].each do |(kind, args)|
 
