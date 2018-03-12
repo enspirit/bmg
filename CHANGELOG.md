@@ -2,6 +2,8 @@
 
 * Optimization: push restrictions over rename & autosummarize.
 
+* Added Relation#to_json
+
 # 0.4.1 - March 9st, 2018
 
 * Fix Image#restrict optimization that pushed down restrictions on right attributes

@@ -35,6 +35,11 @@ module Bmg
       one_or_yield{ nil }
     end
 
+    # Returns a json representation
+    def to_json(*args, &bl)
+      to_a.to_json(*args, &bl)
+    end
+
     # Converts to an sexpr expression.
     def to_ast
       raise "Bmg is missing a feature!"
