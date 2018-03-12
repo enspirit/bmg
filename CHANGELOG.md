@@ -1,6 +1,6 @@
 # 0.5.0 - TBD
 
-* Optimization: push restrictions over rename & autosummarize.
+* Optimization: push restrictions over autosummarize, rename & restrict.
 
 * Added Relation#to_json
 

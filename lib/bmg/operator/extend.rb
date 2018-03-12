@@ -36,6 +36,21 @@ module Bmg
         [ :extend, operand.to_ast, extension.dup ]
       end
 
+    protected ### optimization
+
+      def _restrict(type, predicate)
+        top, bottom = predicate.and_split(extension.keys)
+        if top == predicate
+          super
+        else
+          op = operand
+          op = op.restrict(bottom)
+          op = op.extend(extension)
+          op = op.restrict(top)
+          op
+        end
+      end
+
     private
 
       def extend_it(tuple)
