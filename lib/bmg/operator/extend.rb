@@ -32,6 +32,24 @@ module Bmg
         end
       end
 
+      def insert(arg)
+        case arg
+        when Hash       then operand.insert(allbut_extkeys(arg))
+        when Relation   then operand.insert(arg.allbut(extension.keys))
+        when Enumerable then operand.insert(arg.map{|t| allbut_extkeys(t) })
+        else
+          super
+        end
+      end
+
+      def update(tuple)
+        operand.update(allbut_extkeys(tuple))
+      end
+
+      def delete
+        operand.delete
+      end
+
       def to_ast
         [ :extend, operand.to_ast, extension.dup ]
       end
@@ -58,6 +76,10 @@ module Bmg
           memo[k] = v.call(tuple)
           memo
         }
+      end
+
+      def allbut_extkeys(tuple)
+        TupleAlgebra.allbut(tuple, extension.keys)
       end
 
     end # class Extend

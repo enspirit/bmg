@@ -40,6 +40,23 @@ module Bmg
         end
       end
 
+      def insert(arg)
+        case arg
+        when Hash       then operand.insert(valid_tuple!(arg))
+        when Enumerable then operand.insert(arg.map{|t| valid_tuple!(t) })
+        else
+          super
+        end
+      end
+
+      def update(tuple)
+        operand.update(valid_tuple!(tuple))
+      end
+
+      def delete
+        operand.delete
+      end
+
       def to_ast
         [ :project, operand.to_ast, attrlist ]
       end
@@ -54,6 +71,12 @@ module Bmg
 
       def project(tuple)
         tuple.delete_if{|k,_| !@attrlist.include?(k) }
+      end
+
+      def valid_tuple!(tuple)
+        offending = tuple.keys - attrlist
+        raise InvalidUpdateError, "#{offending.inspect} cannot be updated" unless offending.empty?
+        tuple
       end
 
     end # class Project

@@ -35,6 +35,18 @@ module Bmg
       one_or_yield{ nil }
     end
 
+    def insert(arg)
+      raise InvalidUpdateError, "Cannot insert into this relation"
+    end
+
+    def update(arg)
+      raise InvalidUpdateError, "Cannot update this relation"
+    end
+
+    def delete
+      raise InvalidUpdateError, "Cannot delete from this relation"
+    end
+
     # Returns a json representation
     def to_json(*args, &bl)
       to_a.to_json(*args, &bl)

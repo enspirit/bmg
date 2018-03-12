@@ -19,6 +19,18 @@ module Bmg
         @dataset.each(&bl)
       end
 
+      def delete
+        dataset.delete
+      end
+
+      def insert(arg)
+        dataset.insert(arg)
+      end
+
+      def update(arg)
+        dataset.update(arg)
+      end
+
       def to_ast
         [:sequel, @dataset.sql]
       end

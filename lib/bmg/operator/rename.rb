@@ -31,8 +31,30 @@ module Bmg
 
       def each
         @operand.each do |tuple|
-          yield rename(tuple)
+          yield rename(tuple, renaming)
         end
+      end
+
+      def insert(arg)
+        case arg
+        when Hash       then operand.insert(rename(arg, reverse_renaming))
+        when Relation   then operand.insert(arg.rename(reverse_renaming))
+        when Enumerable then operand.insert(arg.map{|t| rename(t, reverse_renaming) })
+        else
+          super
+        end
+      end
+
+      def update(arg)
+        case arg
+        when Hash then operand.update(rename(arg, reverse_renaming))
+        else
+          super
+        end
+      end
+
+      def delete
+        operand.delete
       end
 
       def to_ast
@@ -42,24 +64,19 @@ module Bmg
     protected ### optimization
 
       def _restrict(type, predicate)
-        reversed = reverse_renaming(renaming)
-        operand.restrict(predicate.rename(reversed)).rename(renaming)
+        operand.restrict(predicate.rename(reverse_renaming)).rename(renaming)
       end
 
     private
 
-      def rename(tuple)
+      def rename(tuple, renaming)
         tuple.each_with_object({}){|(k,v),h|
-          h[rename_key(k)] = v
+          h[renaming[k] || k] = v
           h
         }
       end
 
-      def rename_key(k)
-        @renaming[k] || k
-      end
-
-      def reverse_renaming(renaming)
+      def reverse_renaming
         renaming.each_with_object({}){|(k,v),h| h[v] = k }
       end
 

@@ -29,6 +29,28 @@ module Bmg
         end
       end
 
+      def insert(arg)
+        case arg
+        when Hash       then operand.insert(allbut_constants(arg))
+        when Relation   then operand.insert(arg.allbut(constants.keys))
+        when Enumerable then operand.insert(arg.map{|t| allbut_constants(t) })
+        else
+          super
+        end
+      end
+
+      def update(tuple)
+        shared = tuple.keys & constants.keys
+        on_tuple = TupleAlgebra.project(tuple, shared)
+        on_const = TupleAlgebra.project(constants, shared)
+        raise InvalidUpdateError, "Cannot violate relvar predicate" unless on_tuple == on_const
+        operand.update(allbut_constants(tuple))
+      end
+
+      def delete
+        operand.delete
+      end
+
       def to_ast
         [ :constants, operand.to_ast, constants.dup ]
       end
@@ -76,6 +98,10 @@ module Bmg
 
       def extend_it(tuple)
         tuple.merge(@constants)
+      end
+
+      def allbut_constants(tuple)
+        TupleAlgebra.allbut(tuple, constants.keys)
       end
 
     end # class Constants
