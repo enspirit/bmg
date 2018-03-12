@@ -96,11 +96,11 @@ module Bmg
     private
 
       def tuple_project(tuple, on)
-        on.each_with_object({}){|k,t| t[k] = tuple[k] }
+        TupleAlgebra.project(tuple, on)
       end
 
       def tuple_image(tuple, on)
-        tuple.dup.delete_if{|k,_| on.include?(k) }
+        TupleAlgebra.allbut(tuple, on)
       end
 
       def image_type

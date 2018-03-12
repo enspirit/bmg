@@ -54,7 +54,7 @@ module Bmg
     private
 
       def tuple_allbut(tuple)
-        tuple.delete_if{|k,_| @butlist.include?(k) }
+        TupleAlgebra.allbut(tuple, @butlist)
       end
 
     end # class Allbut
