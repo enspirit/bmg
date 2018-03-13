@@ -7,6 +7,9 @@
 
 * Added Relation#to_json
 
+* Predicate required version is bumped to 1.3.0, that contains an important
+  security fix.
+
 # 0.4.1 - March 9st, 2018
 
 * Fix Image#restrict optimization that pushed down restrictions on right attributes
