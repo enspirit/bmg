@@ -1,4 +1,4 @@
-# 0.5.0 - TBD
+# 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding
   no update ambiguity: allbut, constants, extend, project, rename.
