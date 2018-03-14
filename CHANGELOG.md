@@ -1,3 +1,10 @@
+# 0.6.0 - TBD
+
+* Add `Relation#ys_by_x` consumption method, that converts a relation to a
+  Hash mapping `tuple[x]` keys to `[tuple[y]]` values. This is similar to
+  a given summary with autosummarize, but provided as a consumption method.
+  The options support specifying an order and whether ys must be distinct.
+
 # 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding

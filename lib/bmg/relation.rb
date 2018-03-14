@@ -47,6 +47,21 @@ module Bmg
       raise InvalidUpdateError, "Cannot delete from this Relvar"
     end
 
+    def ys_by_x(y, x, options = {})
+      ordering = options[:order]
+      projection = [y, ordering].compact.uniq
+      by_x = each.each_with_object({}) do |tuple,h|
+        h[tuple[x]] ||= []
+        h[tuple[x]] << TupleAlgebra.project(tuple, projection)
+      end
+      by_x.each_with_object({}) do |(x,ys),h|
+        ys = ys.sort{|y1,y2| y1[ordering] <=> y2[ordering] } if ordering
+        ys = ys.map{|t| t[y] }
+        ys = ys.uniq if options[:distinct]
+        h[x] = ys
+      end
+    end
+
     # Returns a json representation
     def to_json(*args, &bl)
       to_a.to_json(*args, &bl)
