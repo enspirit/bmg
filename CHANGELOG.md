@@ -5,6 +5,8 @@
   a given summary with autosummarize, but provided as a consumption method.
   The options support specifying an order and whether ys must be distinct.
 
+* Add `Relation#empty?`
+
 # 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding

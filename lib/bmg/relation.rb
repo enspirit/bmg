@@ -11,6 +11,11 @@ module Bmg
       Relation::Empty.new(type)
     end
 
+    def empty?
+      each{|t| return false }
+      true
+    end
+
     # Private helper to implement `one` and `one_or_nil`
     def one_or_yield(&bl)
       first = nil
