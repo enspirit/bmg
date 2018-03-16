@@ -5,7 +5,7 @@ module Bmg
 
       it 'works when the extension is known' do
         file = Path.dir/("example.xlsx")
-        xlsx = Excel.new(file, skip: 1)
+        xlsx = Excel.new(Type::ANY, file, skip: 1)
         expect(xlsx.to_a).to eql([
           {id: 1, name: "Bernard Lambeau"},
           {id: 2, name: "Yoann Guyot"}
@@ -14,7 +14,7 @@ module Bmg
 
       it "allows specifying the extension through Roo's option" do
         file = Path.dir/("example.excel")
-        xlsx = Excel.new(file, skip: 1, extension: 'xlsx')
+        xlsx = Excel.new(Type::ANY, file, skip: 1, extension: 'xlsx')
         expect(xlsx.to_a).to eql([
           {id: 1, name: "Bernard Lambeau"},
           {id: 2, name: "Yoann Guyot"}

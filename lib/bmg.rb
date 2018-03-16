@@ -7,13 +7,13 @@ module Bmg
   end
   module_function :in_memory
 
-  def csv(path, options = {})
-    Relation.new Reader::Csv.new path, options
+  def csv(path, options = {}, type = Type::ANY)
+    Reader::Csv.new(type, path, options)
   end
   module_function :csv
 
-  def excel(path, options = {})
-    Relation.new Reader::Excel.new path, options
+  def excel(path, options = {}, type = Type::ANY)
+    Reader::Excel.new(type, path, options)
   end
   module_function :excel
 

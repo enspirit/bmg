@@ -8,7 +8,8 @@ module Bmg
         :return_headers => false
       }
 
-      def initialize(path, options = {})
+      def initialize(type, path, options = {})
+        @type = type
         @path = path
         @options = DEFAULT_OPTIONS.merge(options)
         @options[:col_sep] ||= infer_col_sep
@@ -20,6 +21,10 @@ module Bmg
         ::CSV.foreach(@path, @options) do |row|
           yield tuple(row)
         end
+      end
+
+      def to_ast
+        [ :csv, @path, @options ]
       end
 
     private

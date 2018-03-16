@@ -7,7 +7,8 @@ module Bmg
         skip: 0
       }
 
-      def initialize(path, options = {})
+      def initialize(type, path, options = {})
+        @type = type
         @path = path
         @options = DEFAULT_OPTIONS.merge(options)
       end
@@ -28,6 +29,10 @@ module Bmg
               yield(tuple)
             end
           end
+      end
+
+      def to_ast
+        [ :excel, @path, @options ]
       end
 
     end # class Excel

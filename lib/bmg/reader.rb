@@ -1,9 +1,8 @@
 module Bmg
   module Reader
+    include Relation
 
-    def to_a
-      to_enum(:each).to_a
-    end
+    attr_reader :type
 
   end
 end

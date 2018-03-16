@@ -5,7 +5,7 @@ module Bmg
 
       it 'works' do
         file = Path.dir/("example.csv")
-        csv = Csv.new(file)
+        csv = Csv.new(Type::ANY, file)
         expect(csv.to_a).to eql([
           {id: "1", name: "Bernard Lambeau"},
           {id: "2", name: "Yoann;Guyot"}

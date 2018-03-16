@@ -17,6 +17,9 @@
 * Fix `rename.restrict` optimization that failed with an UnsupportedError
   on native predicate.
 
+* Objects obtained through `Bmg.csv` and `Bmg.excel` and now real Relation
+  instances, and no longer tuple enumerabled.
+
 # 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding
