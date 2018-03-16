@@ -93,6 +93,12 @@ module Bmg
         super
       end
 
+    protected ### inspect
+
+      def args
+        [ constants ]
+      end
+
     private
 
       def extend_it(tuple)

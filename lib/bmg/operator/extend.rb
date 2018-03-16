@@ -68,6 +68,12 @@ module Bmg
         end
       end
 
+    protected ### inspect
+
+      def args
+        [ extension ]
+      end
+
     private
 
       def extend_it(tuple)

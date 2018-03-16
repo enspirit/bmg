@@ -19,6 +19,14 @@ module Bmg
         [ :in_memory, operand ]
       end
 
+      def to_s
+        "(in_memory ...)"
+      end
+
+      def inspect
+        "(in_memory #{operand.inspect})"
+      end
+
     end # class InMemory
   end # module Relation
 end # module Bmg

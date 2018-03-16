@@ -11,6 +11,10 @@
   The block is yield with every (relation, parent) pair in a depth first
   search walk of the tree.
 
+* `Relation#to_s` and `Relation#inspect` now provide a friendly representation
+  of the expression tree. This is used to improve what `#debug` prints on
+  its argument.
+
 * `Relation::Sequel#insert` now inserts known attribute constants inherited
   from the relvar predicate. This means that
 

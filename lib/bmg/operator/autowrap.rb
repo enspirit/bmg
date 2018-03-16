@@ -49,6 +49,12 @@ module Bmg
         [ :autowrap, operand.to_ast, @original_options.dup ]
       end
 
+    protected ### inspect
+
+      def args
+        [ options ]
+      end
+
     private
 
       def autowrap(tuple)
@@ -92,6 +98,7 @@ module Bmg
         }
 
         def initialize(remover)
+          @remover_to_s = remover
           @remover = case remover
           when NilClass then REMOVERS[:none]
           when Proc     then remover
@@ -113,6 +120,11 @@ module Bmg
           return false unless tuple.is_a?(Hash)
           tuple.all?{|(k,v)| v.nil? || all_nil?(tuple[k]) }
         end
+
+        def inspect
+          @remover_to_s.inspect
+        end
+        alias :to_s :inspect
 
       end # NoLeftJoinNoise
 

@@ -22,6 +22,14 @@ module Bmg
         [ :empty ]
       end
 
+      def to_s
+        "(empty)"
+      end
+
+      def inspect
+        "(empty)"
+      end
+
     protected ### optimization
 
       def _allbut(type, *args)

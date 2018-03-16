@@ -2,6 +2,24 @@ module Bmg
   module Operator
     include Relation
 
+    def to_s
+      str = "(#{self.class.name.split('::').last.downcase}\n"
+      str << operands.map{|op| op.to_s.gsub(/^/m, "  ") }.join("\n")
+      str << "\n"
+      str << args.map{|a| a.to_s.gsub(/^/m, "  ") }.join("\n")
+      str << ")"
+      str
+    end
+
+    def inspect
+      str = "(#{self.class.name.split('::').last.downcase}\n"
+      str << operands.map{|op| op.inspect.gsub(/^/m, "  ") }.join("\n")
+      str << "\n"
+      str << args.map{|a| a.inspect.gsub(/^/m, "  ") }.join("\n")
+      str << ")"
+      str
+    end
+
     module Unary
       include Operator
 
@@ -11,6 +29,11 @@ module Bmg
         visitor.call(self, parent)
         operand._visit(self, visitor)
       end
+
+      def operands
+        [operand]
+      end
+
     end
 
     module Binary
@@ -22,6 +45,10 @@ module Bmg
         visitor.call(self, parent)
         left._visit(self, visitor)
         right._visit(self, visitor)
+      end
+
+      def operands
+        [left, right]
       end
     end
 

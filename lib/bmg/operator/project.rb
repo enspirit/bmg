@@ -66,6 +66,12 @@ module Bmg
         operand.restrict(predicate).project(attrlist)
       end
 
+    protected ### inspect
+
+      def args
+        [ attrlist ]
+      end
+
     private
 
       def project(tuple)

@@ -27,6 +27,11 @@ module Bmg
         [ :csv, @path, @options ]
       end
 
+      def to_s
+        "(csv #{path})"
+      end
+      alias :inspect :to_s
+
     private
 
       def tuple(row)

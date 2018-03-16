@@ -35,6 +35,11 @@ module Bmg
         [ :excel, @path, @options ]
       end
 
+      def to_s
+        "(excel #{path})"
+      end
+      alias :inspect :to_s
+
     end # class Excel
   end # module Reader
 end # module Bmg

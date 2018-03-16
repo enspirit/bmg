@@ -92,6 +92,12 @@ module Bmg
         super
       end
 
+    protected ### inspect
+
+      def args
+        [ as, on, options ]
+      end
+
     private
 
       def tuple_project(tuple, on)

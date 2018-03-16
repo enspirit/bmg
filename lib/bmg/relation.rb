@@ -89,22 +89,8 @@ module Bmg
 
     # Returns a String representing the query plan
     def debug(max_level = nil, on = STDERR)
-      on.puts _debug(to_ast, 1, max_level)
+      on.puts(self.inspect)
       self
-    end
-
-  private
-
-    def _debug(ast, level = 1, max_level = nil)
-      return ast.inspect if ast.is_a?(Symbol)
-      return ast.to_s unless ast.is_a?(Array)
-      return ast.to_s unless ast.first.is_a?(Symbol)
-      if max_level && level>max_level
-        "(#{ast.first} ...)"
-      else
-        sep = "  " * level
-        "(#{ast.first}\n" + ast[1..-1].map{|a| _debug(a, 1+level, max_level) }.join("\n").gsub(/^/, sep) + ")"
-      end
     end
 
   end # module Relation

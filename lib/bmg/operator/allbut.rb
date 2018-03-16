@@ -67,6 +67,12 @@ module Bmg
         operand.restrict(predicate).allbut(butlist)
       end
 
+    protected ### inspect
+
+      def args
+        [ butlist ]
+      end
+
     private
 
       def tuple_allbut(tuple)

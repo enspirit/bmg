@@ -32,8 +32,13 @@ module Bmg
       end
 
       def to_ast
-        [:sequel, @dataset.sql]
+        [:sequel, dataset.sql]
       end
+
+      def to_s
+        "(sequel #{dataset.sql})"
+      end
+      alias :inspect :to_s
 
     protected ### optimization
 

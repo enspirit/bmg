@@ -56,6 +56,12 @@ module Bmg
         end
       end
 
+    protected ### inspect
+
+      def args
+        [ by, sums ]
+      end
+
     private
 
       # Returns the tuple determinant.
@@ -117,6 +123,11 @@ module Bmg
           v
         end
 
+        def inspect
+          ":same"
+        end
+        alias :to_s :inspect
+
       end # class Same
 
       #
@@ -143,6 +154,11 @@ module Bmg
           v = v.sort(&@sorter) if @sorter
           v
         end
+
+        def inspect
+          ":group"
+        end
+        alias :to_s :inspect
 
       end # class DistinctList
 
@@ -174,6 +190,11 @@ module Bmg
           end
           h
         end
+
+        def inspect
+          ":#{y}_by_#{x}"
+        end
+        alias :to_s :inspect
 
       end # class YByX
 
@@ -208,6 +229,11 @@ module Bmg
           end
           h
         end
+
+        def inspect
+          ":#{y}s_by_#{x}"
+        end
+        alias :to_s :inspect
 
       end # class YsByX
 

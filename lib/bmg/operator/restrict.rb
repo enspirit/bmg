@@ -37,6 +37,12 @@ module Bmg
         Restrict.new(type, @operand, @predicate & predicate)
       end
 
+    protected ### inspect
+
+      def args
+        [ predicate ]
+      end
+
     end # class Restrict
   end # module Operator
 end # module Bmg

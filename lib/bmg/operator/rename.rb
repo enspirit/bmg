@@ -66,6 +66,12 @@ module Bmg
         operand.restrict(predicate.rename(reverse_renaming)).rename(renaming)
       end
 
+    protected ### inspect
+
+      def args
+        [ renaming ]
+      end
+
     private
 
       def rename(tuple, renaming)

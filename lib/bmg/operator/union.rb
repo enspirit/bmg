@@ -82,6 +82,12 @@ module Bmg
         end
       end
 
+    protected ### inspect
+
+      def args
+        [ options ]
+      end
+
     end # class Union
   end # module Operator
 end # module Bmg
