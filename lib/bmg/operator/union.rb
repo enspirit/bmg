@@ -14,7 +14,7 @@ module Bmg
     # behavior and save execution time.
     #
     class Union
-      include Operator
+      include Operator::Nary
 
       DEFAULT_OPTIONS = {
         all: false
@@ -25,11 +25,10 @@ module Bmg
         @operands = operands
         @options = DEFAULT_OPTIONS.merge(options)
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operands, :options
+      attr_reader :options
 
     public
 

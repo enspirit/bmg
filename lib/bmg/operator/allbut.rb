@@ -15,18 +15,17 @@ module Bmg
     # input tuples.
     #
     class Allbut
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, butlist)
         @type = type
         @operand = operand
         @butlist = butlist
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operand, :butlist
+      attr_reader :butlist
 
     public
 

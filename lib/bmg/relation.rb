@@ -53,6 +53,15 @@ module Bmg
       raise InvalidUpdateError, "Cannot delete from this Relvar"
     end
 
+    def visit(&visitor)
+      _visit(nil, visitor)
+    end
+
+    def _visit(parent, visitor)
+      visitor.call(self, parent)
+    end
+    protected :_visit
+
     def ys_by_x(y, x, options = {})
       ordering = options[:order]
       projection = [y, ordering].compact.uniq

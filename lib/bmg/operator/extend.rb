@@ -11,18 +11,17 @@ module Bmg
     #   [{ a: 1 }] extend { b: ->(t){ 2 } } => [{ a: 1, b: 2 }]
     #
     class Extend
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, extension)
         @type = type
         @operand = operand
         @extension = extension
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operand, :extension
+      attr_reader :extension
 
     public
 

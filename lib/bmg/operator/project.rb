@@ -14,18 +14,17 @@ module Bmg
     # input tuples.
     #
     class Project
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, attrlist)
         @type = type
         @operand = operand
         @attrlist = attrlist
       end
-      attr_reader :type
 
     private
 
-      attr_reader :operand, :attrlist
+      attr_reader :attrlist
 
     public
 

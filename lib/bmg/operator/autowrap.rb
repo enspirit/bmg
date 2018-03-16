@@ -18,7 +18,7 @@ module Bmg
     # - `split: String` the seperator to use to split keys, defaults to `_`
     #
     class Autowrap
-      include Operator
+      include Operator::Unary
 
       DEFAULT_OPTIONS = {
         :postprocessor => :none,
@@ -32,11 +32,10 @@ module Bmg
         @options = DEFAULT_OPTIONS.merge(options)
         @options[:postprocessor] = NoLeftJoinNoise.new(@options[:postprocessor])
       end
-      attr_reader :type
 
     private
 
-      attr_reader :operand, :options
+      attr_reader :options
 
     public
 

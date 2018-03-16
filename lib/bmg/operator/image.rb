@@ -6,7 +6,7 @@ module Bmg
     # Extends each tuple with its image in right.
     #
     class Image
-      include Operator
+      include Operator::Binary
 
       DEFAULT_OPTIONS = {
 
@@ -24,11 +24,10 @@ module Bmg
         @on = on
         @options = DEFAULT_OPTIONS.merge(options)
       end
-      attr_reader :type
 
     private
 
-      attr_reader :left, :right, :as, :on, :options
+      attr_reader :as, :on, :options
 
     public
 

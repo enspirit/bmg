@@ -14,18 +14,17 @@ module Bmg
     # attributes of the input tuples.
     #
     class Rename
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, renaming)
         @type = type
         @operand = operand
         @renaming = renaming
       end
-      attr_reader :type
 
     private
 
-      attr_reader :operand, :renaming
+      attr_reader :renaming
 
     public
 

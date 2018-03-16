@@ -7,18 +7,17 @@ module Bmg
     # at construction.
     #
     class Restrict
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, predicate)
         @type = type
         @operand = operand
         @predicate = predicate
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operand, :predicate
+      attr_reader :predicate
 
     public
 

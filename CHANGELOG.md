@@ -7,6 +7,10 @@
 
 * Add `Relation#empty?`
 
+* Add `Relation#visit` that allows visiting an expression tree with a block.
+  The block is yield with every (relation, parent) pair in a depth first
+  search walk of the tree.
+
 * `Relation::Sequel#insert` now inserts known attribute constants inherited
   from the relvar predicate. This means that
 

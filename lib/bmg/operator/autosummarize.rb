@@ -9,7 +9,7 @@ module Bmg
     # care...
     #
     class Autosummarize
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, by, sums)
         @type = type
@@ -17,11 +17,10 @@ module Bmg
         @by = by
         @sums = sums.each_with_object({}){|(k,v),h| h[k] = to_summarizer(v) }
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operand, :by, :sums
+      attr_reader :by, :sums
 
     public
 

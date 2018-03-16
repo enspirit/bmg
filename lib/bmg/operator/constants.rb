@@ -8,18 +8,17 @@ module Bmg
     # statically known.
     #
     class Constants
-      include Operator
+      include Operator::Unary
 
       def initialize(type, operand, constants)
         @type = type
         @operand = operand
         @constants = constants
       end
-      attr_reader :type
 
     protected
 
-      attr_reader :operand, :constants
+      attr_reader :constants
 
     public
 
