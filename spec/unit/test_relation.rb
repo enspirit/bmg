@@ -15,7 +15,7 @@ module Bmg
       it "accepts arrays but enclosed them as Leafs" do
         tuple = { a: 1, b: 2 }
         rel = Relation.new([tuple])
-        expect(rel).to be_a(Leaf)
+        expect(rel).to be_a(Relation::InMemory)
       end
 
     end
@@ -89,7 +89,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:allbut, [:leaf, data], [:b]])
+        expect(subject.to_ast).to eql([:allbut, [:in_memory, data], [:b]])
       end
     end
 
@@ -122,7 +122,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:autosummarize, [:leaf, data], [:a], options ])
+        expect(subject.to_ast).to eql([:autosummarize, [:in_memory, data], [:a], options ])
       end
     end
 
@@ -163,7 +163,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(relation.autowrap(options).to_ast).to eql([:autowrap, [:leaf, data], options ])
+        expect(relation.autowrap(options).to_ast).to eql([:autowrap, [:in_memory, data], options ])
       end
     end
 
@@ -193,7 +193,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:constants, [:leaf, data], {c: 3}])
+        expect(subject.to_ast).to eql([:constants, [:in_memory, data], {c: 3}])
       end
     end
 
@@ -229,7 +229,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:extend, [:leaf, data], extension])
+        expect(subject.to_ast).to eql([:extend, [:in_memory, data], extension])
       end
     end
 
@@ -270,7 +270,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:image, [:leaf, left_data], [:leaf, right_data], :image, [:a], {array: true}])
+        expect(subject.to_ast).to eql([:image, [:in_memory, left_data], [:in_memory, right_data], :image, [:a], {array: true}])
       end
     end
 
@@ -301,7 +301,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([ :project, [:leaf, data], [:b] ])
+        expect(subject.to_ast).to eql([ :project, [:in_memory, data], [:b] ])
       end
     end
 
@@ -331,7 +331,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:rename, [:leaf, data], {b: :c}])
+        expect(subject.to_ast).to eql([:rename, [:in_memory, data], {b: :c}])
       end
     end
 
@@ -360,7 +360,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:restrict, [:leaf, data], [:eq, [:identifier, :a], [:literal, 1]]])
+        expect(subject.to_ast).to eql([:restrict, [:in_memory, data], [:eq, [:identifier, :a], [:literal, 1]]])
       end
 
       it 'always optimizes restrictions on tautologies' do
@@ -410,7 +410,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:union, [:leaf, left_data], [:leaf, right_data], {all: false}])
+        expect(subject.to_ast).to eql([:union, [:in_memory, left_data], [:in_memory, right_data], {all: false}])
       end
     end
 

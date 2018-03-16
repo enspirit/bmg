@@ -4,7 +4,8 @@ module Bmg
     include Algebra
 
     def self.new(operand, type = Type::ANY)
-      operand.is_a?(Relation) ? operand : Leaf.new(type, operand)
+      raise ArgumentError, "Missing type" if type.nil?
+      operand.is_a?(Relation) ? operand : Bmg.in_memory(operand, type)
     end
 
     def self.empty(type = Type::ANY)
@@ -100,3 +101,4 @@ module Bmg
   end # module Relation
 end # module Bmg
 require_relative 'relation/empty'
+require_relative 'relation/in_memory'

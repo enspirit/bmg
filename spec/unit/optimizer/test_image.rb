@@ -38,7 +38,7 @@ module Bmg
           expect(subject).to be_a(Operator::Image)
           expect(left_operand).to be_a(Operator::Restrict)
           expect(left_operand.send(:predicate)).to eql(predicate)
-          expect(right_operand).to be_a(Leaf)
+          expect(right_operand).to be_a(Relation::InMemory)
         end
       end
 

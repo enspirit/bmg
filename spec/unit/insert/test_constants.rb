@@ -29,7 +29,7 @@ module Bmg
 
       context 'with a Relation not having extension attributes' do
         let(:inserted){
-          Leaf.new Type::ANY, [{ a: 17 }]
+          Relation.new [{ a: 17 }]
         }
 
         it 'inserts it on operand' do

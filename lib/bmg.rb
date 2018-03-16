@@ -2,6 +2,11 @@ require 'path'
 require 'predicate'
 module Bmg
 
+  def in_memory(enumerable, type = Type::ANY)
+    Relation::InMemory.new(type, enumerable)
+  end
+  module_function :in_memory
+
   def csv(path, options = {})
     Relation.new Reader::Csv.new path, options
   end
@@ -12,13 +17,15 @@ module Bmg
   end
   module_function :excel
 
+  require_relative 'bmg/version'
+  require_relative 'bmg/error'
+  require_relative 'bmg/support'
+  require_relative 'bmg/algebra'
+  require_relative 'bmg/type'
+  require_relative 'bmg/relation'
+  require_relative 'bmg/operator'
+  require_relative 'bmg/reader'
+
+  # Deprecated
+  Leaf = Relation::InMemory
 end
-require_relative 'bmg/version'
-require_relative 'bmg/error'
-require_relative 'bmg/support'
-require_relative 'bmg/algebra'
-require_relative 'bmg/type'
-require_relative 'bmg/relation'
-require_relative 'bmg/leaf'
-require_relative 'bmg/operator'
-require_relative 'bmg/reader'

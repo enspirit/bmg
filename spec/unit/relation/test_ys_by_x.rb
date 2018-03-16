@@ -3,7 +3,7 @@ module Bmg
   describe Relation, "ys_by_x" do
 
     let(:relation) {
-      Leaf.new Type::ANY, [
+      Relation.new [
         { a: 1, b: 1, order: 5 },
         { a: 1, b: 2, order: 2 },
         { a: 1, b: 3, order: 3 },

@@ -129,7 +129,7 @@ module Bmg
           expect(subject).to be_a(Operator::Union)
           expect(operands.size).to eql(2)
           expect(operands.first).to be_a(Operator::Union)
-          expect(operands.last).to be_a(Leaf)
+          expect(operands.last).to be_a(Relation::InMemory)
         end
 
       end

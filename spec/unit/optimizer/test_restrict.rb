@@ -20,7 +20,7 @@ module Bmg
 
       it 'works' do
         expect(subject).to be_a(Operator::Restrict)
-        expect(operand).to be_a(Leaf)
+        expect(operand).to be_a(Relation::InMemory)
         expect(subject.send(:predicate)).to eql(p1 & p2)
         expect(operand.send(:operand)).to be_a(Array)
       end

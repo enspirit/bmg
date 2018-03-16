@@ -108,7 +108,7 @@ module Bmg
       end
 
       def empty_image
-        Leaf.new(image_type, Set.new)
+        Relation::InMemory.new(image_type, Set.new)
       end
 
     end # class Project

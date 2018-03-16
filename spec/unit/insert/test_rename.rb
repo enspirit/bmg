@@ -44,7 +44,7 @@ module Bmg
 
       context 'with a Relation' do
         let(:inserted){
-          Leaf.new Type::ANY, [
+          Relation.new [
             { b: 1 },
             { b: 2 }
           ]
