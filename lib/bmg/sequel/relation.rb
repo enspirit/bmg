@@ -24,7 +24,7 @@ module Bmg
       end
 
       def insert(arg)
-        dataset.insert(arg)
+        dataset.insert(arg.merge(type.predicate.constants))
       end
 
       def update(arg)

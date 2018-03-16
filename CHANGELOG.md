@@ -7,6 +7,13 @@
 
 * Add `Relation#empty?`
 
+* `Relation::Sequel#insert` now inserts known attribute constants inherited
+  from the relvar predicate. This means that
+
+      rel.restrict(x: 2).allbut([:x]).insert(y: 7)
+
+  will actually insert the tuple `{x: 2, y: 7}` in the underlying SQL table.
+
 * Fix `rename.restrict` optimization that failed with an UnsupportedError
   on native predicate.
 
