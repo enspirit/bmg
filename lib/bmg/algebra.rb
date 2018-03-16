@@ -82,7 +82,11 @@ module Bmg
         if predicate.contradiction?
           Relation.empty(type)
         else
-          _restrict type, predicate
+          begin
+            _restrict type, predicate
+          rescue Predicate::NotSupportedError
+            Operator::Restrict.new(type, self, predicate)
+          end
         end
       end
     end

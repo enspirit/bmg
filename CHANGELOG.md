@@ -7,6 +7,9 @@
 
 * Add `Relation#empty?`
 
+* Fix `rename.restrict` optimization that failed with an UnsupportedError
+  on native predicate.
+
 # 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding
