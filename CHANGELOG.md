@@ -28,6 +28,14 @@
 * Objects obtained through `Bmg.csv` and `Bmg.excel` and now real Relation
   instances, and no longer tuple enumerabled.
 
+* Add a spying mechanism that allows analyzing tree expressions just before
+  each is called. This works by calling `spied(spy)` on relations, just like
+  other operators. The spied operator always stays on top of the expression
+  tree, by a delegation mechanism when algebra methods are called. When the
+  relation is eventually consumed, it calls the `spy` argument with itself.
+  The spy has the opportunity to inspect the expression tree, and act
+  accordingly (e.g. raising an error if something strange is detected).
+
 # 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding

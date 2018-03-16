@@ -1,6 +1,19 @@
 module Bmg
   module Algebra
 
+    METHODS = [
+      :allbut,
+      :autowrap,
+      :autosummarize,
+      :constants,
+      :extend,
+      :image,
+      :project,
+      :rename,
+      :restrict,
+      :union
+    ]
+
     def allbut(butlist = [])
       _allbut self.type.allbut(butlist), butlist
     end
@@ -104,6 +117,15 @@ module Bmg
       Operator::Union.new(type, [self, other], options)
     end
     protected :_union
+
+    def spied(spy)
+      return self if spy.nil?
+      Relation::Spied.new(self, spy)
+    end
+
+    def unspied
+      self
+    end
 
   end # module Algebra
 end # module Bmg
