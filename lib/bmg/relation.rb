@@ -9,6 +9,7 @@ module Bmg
     end
 
     def self.empty(type = Type::ANY)
+      raise ArgumentError, "Missing type" if type.nil?
       Relation::Empty.new(type)
     end
 
@@ -95,5 +96,3 @@ module Bmg
 
   end # module Relation
 end # module Bmg
-require_relative 'relation/empty'
-require_relative 'relation/in_memory'

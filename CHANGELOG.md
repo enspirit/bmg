@@ -1,4 +1,9 @@
-# 0.6.0 - TBD
+# 0.6.1 - March 30st, 2018
+
+* The default implementation of `Relation::Type` now exposes the relation
+  predicate, when known.
+
+# 0.6.0 - March 16st, 2018
 
 * Add `Relation#ys_by_x` consumption method, that converts a relation to a
   Hash mapping `tuple[x]` keys to `[tuple[y]]` values. This is similar to
