@@ -24,7 +24,16 @@ module Bmg
       end
 
       def insert(arg)
-        dataset.insert(arg.merge(type.predicate.constants))
+        case arg
+        when Hash then
+          dataset.insert(arg.merge(type.predicate.constants))
+        when Enumerable then
+          dataset.multi_insert(arg.map { |x|
+            x.merge(type.predicate.constants)
+          })
+        else
+          dataset.insert(arg.merge(type.predicate.constants))
+        end
       end
 
       def update(arg)
