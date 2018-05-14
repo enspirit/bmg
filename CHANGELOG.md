@@ -1,4 +1,4 @@
-# 0.7.0
+# 0.7.0 - May 14st, 2018
 
 * Add the Matching operator: filters the left operand to tuples that have
   at least a matching tuple on right operand on a given shared join key.
