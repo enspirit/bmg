@@ -37,6 +37,10 @@ module Bmg
       ANY
     end
 
+    def matching(right, on)
+      ANY
+    end
+
     def project(attrlist)
       ANY
     end

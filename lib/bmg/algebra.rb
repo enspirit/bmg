@@ -68,6 +68,15 @@ module Bmg
     end
     protected :_image
 
+    def matching(right, on = [])
+      _matching self.type.matching(right, on), right, on
+    end
+
+    def _matching(type, right, on)
+      Operator::Matching.new(type, self, right, on)
+    end
+    protected :_matching
+
     def project(attrlist = [])
       _project self.type.project(attrlist), attrlist
     end

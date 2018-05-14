@@ -1,3 +1,9 @@
+# 0.7.0
+
+* Add the Matching operator: filters the left operand to tuples that have
+  at least a matching tuple on right operand on a given shared join key.
+  Restrict optimization is implemented.
+
 # 0.6.1 - March 30st, 2018
 
 * The default implementation of `Relation::Type` now exposes the relation
