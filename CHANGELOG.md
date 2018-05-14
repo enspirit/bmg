@@ -1,3 +1,8 @@
+# 0.7.1 - May 14st, 2018
+
+* Fixes the restrict optimization on Matching, that led forgetting about
+  the join key
+
 # 0.7.0 - May 14st, 2018
 
 * Add the Matching operator: filters the left operand to tuples that have

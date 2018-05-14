@@ -58,7 +58,7 @@ module Bmg
           new_right = right
         end
 
-        new_left.matching(new_right)
+        new_left.matching(new_right, on)
       rescue Predicate::NotSupportedError
         super
       end

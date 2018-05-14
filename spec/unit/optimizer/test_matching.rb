@@ -74,6 +74,7 @@ module Bmg
 
         it 'optimizes both sides' do
           expect(subject).to be_a(Operator::Matching)
+          expect(subject.send(:on)).to eql([:a])
           expect(left_operand).to be_a(Operator::Restrict)
           expect(predicate_of(left_operand)).to eql(predicate)
           expect(right_operand).to be_a(Operator::Restrict)
