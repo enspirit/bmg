@@ -61,6 +61,10 @@ module Bmg
       Type.new(@predicate & predicate)
     end
 
+    def rxmatch(attrs, matcher, options)
+      self
+    end
+
     def union(other)
       Type.new(@predicate | other.predicate)
     end

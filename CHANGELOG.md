@@ -3,6 +3,10 @@
 * Add the Page operator: filters on n tuples according to an ordering
   and a given page size and page index. No optimization implemented yet.
 
+* Add the Rxmatch operator: filters tuples whose subset of attributes
+  match a given string or regular expression when concatanated together
+  by a space. Restrict optimization is implemented.
+
 # 0.8.0 - May 16st, 2018
 
 * Add the Group operator: groups some attributes of the operand as a

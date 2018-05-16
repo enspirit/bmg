@@ -14,6 +14,7 @@ module Bmg
       :project,
       :rename,
       :restrict,
+      :rxmatch,
       :union
     ]
 
@@ -138,6 +139,15 @@ module Bmg
       Operator::Restrict.new(type, self, predicate)
     end
     protected :_restrict
+
+    def rxmatch(attrs, matcher, options = {})
+      _rxmatch type.rxmatch(attrs, matcher, options), attrs, matcher, options
+    end
+
+    def _rxmatch(type, attrs, matcher, options)
+      Operator::Rxmatch.new(type, self, attrs, matcher, options)
+    end
+    protected :_rxmatch
 
     def union(other, options = {})
       _union self.type.union(other.type), other, options

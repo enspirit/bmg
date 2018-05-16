@@ -473,6 +473,35 @@ module Bmg
       end
     end
 
+    describe 'rxmatch' do
+      let(:data) {
+        [
+          { a: "foo", b: 2 },
+          { a: "bar", b: 4 }
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      subject {
+        relation.rxmatch([:a, :b], /fo/)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: "foo", b: 2 },
+        ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:rxmatch, [:in_memory, data], [:a, :b], /fo/, {}])
+      end
+    end
+
     describe 'union' do
       let(:left_data) {
         [
