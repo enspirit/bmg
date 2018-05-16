@@ -7,6 +7,9 @@
   match a given string or regular expression when concatanated together
   by a space. Restrict optimization is implemented.
 
+* The expression `r.matching(...)` now correctly preserves the same type
+  as `r`.
+
 # 0.8.0 - May 16st, 2018
 
 * Add the Group operator: groups some attributes of the operand as a

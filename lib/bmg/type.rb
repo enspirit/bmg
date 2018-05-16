@@ -42,7 +42,7 @@ module Bmg
     end
 
     def matching(right, on)
-      ANY
+      self
     end
 
     def page(ordering, page_size, options)
