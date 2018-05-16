@@ -8,6 +8,7 @@ module Bmg
       :constants,
       :extend,
       :image,
+      :matching,
       :project,
       :rename,
       :restrict,

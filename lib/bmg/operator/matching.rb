@@ -1,9 +1,10 @@
 module Bmg
   module Operator
     #
-    # Image operator.
+    # Matching operator.
     #
-    # Extends each tuple with its image in right.
+    # Filters tuples of left operand to those matching at least
+    # one tuple in right operand.
     #
     class Matching
       include Operator::Binary
