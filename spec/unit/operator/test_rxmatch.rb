@@ -10,8 +10,12 @@ module Bmg
         ]
       }
 
+      let(:options) {
+        {}
+      }
+
       subject {
-        Rxmatch.new Type::ANY, data, attrs, matcher, {}
+        Rxmatch.new Type::ANY, data, attrs, matcher, options
       }
 
       context 'against a string' do
@@ -21,6 +25,28 @@ module Bmg
         it 'works as expected' do
           expect(subject.to_a).to eql([
             { a: "foo",  b: 2 }
+          ])
+        end
+      end
+
+      context 'against a string, it is case insensitive by default' do
+        let(:attrs){ [:a] }
+        let(:matcher){ "Fo" }
+
+        it 'works as expected' do
+          expect(subject.to_a).to eql([
+            { a: "foo",  b: 2 }
+          ])
+        end
+      end
+
+      context 'against a string, it is case sensitive if requested' do
+        let(:attrs){ [:a] }
+        let(:matcher){ "Fo" }
+        let(:options){ { case_sensitive: true } }
+
+        it 'works as expected' do
+          expect(subject.to_a).to eql([
           ])
         end
       end

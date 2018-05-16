@@ -498,7 +498,7 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:rxmatch, [:in_memory, data], [:a, :b], /fo/, {}])
+        expect(subject.to_ast).to eql([:rxmatch, [:in_memory, data], [:a, :b], /fo/, {:case_sensitive=>false}])
       end
     end
 

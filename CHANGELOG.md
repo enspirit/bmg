@@ -1,3 +1,9 @@
+# 0.9.1 - May 16st, 2018
+
+* Fix Rxmatch that now applies matching in a case insensitive way by
+  default when used with a String. A `case_sensitive: true` option
+  can be specified to change that behavior.
+
 # 0.9.0 - May 16st, 2018
 
 * Add the Page operator: filters on n tuples according to an ordering

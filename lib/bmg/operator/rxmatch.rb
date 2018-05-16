@@ -9,7 +9,9 @@ module Bmg
     class Rxmatch
       include Operator::Unary
 
-      DEFAULT_OPTIONS = {}
+      DEFAULT_OPTIONS = {
+        case_sensitive: false
+      }
 
       def initialize(type, operand, attrs, matcher, options)
         @type = type
@@ -23,11 +25,20 @@ module Bmg
 
       attr_reader :attrs, :matcher, :options
 
+      def case_sensitive?
+        !!options[:case_sensitive]
+      end
+
     public
 
       def each
         @operand.each do |tuple|
           against = attrs.map{|a| tuple[a] }.join(" ")
+          matcher = self.matcher
+          unless case_sensitive?
+            against = against.downcase
+            matcher = matcher.downcase if matcher.is_a?(String)
+          end
           yield(tuple) if against.match(matcher)
         end
       end
