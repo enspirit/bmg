@@ -7,6 +7,7 @@ module Bmg
       :autosummarize,
       :constants,
       :extend,
+      :group,
       :image,
       :matching,
       :project,
@@ -59,6 +60,15 @@ module Bmg
       Operator::Extend.new(type, self, extension)
     end
     protected :_extend
+
+    def group(attrs, as = :group, options = {})
+      _group self.type.group(attrs, as), attrs, as, options
+    end
+
+    def _group(type, attrs, as, options)
+      Operator::Group.new(type, self, attrs, as, options)
+    end
+    protected :_group
 
     def image(right, as = :image, on = [], options = {})
       _image self.type.image(right, as, on, options), right, as, on, options

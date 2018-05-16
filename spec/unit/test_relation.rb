@@ -233,6 +233,37 @@ module Bmg
       end
     end
 
+    describe 'group' do
+      let(:operand_data) {
+        [
+          { a: 1, b: 2 },
+          { a: 2, b: 3 },
+          { a: 1, b: 4 }
+        ]
+      }
+
+      let(:operand) {
+        Relation.new(operand_data)
+      }
+
+      subject{
+        operand.group([:b], :grouped, array: true)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, grouped: [{b: 2}, {b: 4}]},
+          { a: 2, grouped: [{b: 3}]},
+        ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:group, [:in_memory, operand_data], [:b], :grouped, {array: true}])
+      end
+    end
+
     describe 'image' do
       let(:left_data) {
         [

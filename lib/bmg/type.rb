@@ -33,6 +33,10 @@ module Bmg
       ANY
     end
 
+    def group(attrs, as)
+      ANY
+    end
+
     def image(right, as, on, options)
       ANY
     end

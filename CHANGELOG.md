@@ -1,3 +1,8 @@
+# 0.8.0 - May 16st, 2018
+
+* Add the Group operator: groups some attributes of the operand as a
+  new relation-valued attribute. Restrict optimization is implemented.
+
 # 0.7.1 - May 14st, 2018
 
 * Fixes the restrict optimization on Matching, that led forgetting about
