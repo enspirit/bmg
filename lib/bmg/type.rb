@@ -45,6 +45,10 @@ module Bmg
       ANY
     end
 
+    def page(ordering, page_size, options)
+      self
+    end
+
     def project(attrlist)
       ANY
     end

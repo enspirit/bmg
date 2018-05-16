@@ -10,6 +10,7 @@ module Bmg
       :group,
       :image,
       :matching,
+      :page,
       :project,
       :rename,
       :restrict,
@@ -87,6 +88,15 @@ module Bmg
       Operator::Matching.new(type, self, right, on)
     end
     protected :_matching
+
+    def page(ordering, page_index, options)
+      _page self.type.page(ordering, page_index, options), ordering, page_index, options
+    end
+
+    def _page(type, ordering, page_index, options)
+      Operator::Page.new(type, self, ordering, page_index, options)
+    end
+    protected :_page
 
     def project(attrlist = [])
       _project self.type.project(attrlist), attrlist

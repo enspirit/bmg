@@ -345,6 +345,36 @@ module Bmg
       end
     end
 
+    describe 'page' do
+      let(:data) {
+        [
+          { a: 1 },
+          { a: 2 },
+          { a: 3 }
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      subject {
+        relation.page([:a], 2, page_size: 1)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 2 }
+        ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([ :page, [:in_memory, data], [:a], 2, page_size: 1 ])
+      end
+    end
+
     describe 'project' do
       let(:data) {
         [
