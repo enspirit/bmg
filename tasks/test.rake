@@ -6,14 +6,14 @@ namespace :test do
   desc "Runs unit tests"
   RSpec::Core::RakeTask.new(:unit) do |t|
     t.pattern = "spec/unit/**/test_*.rb"
-    t.rspec_opts = ["-Ilib", "-Ispec/unit", "--color", "--backtrace", "--format=progress"]
+    t.rspec_opts = ["-Ilib", "-Ispec/unit", "--fail-fast", "--color", "--backtrace", "--format=progress"]
   end
   tests << :unit
 
   desc "Runs integration tests"
   RSpec::Core::RakeTask.new(:integration) do |t|
     t.pattern = "spec/integration/**/test_*.rb"
-    t.rspec_opts = ["-Ilib", "-Ispec/integration", "--color", "--backtrace", "--format=progress"]
+    t.rspec_opts = ["-Ilib", "-Ispec/integration", "--fail-fast", "--color", "--backtrace", "--format=progress"]
   end
   tests << :integration
 
