@@ -62,6 +62,14 @@ module Bmg
 
     protected ### optimization
 
+      def _page(type, ordering, page_index, options)
+        rr = reverse_renaming
+        ordering = ordering.map{|(k,v)|
+          v.nil? ? rr[k] || k : [rr[k] || k, v]
+        }
+        operand.page(ordering, page_index, options).rename(renaming)
+      end
+
       def _restrict(type, predicate)
         operand.restrict(predicate.rename(reverse_renaming)).rename(renaming)
       end

@@ -55,6 +55,16 @@ module Bmg
 
     protected ### optimization
 
+      def _page(type, ordering, page_index, opts)
+        if ordering.map{|(k,v)| k}.include?(as)
+          super
+        else
+          left
+            .page(ordering, page_index, opts)
+            .image(right, as, on, options)
+        end
+      end
+
       def _restrict(type, predicate)
         on_as, rest = predicate.and_split([as])
         if rest.tautology?

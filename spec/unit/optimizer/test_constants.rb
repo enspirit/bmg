@@ -2,17 +2,47 @@ require 'spec_helper'
 module Bmg
   describe "constants optimization" do
 
-    context "constants.restrict" do
-      let(:relation) {
-        Relation.new([
-          { a: 1,  b: 2 },
-          { a: 11, b: 2 }
-        ])
+    let(:relation) {
+      Relation.new([
+        { a: 1,  b: 2 },
+        { a: 11, b: 2 }
+      ])
+    }
+
+    let(:constants) {
+      { c: 3 }
+    }
+
+    context "constants.page" do
+
+      subject{
+        relation.constants(constants).page(ordering, 7, page_size: 19)
       }
 
-      let(:constants) {
-        { c: 3 }
-      }
+      context "when the ordering does not touch constants" do
+        let(:ordering){ [:a] }
+
+        it 'pushes page down the tree' do
+          expect(subject).to be_a(Operator::Constants)
+          expect(subject.send(:constants)).to eql(constants)
+          expect(operand).to be_a(Operator::Page)
+          expect(operand.send(:ordering)).to eql([:a])
+          expect(operand.send(:page_index)).to eql(7)
+          expect(operand.send(:options)[:page_size]).to eql(19)
+        end
+      end
+
+      context "when the ordering touches constants" do
+        let(:ordering){ [:a, [:c, :desc]] }
+
+        it 'does not push page' do
+          expect(subject).to be_a(Operator::Page)
+          expect(operand).to be_a(Operator::Constants)
+        end
+      end
+    end
+
+    context "constants.restrict" do
 
       subject{
         relation.constants(constants).restrict(predicate)

@@ -1,3 +1,8 @@
+# 0.10.0
+
+* Add Page optimizations: push it over `constants, `rename` and `image`
+  when possible.
+
 # 0.9.1 - May 16st, 2018
 
 * Fix Rxmatch that now applies matching in a case insensitive way by

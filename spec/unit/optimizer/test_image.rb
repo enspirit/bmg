@@ -2,28 +2,63 @@ require 'spec_helper'
 module Bmg
   describe "image optimization" do
 
+    let(:left_data) {
+      [
+        { a: 1, b: 2 },
+        { a: 3, b: 4 }
+      ]
+    }
+
+    let(:left) {
+      Relation.new(left_data)
+    }
+
+    let(:right_data) {
+      [
+        { a: 1, c: 4 },
+        { a: 1, c: 5 }
+      ]
+    }
+
+    let(:right) {
+      Relation.new(right_data)
+    }
+
+    context "image.page" do
+
+      context 'when the ordering does not touch the new attribute' do
+
+        subject{
+          left.image(right, :image, [:a]).page([:a], 7, page_size: 17)
+        }
+
+        it 'pushes the page down the tree' do
+          expect(subject).to be_a(Operator::Image)
+          expect(subject.send(:options)).to eql(array: false)
+          expect(left_operand).to be_a(Operator::Page)
+          expect(left_operand.send(:ordering)).to eql([:a])
+          expect(left_operand.send(:page_index)).to eql(7)
+          expect(left_operand.send(:options)[:page_size]).to eql(17)
+        end
+
+      end
+
+      context 'when the ordering touches the new attribute' do
+
+        subject{
+          left.image(right, :image, [:a]).page([:a, [:image, :desc]], 7, page_size: 17)
+        }
+
+        it 'pushes the page down the tree' do
+          expect(subject).to be_a(Operator::Page)
+          expect(operand).to be_a(Operator::Image)
+        end
+
+      end
+
+    end
+
     context "image.restrict" do
-      let(:left_data) {
-        [
-          { a: 1, b: 2 },
-          { a: 3, b: 4 }
-        ]
-      }
-
-      let(:left) {
-        Relation.new(left_data)
-      }
-
-      let(:right_data) {
-        [
-          { a: 1, c: 4 },
-          { a: 1, c: 5 }
-        ]
-      }
-
-      let(:right) {
-        Relation.new(right_data)
-      }
 
       subject{
         left.image(right, :image, [:a]).restrict(predicate)

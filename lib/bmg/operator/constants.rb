@@ -56,6 +56,18 @@ module Bmg
 
     protected ### optimization
 
+      def _page(type, ordering, page_index, options)
+        attrs = ordering.map{|(k,v)| k}
+        cs_attrs = constants.keys
+        if (attrs & cs_attrs).empty?
+          operand
+            .page(ordering, page_index, options)
+            .constants(constants)
+        else
+          super
+        end
+      end
+
       def _restrict(type, predicate)
         # bottom_p makes no reference to constants, top_p possibly
         # does...
