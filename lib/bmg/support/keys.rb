@@ -1,0 +1,59 @@
+module Bmg
+  class Keys
+
+    def initialize(keys, reduce = false)
+      @keys = reduce ? reduce(keys) : keys
+    end
+
+  public ## tools
+
+  public ## algebra
+
+    def allbut(oldtype, newtype, butlist)
+      keys = @keys.select{|k| (k & butlist).empty? }
+      keys = [newtype.attrlist] if keys.empty?
+      Keys.new(keys, false)
+    end
+
+    def group(oldtype, newtype, attrs, as)
+      keys = [ oldtype.attrlist - attrs ]
+      keys += @keys.map{|k| (k & attrs).empty? ? k : (k - attrs) + [as] }
+      Keys.new(keys, true)
+    end
+
+    def project(oldtype, newtype, attrlist)
+      keys = @keys.select{|k| k.all?{|a| attrlist.include?(a) } }
+      keys = [newtype.attrlist] if keys.empty?
+      Keys.new(keys, false)
+    end
+
+    def rename(oldtype, newtype, renaming)
+      keys = @keys.map{|k| k.map{|a| renaming[a] || a } }
+      Keys.new(keys, false)
+    end
+
+    def union(oldtype, newtype, right_type)
+      return nil unless rkeys = right_type.keys
+      return nil unless (oldtype.predicate & right_type.predicate).contradiction?
+      shared = @keys.select{|k| rkeys.include?(k) }
+      Keys.new(shared, false)
+    end
+
+  public ## usuals
+
+    def to_a
+      @keys
+    end
+
+  private
+
+    def reduce(keys)
+      reduced = []
+      keys.sort{|a,b| a.size <=> b.size}.each do |k|
+        reduced << k unless reduced.any?{|r| (r - k).empty? }
+      end
+      reduced
+    end
+
+  end
+end
