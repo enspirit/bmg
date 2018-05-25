@@ -1,5 +1,9 @@
 # 0.10.0
 
+* Add Restrict optimization: pust it over `autowrap` when the list of
+  attributes are known statically and the predicate does not use any
+  of the wrapped new attributes.
+
 * Add Page optimizations: push it over `constants, `rename` and `image`
   when possible.
 

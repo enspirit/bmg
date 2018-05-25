@@ -41,12 +41,25 @@ module Bmg
 
       def each
         @operand.each do |tuple|
-          yield autowrap(tuple)
+          yield autowrap_tuple(tuple)
         end
       end
 
       def to_ast
         [ :autowrap, operand.to_ast, @original_options.dup ]
+      end
+
+    protected ### optimization
+
+      def _restrict(type, predicate)
+        return super unless operand.type.knows_attrlist?
+        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
+        vars = predicate.free_variables
+        if (roots & vars).empty?
+          operand.restrict(predicate).autowrap(options)
+        else
+          super
+        end
       end
 
     protected ### inspect
@@ -57,7 +70,7 @@ module Bmg
 
     private
 
-      def autowrap(tuple)
+      def autowrap_tuple(tuple)
         separator = @options[:split]
         autowrapped = tuple.each_with_object({}){|(k,v),h|
           parts = k.to_s.split(separator).map(&:to_sym)
@@ -97,6 +110,11 @@ module Bmg
           none:   ->(t,k){ t           }
         }
 
+        def self.new(remover)
+          return remover if remover.is_a?(NoLeftJoinNoise)
+          super
+        end
+
         def initialize(remover)
           @remover_to_s = remover
           @remover = case remover
@@ -127,6 +145,18 @@ module Bmg
         alias :to_s :inspect
 
       end # NoLeftJoinNoise
+
+      module Support
+
+        def wrapped_roots(attrlist, split_symbol)
+          attrlist.map{|a|
+            split = a.to_s.split(split_symbol)
+            split.size == 1 ? nil : split[0]
+          }.compact.uniq.map(&:to_sym)
+        end
+        module_function :wrapped_roots
+
+      end # module Support
 
     end # class Autowrap
   end # module Operator
