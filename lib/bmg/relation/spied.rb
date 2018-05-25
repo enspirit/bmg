@@ -29,18 +29,13 @@ module Bmg
 
     public ### algebra
 
-      Algebra::METHODS.each do |m|
+      Algebra.public_instance_methods(false).each do |m|
+        next if [:spied, :unspied].include?(m)
+
         define_method(m) do |*args, &bl|
+          args = args.map{|a| a.respond_to?(:unspied) ? a.unspied : a }
           operand.send(m, *args, &bl).spied(spy)
         end
-      end
-
-      def image(right, *args)
-        operand.image(right.unspied, *args).spied(spy)
-      end
-
-      def union(right, *args)
-        operand.union(right.unspied, *args).spied(spy)
       end
 
       def unspied

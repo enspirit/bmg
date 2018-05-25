@@ -1,23 +1,6 @@
 module Bmg
   module Algebra
 
-    METHODS = [
-      :allbut,
-      :autowrap,
-      :autosummarize,
-      :constants,
-      :extend,
-      :group,
-      :image,
-      :matching,
-      :page,
-      :project,
-      :rename,
-      :restrict,
-      :rxmatch,
-      :union
-    ]
-
     def allbut(butlist = [])
       _allbut self.type.allbut(butlist), butlist
     end
