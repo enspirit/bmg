@@ -1,0 +1,96 @@
+rules:
+  query:
+    - with_exp
+    - nonjoin_exp
+  with_exp:
+    - [ with_spec, nonjoin_exp ]
+  with_spec:
+    - [ name_intro+ ]
+  name_intro:
+    - [ table_name, nonjoin_exp ]
+  nonjoin_exp:
+    - union
+    - except
+    - intersect
+    - select_exp
+  union:
+    - [ all, nonjoin_exp, nonjoin_exp ]
+  all:
+    - truth_value
+  except:
+    - [ set_quantifier, nonjoin_exp, nonjoin_exp ]
+  intersect:
+    - [ set_quantifier, nonjoin_exp, nonjoin_exp ]
+  join_exp:
+    - cross_join
+    - inner_join
+  cross_join:
+    - [ table_spec, table_spec ]
+  inner_join:
+    - [ table_spec, table_spec, predicate ]
+  using:
+    - [ column_name+ ]
+  select_exp:
+    - [ set_quantifier,
+        [ select_list, select_star ],
+        from_clause,
+        where_clause,
+        order_by_clause,
+        limit_clause,
+        offset_clause ]
+  set_quantifier:
+    - [ set_quantifier_name ]
+  select_star:
+    - []
+  set_quantifier_name:
+    !ruby/regexp /^all|distinct$/
+  select_list:
+    - [ select_item+ ]
+  from_clause:
+    - [ table_spec ]
+  where_clause:
+    - [ predicate ]
+  order_by_clause:
+    - [ order_by_term+ ]
+  order_by_term:
+    - [ qualified_name, direction ]
+  direction:
+    !ruby/regexp /^asc|desc$/
+  select_item:
+    - [ scalar_exp, column_name ]
+  table_spec:
+    - native_table_as
+    - table_as
+    - subquery_as
+    - join_exp
+  table_as:
+    - [ table_name, range_var_name ]
+  native_table_as:
+    - "::Object"
+  subquery_as:
+    - [ nonjoin_exp, range_var_name ]
+  scalar_exp:
+    - qualified_name
+    - column_name
+    - literal
+  qualified_name:
+    - [ range_var_name, column_name ]
+  column_name:
+    - [ name_rgx ]
+  table_name:
+    - [ name_rgx ]
+  range_var_name:
+    - [ name_rgx ]
+  limit_clause:
+    - [ integer ]
+  offset_clause:
+    - [ integer ]
+  integer:
+    - "::Integer"
+  literal:
+    - "::Object"
+  name_rgx:
+    !ruby/regexp /^[a-zA-Z0-9_]+$/
+  truth_value:
+    - "::TrueClass"
+    - "::FalseClass"

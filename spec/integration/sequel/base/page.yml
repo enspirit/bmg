@@ -1,0 +1,72 @@
+---
+- bmg: |-
+    suppliers
+      .page([:name, :sid], 1, page_size: 2)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    ORDER BY
+      `t1`.`name` ASC,
+      `t1`.`sid` ASC
+    LIMIT
+      2
+- bmg: |-
+    suppliers
+      .page([:name, :sid], 3, page_size: 2)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    ORDER BY
+      `t1`.`name` ASC,
+      `t1`.`sid` ASC
+    LIMIT
+      2
+    OFFSET
+      4
+- bmg: |-
+    suppliers
+      .restrict(:city => 'London')
+      .page([:name, :sid], 1, page_size: 2)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`city` = 'London'
+    )
+    ORDER BY
+      `t1`.`name` ASC,
+      `t1`.`sid` ASC
+    LIMIT
+      2
+- bmg: |-
+    suppliers
+      .rename(:sid => :id)
+      .page([:id, :name], 1, page_size: 2)
+  sqlite: |-
+    SELECT
+      `t1`.`sid` AS 'id',
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    ORDER BY
+      `t1`.`sid` ASC,
+      `t1`.`name` ASC
+    LIMIT
+      2

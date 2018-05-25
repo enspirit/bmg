@@ -1,0 +1,24 @@
+---
+- bmg: |-
+    suppliers.allbut([:city, :status])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`
+    FROM
+      `suppliers` AS 't1'
+- bmg: |-
+    suppliers.allbut([:sid, :name, :status])
+  sqlite: |-
+    SELECT DISTINCT
+      `t1`.`city`
+    FROM
+      `suppliers` AS 't1'
+- bmg: |-
+    suppliers.project([:sid, :name, :city]).allbut([:city])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`
+    FROM
+      `suppliers` AS 't1'

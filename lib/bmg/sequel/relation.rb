@@ -1,22 +1,15 @@
 module Bmg
   module Sequel
-    class Relation
-      include Bmg::Relation
+    class Relation < Sql::Relation
 
-      def initialize(type, dataset)
-        @type = type
-        @dataset = dataset
+      def initialize(type, builder, source, sequel_db)
+        super(type, builder, source)
+        @sequel_db = sequel_db
       end
-      attr_reader :type
-
-    protected
-
-      attr_reader :dataset
-
-    public
+      attr_reader :sequel_db
 
       def each(&bl)
-        @dataset.each(&bl)
+        dataset.each(&bl)
       end
 
       def delete
@@ -44,19 +37,31 @@ module Bmg
         [:sequel, dataset.sql]
       end
 
+      def to_sql
+        dataset.sql
+      end
+
       def to_s
         "(sequel #{dataset.sql})"
       end
       alias :inspect :to_s
 
-    protected ### optimization
+    protected
 
-      def _restrict(type, predicate)
-        Relation.new type, dataset.where(predicate.to_sequel)
-      rescue NotImplementedError, Predicate::NotSupportedError
-        super
+      def dataset
+        @dataset ||= Translator.new(sequel_db).call(self.expr)
+      end
+
+      def _instance(type, builder, expr)
+        Relation.new(type, builder, expr, sequel_db)
+      end
+
+      def extract_compatible_sexpr(operand)
+        return nil unless operand.is_a?(Bmg::Sequel::Relation)
+        return nil unless self.sequel_db == operand.sequel_db
+        operand.expr
       end
 
     end # class Relation
-  end # module Operator
+  end # module Sequel
 end # module Bmg

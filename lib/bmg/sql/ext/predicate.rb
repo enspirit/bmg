@@ -1,0 +1,23 @@
+class Predicate
+  Sql = ::Bmg::Sql
+end
+require_relative 'predicate/expr'
+require_relative 'predicate/dyadic_comp'
+require_relative 'predicate/nadic_bool'
+require_relative 'predicate/tautology'
+require_relative 'predicate/contradiction'
+require_relative 'predicate/identifier'
+require_relative 'predicate/qualified_identifier'
+require_relative 'predicate/and'
+require_relative 'predicate/or'
+require_relative 'predicate/not'
+require_relative 'predicate/eq'
+require_relative 'predicate/neq'
+require_relative 'predicate/gt'
+require_relative 'predicate/gte'
+require_relative 'predicate/lt'
+require_relative 'predicate/lte'
+require_relative 'predicate/in'
+require_relative 'predicate/exists'
+require_relative 'predicate/literal'
+require_relative 'predicate/native'

@@ -1,0 +1,51 @@
+---
+- bmg: |-
+    suppliers
+      .rename(:name => :firstname)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name` AS 'firstname',
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+- bmg: |-
+    suppliers
+      .project([:name])
+      .rename(:name => :firstname)
+  sqlite: |-
+    SELECT DISTINCT
+      `t1`.`name` AS 'firstname'
+    FROM
+      `suppliers` AS 't1'
+- bmg: |-
+    suppliers
+      .restrict(:name => 'Smith')
+      .rename(:name => :firstname)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name` AS 'firstname',
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`name` = 'Smith'
+    )
+- bmg: |-
+    suppliers
+      .restrict(:name => 'Smith')
+      .rename(:name => :firstname)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name` AS 'firstname',
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`name` = 'Smith'
+    )

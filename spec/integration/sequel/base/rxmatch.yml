@@ -1,0 +1,33 @@
+---
+- bmg: |-
+    suppliers
+      .rxmatch([:city, :name], "S")
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      (`t1`.`city` LIKE '%S%' ESCAPE '\')
+      OR
+      (`t1`.`name` LIKE '%S%' ESCAPE '\')
+    )
+- bmg: |-
+    suppliers
+      .rxmatch([:city, :name], "S", case_sensitive: false)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      (UPPER(`t1`.`city`) LIKE UPPER('%S%') ESCAPE '\')
+      OR
+      (UPPER(`t1`.`name`) LIKE UPPER('%S%') ESCAPE '\')
+    )

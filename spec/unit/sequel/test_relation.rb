@@ -3,30 +3,52 @@ module Bmg
   module Sequel
     describe Relation do
 
-      let(:relation) {
-        Bmg.sequel(sequel_db[:suppliers])
+      let(:suppliers_type) {
+        Type::ANY.with_attrlist([:sid, :name, :city, :status])
       }
 
-      it 'works' do
-        expect(relation.to_a.size).to eql(5)
+      context 'starting with a table name' do
+
+        let(:relation) {
+          Bmg.sequel(:suppliers, sequel_db, suppliers_type)
+        }
+
+        it 'works' do
+          expect(relation.to_a.size).to eql(5)
+        end
+
+        it 'optimizes restrictions' do
+          optimized = relation.restrict(sid: "S1")
+          expect(optimized).to be_a(Sequel::Relation)
+        end
+
+        it 'supports projections' do
+          optimized = relation.restrict(sid: "S1").project([:name])
+          expect(optimized).to be_a(Sequel::Relation)
+        end
+
+        it 'does not fail when a native predicate is used' do
+          optimized = relation.restrict(->(t){ false })
+          expect(optimized).to be_a(Operator::Restrict)
+          expect(optimized.to_a).to be_empty
+        end
+
       end
 
-      it 'optimizes restrictions' do
-        optimized = relation.restrict(sid: "S1")
-        expect(optimized).to be_a(Sequel::Relation)
-        expect(optimized.send(:dataset).sql).to eql(<<-SQL.gsub(/\s+/, " ").strip)
-          SELECT * FROM `suppliers` WHERE (`sid` = 'S1')
-        SQL
-      end
+      context 'starting with a dataset' do
 
-      it 'does not fail when a native predicate is used' do
-        optimized = relation.restrict(->(t){ false })
-        expect(optimized).to be_a(Operator::Restrict)
-        expect(optimized.to_a).to be_empty
-      end
+        let(:relation) {
+          Bmg.sequel(sequel_db[:suppliers].from_self, suppliers_type)
+        }
 
-      it 'has the expected ast' do
-        expect(relation.to_ast).to eql([:sequel, "SELECT * FROM `suppliers`"])
+        it 'works' do
+          expect(relation.to_a.size).to eql(5)
+        end
+
+        it 'applies to_self if needed' do
+          optimized = relation.restrict(sid: "S1")
+          expect(optimized).to be_a(Sequel::Relation)
+        end
       end
 
     end

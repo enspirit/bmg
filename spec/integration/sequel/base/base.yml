@@ -1,0 +1,22 @@
+---
+- bmg: |-
+    suppliers
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+- bmg: |-
+    suppliers_dataset
+  sqlite: |-
+    SELECT
+      `t1`.`sid` AS 'sid',
+      `t1`.`name` AS 'name',
+      `t1`.`city` AS 'city',
+      `t1`.`status` AS 'status'
+    FROM (
+      SELECT * FROM `suppliers`
+    ) AS 't1'

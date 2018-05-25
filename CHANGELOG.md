@@ -2,6 +2,10 @@
 
 * BREAKING CHANGE: `rxmatch` is now case sensitive by default.
 
+* BREAKING CHANGE: you should now use `Bmg.sequel(:table_name, db)`
+  instead of `Bmg.sequel(db[:table_name])` to avoid unnecessary long
+  SQL from being generated.
+
 * `rxmatch` becomes a shortcut operator, that translates to a `restrict`
   with a OR using Predicate#match. This aims at reusing all existing
   `restrict` optimizations for `rxmatch`, with a free implementation
@@ -13,6 +17,9 @@
 
 * Add Page optimizations: push it over `constants, `rename` and `image`
   when possible.
+
+* The Sequel contribution now generates valid SQL in all cases and
+  performs necessary optimizations.
 
 # 0.9.1 - May 16st, 2018
 
