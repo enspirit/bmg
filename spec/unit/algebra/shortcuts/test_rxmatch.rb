@@ -1,7 +1,7 @@
 require 'spec_helper'
 module Bmg
-  module Operator
-    describe Restrict do
+  module Algebra
+    describe Shortcuts, "rxmatch" do
 
       let(:data) {
         [
@@ -15,7 +15,7 @@ module Bmg
       }
 
       subject {
-        Rxmatch.new Type::ANY, data, attrs, matcher, options
+        Relation.new(data, Type::ANY).rxmatch(attrs, matcher, options)
       }
 
       context 'against a string' do
@@ -29,24 +29,24 @@ module Bmg
         end
       end
 
-      context 'against a string, it is case insensitive by default' do
+      context 'against a string, it is case sensitive by default' do
         let(:attrs){ [:a] }
         let(:matcher){ "Fo" }
 
         it 'works as expected' do
           expect(subject.to_a).to eql([
-            { a: "foo",  b: 2 }
           ])
         end
       end
 
-      context 'against a string, it is case sensitive if requested' do
+      context 'against a string, it is case insensitive if requested' do
         let(:attrs){ [:a] }
         let(:matcher){ "Fo" }
-        let(:options){ { case_sensitive: true } }
+        let(:options){ { case_sensitive: false } }
 
         it 'works as expected' do
           expect(subject.to_a).to eql([
+            { a: "foo",  b: 2 },
           ])
         end
       end

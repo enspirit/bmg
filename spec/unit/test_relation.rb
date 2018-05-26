@@ -496,10 +496,6 @@ module Bmg
           { a: "foo", b: 2 },
         ])
       end
-
-      it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:rxmatch, [:in_memory, data], [:a, :b], /fo/, {:case_sensitive=>false}])
-      end
     end
 
     describe 'union' do

@@ -1,5 +1,12 @@
 # 0.10.0
 
+* BREAKING CHANGE: `rxmatch` is now case sensitive by default.
+
+* `rxmatch` becomes a shortcut operator, that translates to a `restrict`
+  with a OR using Predicate#match. This aims at reusing all existing
+  `restrict` optimizations for `rxmatch`, with a free implementation
+  cost.
+
 * Add Restrict optimization: pust it over `autowrap` when the list of
   attributes are known statically and the predicate does not use any
   of the wrapped new attributes.
