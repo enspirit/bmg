@@ -1,10 +1,11 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'bmg/version'
+require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'bmg'
   s.version     = Bmg::VERSION
-  s.date        = '2017-11-20'
+  s.date        = Date.today.to_s
   s.summary     = "Bmg is Alf's successor."
   s.description = "Bmg is Alf's relational algebra for ruby, but much simpler and lighter than Alf itself"
   s.authors     = ["Bernard Lambeau"]
