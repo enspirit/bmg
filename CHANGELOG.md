@@ -1,4 +1,4 @@
-# 0.10.0
+# 0.10.0 - May 28st, 2018
 
 * BREAKING CHANGE: `rxmatch` is now case sensitive by default.
 
