@@ -12,7 +12,7 @@
       `suppliers` AS 't1'
     WHERE (
       `t1`.`sid` IN (
-        SELECT 
+        SELECT
           `t2`.`sid`
         FROM
           `supplies` AS 't2'
@@ -30,7 +30,7 @@
     FROM
       `suppliers` AS 't1'
     WHERE (EXISTS (
-      SELECT 
+      SELECT
         *
       FROM
         `supplies` AS 't4'
@@ -47,7 +47,7 @@
     FROM
       `suppliers` AS 't1'
     WHERE (EXISTS (
-      SELECT 
+      SELECT
         *
       FROM
         `suppliers` AS 't2'
@@ -56,6 +56,61 @@
       AND
         (`t1`.`name` = `t2`.`name`)
       )
+    ))
+- bmg: |-
+    suppliers
+      .matching(supplies.restrict(:sid => 'S1'), [:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (`t1`.`sid` IN (
+      SELECT
+        `t2`.`sid`
+      FROM
+        `supplies` AS 't2'
+      WHERE
+        (`t2`.`sid` = 'S1')
+    ))
+- bmg: |-
+    suppliers
+      .matching(parts.project([:name]), [:name])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (`t1`.`name` IN (
+      SELECT
+        `t2`.`name`
+      FROM
+        `parts` AS 't2'
+    ))
+- bmg: |-
+    suppliers
+      .matching(supplies.join(parts, [:pid]), [:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (`t1`.`sid` IN (
+      SELECT
+        `t2`.`sid`
+      FROM
+        `supplies` AS 't2'
+      INNER JOIN
+        `parts` AS 't3' ON (`t2`.`pid` = `t3`.`pid`)
     ))
 - bmg: |-
     suppliers

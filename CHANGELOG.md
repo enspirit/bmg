@@ -11,6 +11,10 @@
   of the right operand. In such case, the left keys can all be kept
   unchanged.
 
+* Fix a SQL compilation bug with join expressions in subqueries.
+  Requalification of table names was forgotten in inner join
+  clauses.
+
 # 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename

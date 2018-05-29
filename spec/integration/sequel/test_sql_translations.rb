@@ -23,8 +23,20 @@ module Bmg
         Bmg.sequel(sequel_db[:suppliers], suppliers_type)
       end
 
+      def parts_type
+        Type::ANY
+          .with_attrlist([:pid, :name, :color, :weight, :city])
+          .with_keys([[:pid]])
+      end
+
+      def parts
+        Bmg.sequel(:parts, sequel_db, parts_type)
+      end
+
       def supplies_type
-        Type::ANY.with_attrlist([:sid, :pid, :qty])
+        Type::ANY
+          .with_attrlist([:sid, :pid, :qty])
+          .with_keys([[:sid, :pid]])
       end
 
       def supplies

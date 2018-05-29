@@ -36,11 +36,13 @@ module Bmg
             commons = self.on
             subquery = Clip.new(commons, false, :star, builder).call(right)
             subquery = Requalify.new(builder).call(subquery)
+            subquery = All.new(builder).call(subquery)
             if commons.size == 0
               builder.exists(subquery)
             elsif commons.size == 1
               identifier = left.desaliaser[commons.to_a.first]
-              Predicate::Factory.in(identifier, subquery)
+              qualified  = Predicate::Factory.qualified_identifier(identifier.qualifier, identifier.as_name)
+              Predicate::Factory.in(qualified, subquery)
             else
               join_pre  = join_predicate(left, subquery, commons)
               subquery  = expand_where_clause(subquery, join_pre)
