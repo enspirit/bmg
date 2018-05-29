@@ -8,14 +8,51 @@ module Bmg
 
     let(:data) {
       [
-        { a: 1,  b_id: 2 },
-        { a: 11, b_id: 2 }
+        { :a => 1,  :"b-id" => 2 },
+        { :a => 11, :"b-id" => 2 }
       ]
     }
 
     let(:relation) {
       Relation.new(data, type)
     }
+
+    context "autowrap.page when attributes are known" do
+
+      subject {
+        relation.autowrap(options).page(page_ordering, page_index, page_options)
+      }
+
+      let(:type) {
+        Type.new.with_attrlist([:a, :"b-id"])
+      }
+
+      let(:page_ordering) {
+        [[:a, :desc]]
+      }
+
+      let(:page_index){
+        1
+      }
+
+      let(:page_options){
+        { page_size: 18 }
+      }
+
+      context 'when the ordering does not touch new attribute' do
+
+        it 'pushes the page down the tree' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("-")
+          expect(operand).to be_a(Operator::Page)
+          expect(operand.send(:ordering)).to eql(page_ordering)
+          expect(operand.send(:page_index)).to eql(page_index)
+          expect(operand.send(:options)).to eql(page_options)
+        end
+
+      end
+
+    end
 
     context "autowrap.restrict" do
 

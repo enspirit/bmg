@@ -3,6 +3,10 @@
 * Add NotMatching operator, with restrict optimization and SQL
   compilation.
 
+* Optimize `autowrap.page` by pushing the page down the tree when
+  autowrap attributes are known and the page ordering does not touch
+  them.
+
 # 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename

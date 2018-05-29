@@ -51,6 +51,17 @@ module Bmg
 
     protected ### optimization
 
+      def _page(type, ordering, page_index, opts)
+        return super unless operand.type.knows_attrlist?
+        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
+        attrs = ordering.map{|(a,d)| a }
+        if (roots & attrs).empty?
+          operand.page(ordering, page_index, opts).autowrap(options)
+        else
+          super
+        end
+      end
+
       def _restrict(type, predicate)
         return super unless operand.type.knows_attrlist?
         roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
