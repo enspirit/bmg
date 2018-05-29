@@ -89,7 +89,6 @@ module Bmg
         if right_expr = extract_compatible_sexpr(right)
           expr = before_use(self.expr)
           expr = Processor::Merge.new(:union, !!options[:all], right_expr, builder).call(self.expr)
-          puts expr.each.to_a.inspect
           _instance(type, builder, expr)
         else
           super

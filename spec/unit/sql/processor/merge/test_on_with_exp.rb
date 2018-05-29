@@ -4,7 +4,7 @@ module Bmg
     class Processor
       describe Merge, "on_with_exp" do
 
-        subject{ Merge.new(:intersect, right, builder(1)).on_with_exp(expr) }
+        subject{ Merge.new(:intersect, false, right, builder(1)).on_with_exp(expr) }
 
         context 'when right is a simple exp' do
           let(:expr){
