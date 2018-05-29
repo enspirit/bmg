@@ -21,6 +21,17 @@ module Bmg
       Keys.new(keys, true)
     end
 
+    def join(oldtype, newtype, right_type, on)
+      return nil unless rkeys = right_type.keys
+      keys = []
+      @keys.each do |k1|
+        right_type.keys.each do |k2|
+          keys << (k1 + k2).uniq
+        end
+      end
+      Keys.new(keys, true)
+    end
+
     def project(oldtype, newtype, attrlist)
       keys = @keys.select{|k| k.all?{|a| attrlist.include?(a) } }
       keys = [newtype.attrlist] if keys.empty?

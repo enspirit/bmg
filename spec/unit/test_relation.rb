@@ -305,6 +305,48 @@ module Bmg
       end
     end
 
+    describe 'join' do
+      let(:left_data) {
+        [
+          { a: 1, b: 2 },
+          { a: 3, b: 4 }
+        ]
+      }
+
+      let(:left) {
+        Relation.new(left_data)
+      }
+
+      let(:right_data) {
+        [
+          { a: 1, c: 4 },
+          { a: 1, c: 5 },
+          { a: 7, c: 15 }
+        ]
+      }
+
+      let(:right) {
+        Relation.new(right_data)
+      }
+
+      subject{
+        left.join(right, [:a])
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, b: 2, c: 4 },
+          { a: 1, b: 2, c: 5 }
+        ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:join, [:in_memory, left_data], [:in_memory, right_data], [:a]])
+      end
+    end
+
     describe 'matching' do
       let(:left_data) {
         [

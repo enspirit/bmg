@@ -110,6 +110,14 @@ module Bmg
       }
     end
 
+    def join(right, on)
+      dup.tap{|x|
+        x.attrlist  = (knows_attrlist? and right.knows_attrlist?) ? (self.attrlist + right.attrlist).uniq : nil
+        x.predicate = self.predicate & right.predicate
+        x.keys      = (knows_keys? and right.knows_keys?) ? self._keys.join(self, x, right, on) : nil
+      }
+    end
+
     def matching(right, on)
       self
     end

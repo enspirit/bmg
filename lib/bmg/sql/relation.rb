@@ -44,6 +44,17 @@ module Bmg
         _instance(type, builder, expr)
       end
 
+      def _join(type, right, on)
+        if right_expr = extract_compatible_sexpr(right)
+          right_expr = Processor::Requalify.new(builder).call(right_expr)
+          expr = before_use(self.expr)
+          expr = Processor::Join.new(right_expr, on, builder).call(expr)
+          _instance(type, builder, expr)
+        else
+          super
+        end
+      end
+
       def _matching(type, right, on)
         if right_expr = extract_compatible_sexpr(right)
           expr = before_use(self.expr)

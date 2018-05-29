@@ -64,6 +64,15 @@ module Bmg
     end
     protected :_image
 
+    def join(right, on = [])
+      _join self.type.join(right.type, on), right, on
+    end
+
+    def _join(type, right, on)
+      Operator::Join.new(type, self, right, on)
+    end
+    protected :_join
+
     def matching(right, on = [])
       _matching self.type.matching(right, on), right, on
     end

@@ -12,6 +12,14 @@ module Bmg
       Type::ANY.with_attrlist(suppliers_attrlist)
     }
 
+    let(:supplies_attrlist) {
+      [:sid, :pid, :qty]
+    }
+
+    let(:supplies){
+      Type::ANY.with_attrlist(supplies_attrlist)
+    }
+
     it 'lets specifying the attributes' do
       type = any.with_attrlist([:a, :b])
       expect(type).to be_a(Type)
@@ -116,6 +124,22 @@ module Bmg
       it 'keeps the original keys' do
         type = suppliers.with_keys([[:sid]]).image(suppliers, :image_name, [:sid, :city], {})
         expect(type.keys).to eql([[:sid]])
+      end
+
+    end
+
+    describe 'join' do
+
+      it 'extends the attrlist when both are known' do
+        type = suppliers.join(supplies, [:sid])
+        expect(type.knows_attrlist?). to be(true)
+        expect(type.to_attrlist).to eq(suppliers_attrlist + [:pid, :qty])
+      end
+
+      it 'computes the resulting keys as expected' do
+        rtype = supplies.with_keys([[:sid, :pid]])
+        ltype = suppliers.with_keys([[:sid], [:name, :city]]).join(rtype, [:sid])
+        expect(ltype.keys).to eql([[:sid, :pid]])
       end
 
     end

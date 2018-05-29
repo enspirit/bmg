@@ -3,6 +3,8 @@
 * Add Prefix and Suffix shortcut operators for longer Rename
   expressions. Attrlist must be known on operand's type.
 
+* Add Join operator, with explicit attribute list for join key.
+
 # 0.10.1
 
 * Fix Page implementation to support full ordering, e.g

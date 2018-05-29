@@ -76,6 +76,6 @@ module Bmg
         TupleAlgebra.project(tuple, on)
       end
 
-    end # class Project
+    end # class Matching
   end # module Operator
 end # module Bmg

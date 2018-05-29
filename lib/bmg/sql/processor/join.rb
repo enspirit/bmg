@@ -4,11 +4,12 @@ module Bmg
       class Join < Processor
         include JoinSupport
 
-        def initialize(right, builder)
+        def initialize(right, on, builder)
           super(builder)
           @right = right
+          @on = on
         end
-        attr_reader :right
+        attr_reader :right, :on
 
         def call(sexpr)
           if unjoinable?(sexpr)
@@ -50,7 +51,7 @@ module Bmg
         end
 
         def join_from_clauses(left, right)
-          joincon = join_predicate(left, right)
+          joincon = join_predicate(left, right, on)
           join = if joincon.tautology?
             [:cross_join, left.table_spec, right.table_spec]
           else
