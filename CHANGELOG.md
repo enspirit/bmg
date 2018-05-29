@@ -1,4 +1,4 @@
-# 0.11.0
+# 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename
   expressions. Attrlist must be known on operand's type.
