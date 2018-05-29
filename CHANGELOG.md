@@ -1,3 +1,8 @@
+# 0.11.0
+
+* Add Prefix and Suffix shortcut operators for longer Rename
+  expressions. Attrlist must be known on operand's type.
+
 # 0.10.1
 
 * Fix Page implementation to support full ordering, e.g

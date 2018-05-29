@@ -1,0 +1,12 @@
+---
+- bmg: |-
+    suppliers
+      .prefix(:supplier_)
+  sqlite: |-
+    SELECT
+      `t1`.`sid` AS 'supplier_sid',
+      `t1`.`name` AS 'supplier_name',
+      `t1`.`city` AS 'supplier_city',
+      `t1`.`status` AS 'supplier_status'
+    FROM
+      `suppliers` AS 't1'
