@@ -1,4 +1,4 @@
-# 0.12.0
+# 0.12.0 - May 29st, 2018
 
 * Add NotMatching operator, with restrict optimization and SQL
   compilation.
