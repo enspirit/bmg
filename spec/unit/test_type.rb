@@ -56,6 +56,39 @@ module Bmg
 
     end
 
+    describe 'autowrap' do
+
+      it 'preserves the predicate if possible' do
+        predicate = Predicate.eq(:sid, "S1")
+        type = suppliers.with_predicate(predicate).autowrap({})
+        expect(type.predicate).to eql(predicate)
+      end
+
+      it 'splits the predicate if possible' do
+        left = Predicate.eq(:sid, "S1")
+        right = Predicate.eq(:supplied_name, "Smith")
+        type = suppliers.with_predicate(left & right).autowrap({})
+        expect(type.predicate).to eql(left)
+      end
+
+      it 'autowraps the attrlist when known' do
+        type = suppliers.with_attrlist([:name, :city, :part_pid, :part_name]).autowrap({})
+        expect(type.knows_attrlist?).to be(true)
+        expect(type.to_attrlist).to eq([:name, :city, :part])
+      end
+
+      it 'keeps the keys that are not touched' do
+        type = suppliers.with_keys([[:sid]]).autowrap({})
+        expect(type.keys).to eql([[:sid]])
+      end
+
+      it 'converts autowrapped key attributes by the newly introduced attribute' do
+        type = suppliers.with_keys([[:supplier_sid, :name]]).autowrap({})
+        expect(type.keys).to eql([[:supplier, :name]])
+      end
+
+    end
+
     describe 'constants' do
 
       it 'extends attrlist when known' do

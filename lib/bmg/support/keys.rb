@@ -15,6 +15,14 @@ module Bmg
       Keys.new(keys, false)
     end
 
+    def autowrap(oldtype, newtype, options)
+      sep = options[:split] || Operator::Autowrap::DEFAULT_OPTIONS[:split]
+      keys = @keys.map{|k|
+        k.map{|a| a.to_s.split(sep).first }.uniq.map(&:to_sym)
+      }
+      Keys.new(keys, false)
+    end
+
     def group(oldtype, newtype, attrs, as)
       keys = [ oldtype.attrlist - attrs ]
       keys += @keys.map{|k| (k & attrs).empty? ? k : (k - attrs) + [as] }

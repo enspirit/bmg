@@ -13,6 +13,12 @@ module Bmg
     attr_accessor :predicate
     protected :predicate=
 
+    def with_predicate(predicate)
+      dup.tap{|x|
+        x.predicate = predicate
+      }
+    end
+
   public ## attrlist
 
     attr_accessor :attrlist
@@ -71,7 +77,15 @@ module Bmg
     end
 
     def autowrap(options)
-      ANY
+      sep = options[:split] || Operator::Autowrap::DEFAULT_OPTIONS[:split]
+      splitter = ->(a){ a.to_s.split(sep).first }
+      is_split = ->(a){ a.to_s.split(sep).size > 1 }
+      dup.tap{|x|
+        x.attrlist  = self.attrlist.map(&splitter).uniq.map(&:to_sym) if knows_attrlist?
+        x.keys      = self._keys.autowrap(self, x, options) if knows_keys?
+        autowrapped = self.predicate.free_variables.select(&is_split)
+        x.predicate = autowrapped.empty? ? self.predicate : self.predicate.and_split(autowrapped).last
+      }
     end
 
     def autosummarize(by, summarization)

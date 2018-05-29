@@ -5,6 +5,9 @@
 
 * Add Join operator, with explicit attribute list for join key.
 
+* Attrlist, Key and Predicate inference is now correctly implemented
+  on autowrap.
+
 # 0.10.1
 
 * Fix Page implementation to support full ordering, e.g
