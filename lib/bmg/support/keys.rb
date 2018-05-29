@@ -30,7 +30,8 @@ module Bmg
     end
 
     def join(oldtype, newtype, right_type, on)
-      return nil unless rkeys = right_type.keys
+      return nil  unless rkeys = right_type.keys
+      return self if rkeys.any?{|k| (k - on).empty? }
       keys = []
       @keys.each do |k1|
         right_type.keys.each do |k2|

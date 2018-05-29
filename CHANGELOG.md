@@ -7,6 +7,10 @@
   autowrap attributes are known and the page ordering does not touch
   them.
 
+* Enhance key inference on Join, when joining on a candidate key
+  of the right operand. In such case, the left keys can all be kept
+  unchanged.
+
 # 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename

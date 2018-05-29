@@ -170,9 +170,24 @@ module Bmg
       end
 
       it 'computes the resulting keys as expected' do
-        rtype = supplies.with_keys([[:sid, :pid]])
-        ltype = suppliers.with_keys([[:sid], [:name, :city]]).join(rtype, [:sid])
-        expect(ltype.keys).to eql([[:sid, :pid]])
+        ltype = supplies.with_keys([[:sid, :pid]])
+        rtype = suppliers.with_keys([[:sid], [:name, :city]])
+        type = ltype.join(rtype, [:sid])
+        expect(type.keys).to eql([[:sid, :pid]])
+      end
+
+      it 'is smart when joining towards a candidate key on right' do
+        ltype = suppliers.with_keys([[:sid]])
+        rtype = any.with_attrlist([:city, :peopleCount]).with_keys([[:city]])
+        type  = ltype.join(rtype, [:city])
+        expect(type.keys).to eql([[:sid]])
+      end
+
+      it 'is smart when joining on more that the candidate key on right' do
+        ltype = suppliers.with_keys([[:sid]])
+        rtype = any.with_attrlist([:city, :name, :peopleCount]).with_keys([[:city]])
+        type  = ltype.join(rtype, [:city, :name])
+        expect(type.keys).to eql([[:sid]])
       end
 
     end
