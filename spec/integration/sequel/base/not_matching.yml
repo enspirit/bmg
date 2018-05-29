@@ -1,0 +1,84 @@
+---
+- bmg: |-
+    suppliers
+      .not_matching(supplies, [:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`sid` NOT IN (
+        SELECT 
+          `t2`.`sid`
+        FROM
+          `supplies` AS 't2'
+      )
+    )
+- bmg: |-
+    suppliers
+      .not_matching(supplies, [])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE NOT (EXISTS (
+      SELECT 
+        *
+      FROM
+        `supplies` AS 't4'
+    ))
+- bmg: |-
+    suppliers
+      .not_matching(suppliers, [:sid, :name])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE NOT (EXISTS (
+      SELECT 
+        *
+      FROM
+        `suppliers` AS 't2'
+      WHERE (
+        (`t1`.`sid` = `t2`.`sid`)
+      AND
+        (`t1`.`name` = `t2`.`name`)
+      )
+    ))
+- bmg: |-
+    suppliers
+      .not_matching(native_sids_of_suppliers_in_london, [:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`sid` NOT IN (
+        SELECT
+          `t2`.`sid` AS 'sid'
+        FROM (
+          SELECT
+            sid
+          FROM
+            suppliers
+          WHERE
+            city = 'London'
+        ) AS 't2'
+      )
+    )

@@ -58,7 +58,17 @@ module Bmg
       def _matching(type, right, on)
         if right_expr = extract_compatible_sexpr(right)
           expr = before_use(self.expr)
-          expr = Processor::SemiJoin.new(right_expr, on, builder).call(expr)
+          expr = Processor::SemiJoin.new(right_expr, on, false, builder).call(expr)
+          _instance(type, builder, expr)
+        else
+          super
+        end
+      end
+
+      def _not_matching(type, right, on)
+        if right_expr = extract_compatible_sexpr(right)
+          expr = before_use(self.expr)
+          expr = Processor::SemiJoin.new(right_expr, on, true, builder).call(expr)
           _instance(type, builder, expr)
         else
           super

@@ -1,3 +1,8 @@
+# 0.12.0
+
+* Add NotMatching operator, with restrict optimization and SQL
+  compilation.
+
 # 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename

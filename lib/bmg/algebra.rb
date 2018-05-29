@@ -82,6 +82,15 @@ module Bmg
     end
     protected :_matching
 
+    def not_matching(right, on = [])
+      _not_matching self.type.not_matching(right, on), right, on
+    end
+
+    def _not_matching(type, right, on)
+      Operator::NotMatching.new(type, self, right, on)
+    end
+    protected :_not_matching
+
     def page(ordering, page_index, options)
       _page self.type.page(ordering, page_index, options), ordering, page_index, options
     end

@@ -136,6 +136,10 @@ module Bmg
       self
     end
 
+    def not_matching(right, on)
+      self
+    end
+
     def page(ordering, page_size, options)
       self
     end
