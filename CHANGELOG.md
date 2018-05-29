@@ -1,3 +1,8 @@
+# 0.10.1
+
+* Fix Page implementation to support full ordering, e.g
+  `[[:name, :desc], [:id, :asc]]`
+
 # 0.10.0 - May 28st, 2018
 
 * BREAKING CHANGE: `rxmatch` is now case sensitive by default.

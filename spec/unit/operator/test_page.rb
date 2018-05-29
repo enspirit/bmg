@@ -72,6 +72,21 @@ module Bmg
         end
       end
 
+      context 'with a descending ordering on :a' do
+        let(:ordering) { [[:a, :desc]] }
+
+        context 'with the first page' do
+          let(:page_index){ 1 }
+
+          it 'works' do
+            expect(subject.to_a).to eql([
+              { a: 99, b: 1 },
+              { a: 98, b: 2 }
+            ])
+          end
+        end
+      end
+
     end
   end
 end
