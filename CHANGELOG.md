@@ -1,5 +1,7 @@
 # 0.13.0
 
+* Optimization: Any relation unioned with empty returns itself.
+
 * Optimization: calling `constants` on empty returns an empty
   relation.
 

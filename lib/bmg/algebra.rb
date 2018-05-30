@@ -142,6 +142,7 @@ module Bmg
     protected :_restrict
 
     def union(other, options = {})
+      return self if other.is_a?(Relation::Empty)
       _union self.type.union(other.type), other, options
     end
 
