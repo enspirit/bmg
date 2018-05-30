@@ -7,9 +7,13 @@ module Bmg
 
     def sequel(*args, &bl)
       source, sequel_db, type = sequel_params(*args, &bl)
-      builder = Sql::Builder.new
-      sexpr = builder.select_all(type.to_attrlist, source)
-      Sequel::Relation.new(type, builder, sexpr, sequel_db).spied(Bmg.main_spy)
+      if type
+        builder = Sql::Builder.new
+        sexpr = builder.select_all(type.to_attrlist, source)
+        Sequel::Relation.new(type, builder, sexpr, sequel_db).spied(Bmg.main_spy)
+      else
+        Bmg::Relation.new(source)
+      end
     end
     module_function :sequel
 
@@ -18,16 +22,15 @@ module Bmg
       sequel_db = source.db if sequel_db.nil? and source.is_a?(::Sequel::Dataset)
       raise ArgumentError, "A Sequel::Database object is required" if sequel_db.nil?
       raise ArgumentError, "Type's attrlist must be known (#{type})" if type && !type.knows_attrlist?
-      type = infer_type!(sequel_db, source) if type.nil?
+      type = infer_type(sequel_db, source) if type.nil?
       [source, sequel_db, type]
     end
     module_function :sequel_params
 
-    def infer_type!(sequel_db, source)
-      raise "Sequel::Relation requires a type for `#{source}`" unless source.is_a?(Symbol)
-      TypeInference.new(sequel_db).call(source)
+    def infer_type(sequel_db, source)
+      TypeInference.new(sequel_db).call(source) if source.is_a?(Symbol)
     end
-    module_function :infer_type!
+    module_function :infer_type
 
   end
 

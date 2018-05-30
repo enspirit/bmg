@@ -85,7 +85,7 @@ module Bmg
       end
 
       def on_table_name(sexpr)
-        ::Sequel.identifier(sexpr.last)
+        ::Sequel.expr(sexpr.last.to_sym)
       end
 
       def on_cross_join(sexpr)
@@ -102,7 +102,7 @@ module Bmg
       end
 
       def on_table_as(sexpr)
-        ::Sequel.as(::Sequel.identifier(sexpr.table_name), ::Sequel.identifier(sexpr.as_name))
+        ::Sequel.as(::Sequel.expr(sexpr.table_name.to_sym), ::Sequel.identifier(sexpr.as_name))
       end
 
       def on_subquery_as(sexpr)
