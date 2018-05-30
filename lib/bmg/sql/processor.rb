@@ -70,6 +70,7 @@ end
 require_relative 'processor/distinct'
 require_relative 'processor/all'
 require_relative 'processor/clip'
+require_relative 'processor/constants'
 require_relative 'processor/star'
 require_relative 'processor/rename'
 require_relative 'processor/order_by'

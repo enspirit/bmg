@@ -67,6 +67,13 @@ module Bmg
       end
       builder :select_list
 
+      def select_literal_item(literal, as)
+        [:select_item,
+          literal(literal),
+          column_name(as.to_s)]
+      end
+      builder :select_literal_item
+
       def select_item(qualifier, name, as = name)
         [:select_item,
           qualified_name(qualifier, name.to_s),
@@ -157,6 +164,11 @@ module Bmg
         [:offset_clause, limit]
       end
       builder :offset_clause
+
+      def literal(lit)
+        [:literal, lit]
+      end
+      builder :literal
 
       def from_self(sexpr)
         Processor::FromSelf.new(self).call(sexpr)

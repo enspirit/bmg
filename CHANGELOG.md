@@ -1,5 +1,7 @@
 # 0.13.0
 
+* SQL compilation now support the `constants` operator.
+
 * Optimization: Any relation unioned with empty returns itself.
 
 * Optimization: calling `constants` on empty returns an empty

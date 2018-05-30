@@ -44,6 +44,12 @@ module Bmg
         _instance(type, builder, expr)
       end
 
+      def _constants(type, cs)
+        expr = before_use(self.expr)
+        expr = Processor::Constants.new(cs, builder).call(expr)
+        _instance(type, builder, expr)
+      end
+
       def _join(type, right, on)
         if right_expr = extract_compatible_sexpr(right)
           right_expr = Processor::Requalify.new(builder).call(right_expr)

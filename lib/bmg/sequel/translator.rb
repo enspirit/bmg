@@ -65,10 +65,13 @@ module Bmg
       def on_select_item(sexpr)
         left  = apply(sexpr.left)
         right = apply(sexpr.right)
-        if left.column == right.value
-          left
-        else
+        case kind = sexpr.left.first
+        when :qualified_name
+          left.column == right.value ? left : ::Sequel.as(left, right)
+        when :literal
           ::Sequel.as(left, right)
+        else
+          raise NotImplementedError, "Unexpected select item `#{kind}`"
         end
       end
 
