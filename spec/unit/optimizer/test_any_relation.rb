@@ -14,5 +14,9 @@ module Bmg
       expect(a_relation.union(empty)).to be(a_relation)
     end
 
+    it "includes the fact that any relation returns self if allbut with no attribute" do
+      expect(a_relation.allbut([])).to be(a_relation)
+    end
+
   end
 end

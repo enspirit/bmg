@@ -2,6 +2,7 @@ module Bmg
   module Algebra
 
     def allbut(butlist = [])
+      return self if butlist.empty?
       _allbut self.type.allbut(butlist), butlist
     end
 

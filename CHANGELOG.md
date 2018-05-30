@@ -7,6 +7,9 @@
 
 * Optimization: Any relation unioned with empty returns itself.
 
+* Optimization: All relations return self if allbut is called
+  with and empty attribute list.
+
 * Optimization: calling `constants` on empty returns an empty
   relation.
 
