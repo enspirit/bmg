@@ -44,6 +44,10 @@ module Bmg
         Empty.new(type)
       end
 
+      def _constants(type, cs)
+        Empty.new(type)
+      end
+
       def _extend(type, *args)
         Empty.new(type)
       end

@@ -10,6 +10,7 @@ module Bmg
       [:allbut, []],
       [:autosummarize, []],
       [:autowrap, []],
+      [:constants, {}],
       [:extend, []],
       [:image, [ Relation.new([]) ]],
       [:project, []],
