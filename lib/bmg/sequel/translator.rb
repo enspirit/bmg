@@ -28,9 +28,9 @@ module Bmg
       end
 
       def on_set_operator(sexpr)
-        left, right = apply(sexpr.left), apply(sexpr.right)
-        left = left.from_self if sexpr.left.set_operator?
-        left.send(sexpr.first, right, all: sexpr.all?, from_self: false)
+        sexpr.tail_exprs.inject(apply(sexpr.head_expr)) do |left,right|
+          left.send(sexpr.first, apply(right), all: sexpr.all?, from_self: false)
+        end
       end
       alias :on_union     :on_set_operator
       alias :on_intersect :on_set_operator

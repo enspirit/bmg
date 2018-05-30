@@ -14,13 +14,13 @@ rules:
     - intersect
     - select_exp
   union:
-    - [ all, nonjoin_exp, nonjoin_exp ]
+    - [ all, nonjoin_exp+ ]
   all:
     - truth_value
   except:
-    - [ set_quantifier, nonjoin_exp, nonjoin_exp ]
+    - [ set_quantifier, nonjoin_exp+ ]
   intersect:
-    - [ set_quantifier, nonjoin_exp, nonjoin_exp ]
+    - [ set_quantifier, nonjoin_exp+ ]
   join_exp:
     - cross_join
     - inner_join

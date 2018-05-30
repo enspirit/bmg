@@ -2,6 +2,9 @@
 
 * SQL compilation now support the `constants` operator.
 
+* SQL compilation now support nary-union, intersect and except,
+  provided they have the same modifier.
+
 * Optimization: Any relation unioned with empty returns itself.
 
 * Optimization: calling `constants` on empty returns an empty

@@ -23,11 +23,19 @@ module Bmg
         end
 
         def on_nonjoin_exp(sexpr)
+          left_attrs  = sexpr.to_attr_list.map(&:to_s).sort
+          right_attrs = @right.to_attr_list.map(&:to_s).sort
+          unless left_attrs == right_attrs
+            raise "Operands are not union compatible: #{left_attrs.inspect} vs. #{right_attrs.inspect}"
+          end
+
           reordered = Reorder.new(sexpr.to_attr_list, builder).call(@right)
           if @right.with_exp?
             [ :with_exp,
               reordered.with_spec,
               [ @kind, modifier, sexpr, reordered.select_exp ] ]
+          elsif sexpr.first == @kind && sexpr.set_quantifier == modifier
+            sexpr.dup + [ reordered ]
           else
             [ @kind, modifier, sexpr, reordered ]
           end

@@ -32,6 +32,11 @@ module SqlHelpers
       sexpr [:intersect, distinct, left, right]
     end
 
+    def nary_intersect(left = intersect, right = select_all_t3)
+      raise unless left.first == :intersect
+      left + [right]
+    end
+
     def select_is_table_dee(where = nil)
       exists = Predicate::Grammar.sexpr([:exists, where])
       sexpr [:select_exp, all,

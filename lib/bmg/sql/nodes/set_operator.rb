@@ -3,12 +3,12 @@ module Bmg
     module SetOperator
       include Expr
 
-      def left
+      def head_expr
         self[2]
       end
 
-      def right
-        self[3]
+      def tail_exprs
+        self[3..-1]
       end
 
       def set_quantifier
