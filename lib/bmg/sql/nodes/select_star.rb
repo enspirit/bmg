@@ -5,7 +5,7 @@ module Bmg
 
       STAR = "*".freeze
 
-      def desaliaser
+      def desaliaser(*args, &bl)
         ->(a){
           Predicate::Grammar.sexpr [ :qualified_identifier, last[1], a.to_s ]
         }

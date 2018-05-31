@@ -13,12 +13,10 @@ module Bmg
       private
 
         def join_predicate(left, right, commons)
-          left_d, right_d = left.desaliaser, right.desaliaser
+          left_d, right_d = left.desaliaser(true), right.desaliaser(true)
           commons.to_a.inject(tautology){|cond, attr|
             left_attr, right_attr = left_d[attr], right_d[attr]
-            left_p  = Predicate::Factory.qualified_identifier(left_attr.qualifier, left_attr.as_name)
-            right_p = Predicate::Factory.qualified_identifier(right_attr.qualifier, right_attr.as_name)
-            cond &= Predicate::Factory.eq(left_p, right_p)
+            cond &= Predicate::Factory.eq(left_attr, right_attr)
           }
         end
 

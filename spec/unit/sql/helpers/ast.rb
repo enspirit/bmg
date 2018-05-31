@@ -258,6 +258,10 @@ module SqlHelpers
       [:set_quantifier, "all"]
     end
 
+    def literal(x)
+      sexpr [:literal, x]
+    end
+
   end
   include Ast
 end

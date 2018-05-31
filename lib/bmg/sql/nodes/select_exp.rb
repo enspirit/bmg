@@ -79,8 +79,8 @@ module Bmg
         find_child(:offset_clause)
       end
 
-      def desaliaser
-        select_list.desaliaser
+      def desaliaser(*args, &bl)
+        select_list.desaliaser(*args, &bl)
       end
 
     ### to_xxx

@@ -40,9 +40,8 @@ module Bmg
             if commons.size == 0
               builder.exists(subquery)
             elsif commons.size == 1
-              identifier = left.desaliaser[commons.to_a.first]
-              qualified  = Predicate::Factory.qualified_identifier(identifier.qualifier, identifier.as_name)
-              Predicate::Factory.in(qualified, subquery)
+              identifier = left.desaliaser(true)[commons.to_a.first]
+              Predicate::Factory.in(identifier, subquery)
             else
               join_pre  = join_predicate(left, subquery, commons)
               subquery  = expand_where_clause(subquery, join_pre)

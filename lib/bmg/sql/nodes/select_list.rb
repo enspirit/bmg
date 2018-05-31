@@ -3,10 +3,19 @@ module Bmg
     module SelectList
       include Expr
 
-      def desaliaser
+      def desaliaser(for_predicate = false)
         ->(a){
           item = sexpr_body.find{|item| item.as_name.to_s == a.to_s }
-          item && item.left
+          return nil unless left = item && item.left
+          return left unless for_predicate
+          case left.first
+          when :literal
+            Predicate::Grammar.sexpr([:literal, left.last])
+          when :qualified_name
+            Predicate::Grammar.sexpr([:qualified_identifier, left.qualifier.to_sym, left.as_name.to_sym])
+          else
+            raise "Unexpected select_item `#{left}`"
+          end
         }
       end
 
