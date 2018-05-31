@@ -1,4 +1,4 @@
-# 0.13.0
+# 0.13.0 - May 31st, 2018
 
 * SQL compilation now support the `constants` operator.
 
