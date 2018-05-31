@@ -68,3 +68,45 @@
     WHERE (
       UPPER(`t1`.`city`) LIKE UPPER('%Lon%') ESCAPE '\'
     )
+- bmg: |-
+    suppliers
+      .union(suppliers)
+      .restrict(:city => "London")
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`city` = 'London'
+    )
+    UNION
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`city` = 'London'
+    )
+- bmg: |-
+    suppliers
+      .restrict(:city => "London")
+      .union(suppliers.restrict(:city => "Paris"))
+      .restrict(:city => "London")
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE (
+      `t1`.`city` = 'London'
+    )
