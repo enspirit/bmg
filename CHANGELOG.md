@@ -1,3 +1,12 @@
+# 0.14.0
+
+* Add support for optional type checking through Type#with_typecheck
+  and Type#without_typecheck.
+
+  Type checking is disabled by default, and only check for attribute
+  presence, absence and no-clash policy on the various available
+  operators.
+
 # 0.13.0 - May 31st, 2018
 
 * SQL compilation now support the `constants` operator.

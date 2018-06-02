@@ -3,10 +3,32 @@ module Bmg
 
     def initialize(predicate = Predicate.tautology)
       @predicate = predicate
+      @typechecked = false
       raise ArgumentError if @predicate.nil?
     end
 
     ANY = Type.new
+
+  public ## type checking
+
+    attr_writer :typechecked
+    protected :typechecked=
+
+    def typechecked?
+      @typechecked
+    end
+
+    def with_typecheck
+      dup.tap{|x|
+        x.typechecked = true
+      }
+    end
+
+    def without_typecheck
+      dup.tap{|x|
+        x.typechecked = false
+      }
+    end
 
   public ## predicate
 
@@ -69,6 +91,7 @@ module Bmg
   public ### algebra
 
     def allbut(butlist)
+      known_attributes!(butlist) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist  = self.attrlist - butlist if knows_attrlist?
         x.predicate = Predicate.tautology
@@ -89,10 +112,16 @@ module Bmg
     end
 
     def autosummarize(by, summarization)
-      ANY
+      known_attributes!(by + summarization.keys) if typechecked? && knows_attrlist?
+      dup.tap{|x|
+        x.attrlist = nil
+        x.predicate = Predicate.tautology
+        x.keys = nil
+      }
     end
 
     def constants(cs)
+      unknown_attributes!(cs.keys) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist  = self.attrlist + cs.keys if knows_attrlist?
         x.predicate = self.predicate & Predicate.eq(cs)
@@ -101,6 +130,7 @@ module Bmg
     end
 
     def extend(extension)
+      unknown_attributes!(extension.keys) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist  = self.attrlist + extension.keys if knows_attrlist?
         x.predicate = Predicate.tautology
@@ -109,6 +139,10 @@ module Bmg
     end
 
     def group(attrs, as)
+      if typechecked? && knows_attrlist?
+        known_attributes!(attrs)
+        unknown_attributes!([as])
+      end
       dup.tap{|x|
         x.attrlist  = self.attrlist - attrs + [as] if knows_attrlist?
         x.predicate = Predicate.tautology
@@ -117,6 +151,10 @@ module Bmg
     end
 
     def image(right, as, on, options)
+      if typechecked? && knows_attrlist?
+        join_compatible!(right, on)
+        unknown_attributes!([as])
+      end
       dup.tap{|x|
         x.attrlist  = self.attrlist + [as] if knows_attrlist?
         x.predicate = Predicate.tautology
@@ -125,6 +163,7 @@ module Bmg
     end
 
     def join(right, on)
+      join_compatible!(right, on) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist  = (knows_attrlist? and right.knows_attrlist?) ? (self.attrlist + right.attrlist).uniq : nil
         x.predicate = self.predicate & right.predicate
@@ -133,18 +172,22 @@ module Bmg
     end
 
     def matching(right, on)
+      join_compatible!(right, on) if typechecked? && knows_attrlist?
       self
     end
 
     def not_matching(right, on)
+      join_compatible!(right, on) if typechecked? && knows_attrlist?
       self
     end
 
     def page(ordering, page_size, options)
+      known_attributes!(ordering.map{|(k,v)| k}) if typechecked? && knows_attrlist?
       self
     end
 
     def project(attrlist)
+      known_attributes!(attrlist) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist  = attrlist
         x.predicate = Predicate.tautology
@@ -153,6 +196,10 @@ module Bmg
     end
 
     def rename(renaming)
+      if typechecked? && knows_attrlist?
+        known_attributes!(renaming.keys)
+        unknown_attributes!(renaming.values)
+      end
       dup.tap{|x|
         x.attrlist  = self.attrlist.map{|a| renaming[a] || a } if knows_attrlist?
         x.predicate = self.predicate.rename(renaming)
@@ -161,6 +208,7 @@ module Bmg
     end
 
     def restrict(predicate)
+      known_attributes!(predicate.free_variables) if typechecked? && knows_attrlist?
       dup.tap{|x|
         ### attrlist stays the same
         x.predicate = self.predicate & predicate
@@ -169,11 +217,38 @@ module Bmg
     end
 
     def union(other)
+      if typechecked? && knows_attrlist? && other.knows_attrlist?
+        missing = self.attrlist - other.attrlist
+        raise TypeError, "Union incompatible: missing right attributes #{missing.join(', ')}" unless missing.empty?
+        extra = other.attrlist - self.attrlist
+        raise TypeError, "Union incompatible: missing left attributes #{extra.join(', ')}" unless extra.empty?
+      end
       dup.tap{|x|
         ### attrlist stays the same
         x.predicate = self.predicate | predicate
         x.keys      = self._keys.union(self, x, other) if knows_keys?
       }
+    end
+
+  private
+
+    def known_attributes!(attrs)
+      extra = attrs - self.attrlist
+      raise TypeError, "Unknown attributes #{extra.join(', ')}" unless extra.empty?
+    end
+
+    def unknown_attributes!(attrs)
+      clash = self.attrlist & attrs
+      raise TypeError, "Existing attributes #{clash.join(', ')}" unless clash.empty?
+    end
+
+    def join_compatible!(right, on)
+      extra = on - self.attrlist
+      raise TypeError, "Unknow attributes #{extra.join(', ')}" unless extra.empty?
+      if right.knows_attrlist?
+        extra = on - right.attrlist
+        raise TypeError, "Unknow attributes #{extra.join(', ')}" unless extra.empty?
+      end
     end
 
   end # class Type

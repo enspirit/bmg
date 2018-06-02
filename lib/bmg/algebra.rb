@@ -57,7 +57,7 @@ module Bmg
     protected :_group
 
     def image(right, as = :image, on = [], options = {})
-      _image self.type.image(right, as, on, options), right, as, on, options
+      _image self.type.image(right.type, as, on, options), right, as, on, options
     end
 
     def _image(type, right, as, on, options)
@@ -75,7 +75,7 @@ module Bmg
     protected :_join
 
     def matching(right, on = [])
-      _matching self.type.matching(right, on), right, on
+      _matching self.type.matching(right.type, on), right, on
     end
 
     def _matching(type, right, on)
@@ -84,7 +84,7 @@ module Bmg
     protected :_matching
 
     def not_matching(right, on = [])
-      _not_matching self.type.not_matching(right, on), right, on
+      _not_matching self.type.not_matching(right.type, on), right, on
     end
 
     def _not_matching(type, right, on)

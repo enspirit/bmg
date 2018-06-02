@@ -15,7 +15,7 @@
     FROM
       `suppliers` AS 't1'
 - bmg: |-
-    suppliers.allbut([:id, :status]).project([:name])
+    suppliers.allbut([:sid, :status]).project([:name])
   sqlite: |-
     SELECT DISTINCT
       `t1`.`name`

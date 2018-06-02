@@ -13,6 +13,7 @@ module Bmg
         Type::ANY
           .with_attrlist([:sid, :name, :city, :status])
           .with_keys([[:sid]])
+          .with_typecheck
       end
 
       def suppliers
@@ -27,6 +28,7 @@ module Bmg
         Type::ANY
           .with_attrlist([:pid, :name, :color, :weight, :city])
           .with_keys([[:pid]])
+          .with_typecheck
       end
 
       def parts
@@ -37,6 +39,7 @@ module Bmg
         Type::ANY
           .with_attrlist([:sid, :pid, :qty])
           .with_keys([[:sid, :pid]])
+          .with_typecheck
       end
 
       def supplies

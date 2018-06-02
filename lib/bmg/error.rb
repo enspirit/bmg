@@ -9,4 +9,7 @@ module Bmg
   # Raised when an update is invalid for some reason
   class InvalidUpdateError < Error; end
 
+  # Raised when violating types
+  class TypeError < Error; end
+
 end
