@@ -13,7 +13,8 @@ module Bmg
       def initialize(type)
         @type = type
       end
-      attr_reader :type
+      attr_accessor :type
+      protected :type=
 
       def each(&bl)
       end

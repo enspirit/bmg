@@ -13,6 +13,18 @@ module Bmg
       Relation::Empty.new(type)
     end
 
+    def with_typecheck
+      dup.tap{|r|
+        r.type = r.type.with_typecheck
+      }
+    end
+
+    def without_typecheck
+      dup.tap{|r|
+        r.type = r.type.with_typecheck
+      }
+    end
+
     def empty?
       each{|t| return false }
       true

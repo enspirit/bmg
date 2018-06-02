@@ -8,7 +8,9 @@ module Bmg
         @builder = builder
         @expr = expr
       end
-      attr_reader :type
+
+      attr_accessor :type
+      protected :type=
 
     protected
 

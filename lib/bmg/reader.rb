@@ -2,7 +2,8 @@ module Bmg
   module Reader
     include Relation
 
-    attr_reader :type
+    attr_accessor :type
+    protected :type=
 
   end
 end

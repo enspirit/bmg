@@ -2,6 +2,10 @@ module Bmg
   module Operator
     include Relation
 
+    attr_reader :type
+    attr_writer :type
+    protected   :type=
+
     def to_s
       str = "(#{self.class.name.split('::').last.downcase}\n"
       str << operands.map{|op| op.to_s.gsub(/^/m, "  ") }.join("\n")
@@ -23,7 +27,7 @@ module Bmg
     module Unary
       include Operator
 
-      attr_reader :type, :operand
+      attr_reader :operand
 
       def _visit(parent, visitor)
         visitor.call(self, parent)
@@ -39,7 +43,7 @@ module Bmg
     module Binary
       include Operator
 
-      attr_reader :type, :left, :right
+      attr_reader :left, :right
 
       def _visit(parent, visitor)
         visitor.call(self, parent)
@@ -55,7 +59,7 @@ module Bmg
     module Nary
       include Operator
 
-      attr_reader :type, :operands
+      attr_reader :operands
 
       def _visit(parent, visitor)
         visitor.call(self, parent)

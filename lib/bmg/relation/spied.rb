@@ -18,6 +18,11 @@ module Bmg
         operand.type
       end
 
+      def type=(type)
+        operand.type = type
+      end
+      protected :type=
+
       def each(&bl)
         spy.call(self)
         operand.each(&bl)
