@@ -80,7 +80,7 @@ module Bmg
       end
 
       def group_type
-        type.project(attrs)
+        operand.type.project(attrs)
       end
 
     end # class Extend

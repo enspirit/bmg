@@ -4,7 +4,7 @@ module Bmg
     describe Group do
 
       let(:operand) {
-        [
+        Relation.new [
           { id: 1, label: "Main 1", hobby: "foo" },
           { id: 1, label: "Main 1", hobby: "bar" },
           { id: 2, label: "Main 2", hobby: "baz" }
