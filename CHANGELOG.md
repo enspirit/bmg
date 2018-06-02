@@ -1,3 +1,12 @@
+# 0.14.3
+
+* Add support for optional type checking through Type#with_typecheck
+  and Type#without_typecheck.
+
+  Type checking is disabled by default, and only check for attribute
+  presence, absence and no-clash policy on the various available
+  operators.
+
 # 0.14.2
 
 * Added a schema in Sequel type inference mechanism. Otherwise, indices
@@ -13,13 +22,6 @@
 * BREAKING CHANGE (since 0.10.0 actually): most update fail when trying
   to make them on a Relation::Sequel instance. SQL compilation mechanism
   lacks the update rules implemented in various operators.
-
-* Add support for optional type checking through Type#with_typecheck
-  and Type#without_typecheck.
-
-  Type checking is disabled by default, and only check for attribute
-  presence, absence and no-clash policy on the various available
-  operators.
 
 * Fix the Sequel translation in presence of a WHERE clause involving
   IN with subqueries.
