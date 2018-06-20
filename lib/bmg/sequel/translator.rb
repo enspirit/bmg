@@ -134,10 +134,8 @@ module Bmg
 
     public ### Predicate hack
 
-      def on_in(sexpr)
-        left, right = apply(sexpr.identifier), sexpr.last
-        right = apply(right) if sexpr.subquery?
-        ::Sequel.expr(left => right)
+      def on_opaque(sexpr)
+        apply(sexpr.last)
       end
 
       def on_exists(sexpr)

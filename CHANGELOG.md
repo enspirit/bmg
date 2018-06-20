@@ -7,6 +7,9 @@
   presence, absence and no-clash policy on the various available
   operators.
 
+* Fix the Sequel translation in presence of a WHERE clause involving
+  IN with subqueries.
+
 # 0.13.0 - May 31st, 2018
 
 * SQL compilation now support the `constants` operator.
