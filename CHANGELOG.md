@@ -1,5 +1,9 @@
 # 0.14.0
 
+* BREAKING CHANGE (since 0.10.0 actually): most update fail when trying
+  to make them on a Relation::Sequel instance. SQL compilation mechanism
+  lacks the update rules implemented in various operators.
+
 * Add support for optional type checking through Type#with_typecheck
   and Type#without_typecheck.
 
