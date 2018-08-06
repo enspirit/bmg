@@ -75,7 +75,7 @@ module Bmg
     private
 
       def project(tuple)
-        tuple.delete_if{|k,_| !@attrlist.include?(k) }
+        tuple.dup.delete_if{|k,_| !@attrlist.include?(k) }
       end
 
       def valid_tuple!(tuple)

@@ -1,3 +1,7 @@
+# 0.14.1
+
+* Fix Operator::Project mutating origin tuples.
+
 # 0.14.0
 
 * BREAKING CHANGE (since 0.10.0 actually): most update fail when trying
