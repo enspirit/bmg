@@ -8,9 +8,17 @@ module Bmg
       attr_reader :sequel_db
 
       def call(name)
-        Type.new
-          .with_attrlist(attrlist(name))
-          .with_keys(keys(name))
+        if type = sequel_db.bmg_schema_cache[name]
+          type
+        else
+          type = Type.new
+            .with_attrlist(attrlist(name))
+            .with_keys(keys(name))
+          ::Sequel.synchronize do
+            sequel_db.bmg_schema_cache[name] = type
+          end if sequel_db.cache_schema
+          type
+        end
       end
 
       def attrlist(name)

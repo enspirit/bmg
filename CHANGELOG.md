@@ -1,3 +1,9 @@
+# 0.14.2
+
+* Added a schema in Sequel type inference mechanism. Otherwise, indices
+  are loaded multiple times because Sequel itself does not cache them.
+  (not part of the cache_schema: true) behavior.
+
 # 0.14.1
 
 * Fix Operator::Project mutating origin tuples.
