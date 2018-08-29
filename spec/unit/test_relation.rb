@@ -622,5 +622,14 @@ module Bmg
       end
     end
 
+    describe 'materialize' do
+      let(:source) { Relation.new [] }
+
+      it 'returns a materizalized relation' do
+        expect(source.materialize).to be_a(Relation::Materialized)
+        expect(source.materialize.operand).to be(source)
+      end
+    end
+
   end # describe Relation
 end # module Bmg

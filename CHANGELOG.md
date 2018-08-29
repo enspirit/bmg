@@ -7,6 +7,10 @@
   presence, absence and no-clash policy on the various available
   operators.
 
+* Add Relation#materialize (Relation::Materialized) that ensures that
+  the operand is consumed only once and the result kept in memory if
+  reused later one.
+
 # 0.14.2
 
 * Added a schema in Sequel type inference mechanism. Otherwise, indices

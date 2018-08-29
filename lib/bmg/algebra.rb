@@ -161,6 +161,10 @@ module Bmg
       self
     end
 
+    def materialize
+      Relation::Materialized.new(self)
+    end
+
     require_relative 'algebra/shortcuts'
     include Shortcuts
   end # module Algebra
