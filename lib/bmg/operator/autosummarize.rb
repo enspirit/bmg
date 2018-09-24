@@ -192,7 +192,7 @@ module Bmg
         end
 
         def inspect
-          ":#{y}_by_#{x}"
+          ":#{@y}_by_#{@x}"
         end
         alias :to_s :inspect
 
@@ -231,7 +231,7 @@ module Bmg
         end
 
         def inspect
-          ":#{y}s_by_#{x}"
+          ":#{@y}s_by_#{@x}"
         end
         alias :to_s :inspect
 

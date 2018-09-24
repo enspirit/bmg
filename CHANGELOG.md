@@ -1,3 +1,8 @@
+# 0.14.4
+
+* Fix error when tracing expressions involving autosummarizations with
+  YByX and YsByX
+
 # 0.14.3
 
 * Add support for optional type checking through Type#with_typecheck
