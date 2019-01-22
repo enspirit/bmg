@@ -42,5 +42,43 @@ module Bmg
         end
       end
     end
+
+    context "extend.page" do
+      let(:relation) {
+        Relation.new([
+          { a: 1,  b: 2 },
+          { a: 11, b: 2 }
+        ])
+      }
+
+      subject {
+        relation.extend(extension).page([:a], 1, page_size: 2)
+      }
+
+      context 'when the ordering does not touch the extension' do
+        let(:extension) {
+          { c: ->(t){ 12 } }
+        }
+
+        it 'pushes the page down' do
+          expect(subject).to be_a(Operator::Extend)
+          expect(subject.send(:extension)).to be(extension)
+          expect(operand(subject)).to be_a(Operator::Page)
+          expect(operand(subject).send(:ordering)).to eql([:a])
+          expect(operand(subject).send(:options)[:page_size]).to eql(2)
+        end
+      end
+
+      context 'when the ordering touches the extension' do
+        let(:extension) {
+          { a: ->(t){ t[:a] * 2 } }
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Page)
+        end
+      end
+    end
+
   end
 end

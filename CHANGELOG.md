@@ -1,3 +1,8 @@
+# 0.14.5
+
+* Optimize `extend.page` by pushing the page down the tree when
+  extension attributes and page ordering attributes are disjoint.
+
 # 0.14.4
 
 * Fix error when tracing expressions involving autosummarizations with

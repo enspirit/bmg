@@ -68,6 +68,18 @@ module Bmg
         end
       end
 
+      def _page(type, ordering, page_index, opts)
+        attrs = ordering.map{|(a,d)| a }
+        if (attrs & @extension.keys).empty?
+          op = operand
+          op = op.page(ordering, page_index, opts)
+          op = op.extend(extension)
+          op
+        else
+          super
+        end
+      end
+
     protected ### inspect
 
       def args
