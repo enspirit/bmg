@@ -1,3 +1,11 @@
+# 0.14.6
+
+* Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for
+  `left.join(right.rename({y1 => x1, ..., yn => xn}, [x1,...,xn])`.
+  This allows joining ala SQL, i.e. with attributes differing on each
+  operand. A difference with SQL, though, is that the `ys` attributes
+  are no longer present in the join result.
+
 # 0.14.5 - 2019/01/23
 
 * Optimize `extend.page` by pushing the page down the tree when
