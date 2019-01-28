@@ -166,6 +166,6 @@ module Bmg
     end
 
     require_relative 'algebra/shortcuts'
-    include Shortcuts
+    prepend Algebra::Shortcuts
   end # module Algebra
 end # module Bmg

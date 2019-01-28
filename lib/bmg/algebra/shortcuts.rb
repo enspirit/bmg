@@ -25,6 +25,14 @@ module Bmg
         self.rename(renaming)
       end
 
+      def join(right, on = [])
+        return super unless on.is_a?(Hash)
+        renaming = on.each_pair.inject({}){|r, (k,v)|
+          r.merge(v => k)
+        }
+        self.join(right.rename(renaming), on.keys)
+      end
+
     end # module Shortcuts
   end # module Algebra
 end # module Bmg
