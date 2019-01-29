@@ -6,6 +6,12 @@
 * Optimize `extend.join` but pushing the join down the tree when the
   extension attributes are not part the join at all.
 
+* Optimize `extend.rename` by pushing the renaming down the tree for
+  all attributes not introduced by the extension, and renaming the
+  extension attributes themselves otherwise.
+
+  Add TupleAlgebra.rename as a side effect.
+
 # 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for

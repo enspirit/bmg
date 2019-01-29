@@ -11,5 +11,13 @@ module Bmg
     end
     module_function :project
 
+    def rename(tuple, renaming)
+      tuple.each_with_object({}){|(k,v),m|
+        m[renaming[k] || k] = v
+        m
+      }
+    end
+    module_function :rename
+
   end # module TupleAlgebra
 end # module Bmg

@@ -78,6 +78,13 @@ module Bmg
         end
       end
 
+      def _rename(type, renaming)
+        shared = renaming.keys & extension.keys
+        new_ext = TupleAlgebra.rename(extension, renaming)
+        new_ren = TupleAlgebra.allbut(renaming, shared)
+        operand.rename(new_ren).extend(new_ext)
+      end
+
       def _restrict(type, predicate)
         top, bottom = predicate.and_split(extension.keys)
         if top == predicate

@@ -272,5 +272,49 @@ module Bmg
       end
     end
 
+    context "extend.rename" do
+      subject {
+        relation.extend(extension).rename(renaming)
+      }
+
+      context "when the renaming does not touch the extension attributes" do
+        let(:extension){
+          { c: c_ext }
+        }
+        let(:renaming) {
+          { :a => :z }
+        }
+
+        # rel(:a, :b).extend(:c, :d).rename(:a => :z) => [:z, :b, :c, :d]
+        # becomes
+        # rel(:a, :b).rename(:a => :z).extend(:c, :d) => [:z, :b, :c, :d]
+        it 'pushes the renaming down the tree' do
+          expect(subject).to be_a(Operator::Extend)
+          expect(subject.send(:extension)).to eql(extension)
+          expect(operand(subject)).to be_a(Operator::Rename)
+          expect(operand(subject).send(:renaming)).to eql(renaming)
+        end
+      end
+
+      context "when the renaming touches some extension attributes" do
+        let(:extension){
+          { c: c_ext, d: d_ext }
+        }
+        let(:renaming) {
+          { :a => :z, :c => :y }
+        }
+
+        # rel(:a, :b).extend(:c, :d).rename(:a => :z, :c => :y)   => [:z, :b, :y, :d]
+        # becomes
+        # rel(:a, :b).rename(:a => :z).extend(:y, :d)             => [:z, :b, :y, :d]
+        it 'optimizes both the extension and by push down' do
+          expect(subject).to be_a(Operator::Extend)
+          expect(subject.send(:extension)).to eql({ :y => c_ext, :d => d_ext })
+          expect(operand(subject)).to be_a(Operator::Rename)
+          expect(operand(subject).send(:renaming)).to eql(:a => :z)
+        end
+      end
+    end
+
   end
 end

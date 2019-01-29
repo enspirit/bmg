@@ -1,4 +1,4 @@
-require 'rspec'
+require 'spec_helper'
 module Bmg
   describe TupleAlgebra, "allbut" do
     include TupleAlgebra
@@ -32,6 +32,24 @@ module Bmg
     it 'does not change the original' do
       original = {a: 1, b: 2}
       expect(project(original, [:a])).to eql({a: 1})
+      expect(original).to eql({a: 1, b: 2})
+    end
+
+  end
+  describe TupleAlgebra, "rename" do
+    include TupleAlgebra
+
+    it 'works' do
+      expect(rename({a: 1, b: 2}, :a => :z)).to eql({z: 1, b: 2})
+    end
+
+    it 'ignores unexisting attributes' do
+      expect(rename({a: 1, b: 2}, :a => :z, :c => :y)).to eql({z: 1, b: 2})
+    end
+
+    it 'does not change the original' do
+      original = {a: 1, b: 2}
+      expect(rename(original, :a => :z)).to eql({z: 1, b: 2})
       expect(original).to eql({a: 1, b: 2})
     end
 
