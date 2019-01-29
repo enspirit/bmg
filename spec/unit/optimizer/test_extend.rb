@@ -143,6 +143,61 @@ module Bmg
       end
     end
 
+    [:matching, :not_matching].each do |op|
+      op_class = (op == :matching ? Operator::Matching : Operator::NotMatching)
+
+      context "extend.#{op}" do
+        subject{
+          relation.extend(extension).send(op, right, join_attrs)
+        }
+
+        context 'when the match and extension attributes overlap' do
+          let(:right) {
+            Relation.new([
+              { a: 1,  c: 2 }
+            ])
+          }
+          let(:extension){
+            { c: c_ext }
+          }
+          let(:join_attrs) {
+            [:a, :c]
+          }
+
+          it 'does not optimize at all' do
+            expect(subject).to be_a(op_class)
+            expect(subject.send(:on)).to eql(join_attrs)
+            expect(left_operand(subject)).to be_a(Operator::Extend)
+            expect(left_operand(subject).send(:extension)).to be(extension)
+            expect(right_operand(subject)).to be(right)
+          end
+        end
+
+        context 'when the match and extension attributes are disjoint' do
+          let(:right) {
+            Relation.new([
+              { a: 1,  c: 2 }
+            ])
+          }
+          let(:extension){
+            { d: d_ext }
+          }
+          let(:join_attrs) {
+            [:a]
+          }
+
+          it 'pushes the matching down the tree' do
+            expect(subject).to be_a(Operator::Extend)
+            expect(subject.send(:extension)).to be(extension)
+            expect(operand(subject)).to be_a(op_class)
+            expect(operand(subject).send(:on)).to eql(join_attrs)
+            expect(left_operand(operand(subject))).to be(relation)
+            expect(right_operand(operand(subject))).to be(right)
+          end
+        end
+      end
+    end
+
     context "extend.restrict" do
 
       let(:extension) {

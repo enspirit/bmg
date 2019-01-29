@@ -12,6 +12,10 @@
 
   Add TupleAlgebra.rename as a side effect.
 
+* Optimize `extend.matching` and `extend.not_matching` by pushing the
+  match operators down the tree when match attributes do not overlap
+  with extension attributes.
+
 # 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for

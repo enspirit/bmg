@@ -78,6 +78,24 @@ module Bmg
         end
       end
 
+      def _matching(type, right, on = [])
+        ext_keys = extension.keys
+        if (ext_keys & on).empty?
+          operand.matching(right, on).extend(extension)
+        else
+          super
+        end
+      end
+
+      def _not_matching(type, right, on = [])
+        ext_keys = extension.keys
+        if (ext_keys & on).empty?
+          operand.not_matching(right, on).extend(extension)
+        else
+          super
+        end
+      end
+
       def _rename(type, renaming)
         shared = renaming.keys & extension.keys
         new_ext = TupleAlgebra.rename(extension, renaming)
