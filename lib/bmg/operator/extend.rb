@@ -57,9 +57,6 @@ module Bmg
 
       def _allbut(type, butlist)
         ext_keys = extension.keys
-        # INV: butlist is not empty, see `allbut` itself
-        # INV: ext_keys is not empty, see `extend` itself
-
         if (ext_keys & butlist).empty?
           # extension not touched, fully kept
           # as it might use butlist attributes, we can't push anything down
