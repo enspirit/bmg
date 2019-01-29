@@ -39,6 +39,7 @@ module Bmg
     protected :_constants
 
     def extend(extension = {})
+      return self if extension.empty?
       _extend self.type.extend(extension), extension
     end
 

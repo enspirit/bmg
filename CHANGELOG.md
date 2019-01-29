@@ -1,3 +1,8 @@
+# 0.14.7
+
+* Optimize `extend.allbut` and `extend.project` to strip unnecessary
+  extensions, or simplify them to avoid unnecessary computed attributes.
+
 # 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for

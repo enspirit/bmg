@@ -55,6 +55,23 @@ module Bmg
 
     protected ### optimization
 
+      def _allbut(type, butlist)
+        ext_keys = extension.keys
+        # INV: butlist is not empty, see `allbut` itself
+        # INV: ext_keys is not empty, see `extend` itself
+
+        if (ext_keys & butlist).empty?
+          # extension not touched, fully kept
+          # as it might use butlist attributes, we can't push anything down
+          super
+        else
+          # extension partly stripped away, simplify them
+          new_ext = TupleAlgebra.allbut(extension, butlist)
+          new_but = butlist - ext_keys
+          operand.extend(new_ext).allbut(new_but)
+        end
+      end
+
       def _restrict(type, predicate)
         top, bottom = predicate.and_split(extension.keys)
         if top == predicate
@@ -79,6 +96,21 @@ module Bmg
           super
         end
       end
+
+      def _project(type, attrlist)
+        ext_keys = extension.keys
+        if (ext_keys - attrlist).empty?
+          # extension fully kept, no optimization
+          # (we can't push anything down, because the extension itself might
+          # use all attributes)
+          super
+        else
+          # extension partly or fully stripped away, simplify it
+          new_ext = TupleAlgebra.project(extension, attrlist)
+          operand.extend(new_ext).project(attrlist)
+        end
+      end
+
 
     protected ### inspect
 
