@@ -1,4 +1,4 @@
-# 0.14.6
+# 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for
   `left.join(right.rename({y1 => x1, ..., yn => xn}, [x1,...,xn])`.
