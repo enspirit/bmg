@@ -89,6 +89,60 @@ module Bmg
       end
     end
 
+    context "extend.join" do
+      subject{
+        relation.extend(extension).join(right, join_attrs)
+      }
+
+      context 'when join_attrs overlaps with extension attrs' do
+        let(:right) {
+          Relation.new([
+            { a: 1, c: 2 }
+          ])
+        }
+        let(:extension){
+          { c: c_ext }
+        }
+        let(:join_attrs) {
+          [:a, :c]
+        }
+
+        it 'does not optimize at all' do
+          expect(subject).to be_a(Operator::Join)
+          expect(subject.send(:on)).to eql(join_attrs)
+          expect(left_operand(subject)).to be_a(Operator::Extend)
+          expect(left_operand(subject).send(:extension)).to be(extension)
+          expect(right_operand(subject)).to be(right)
+        end
+      end
+
+      context 'when join_attrs does not overlap with extension attrs' do
+        let(:right) {
+          Relation.new([
+            { a: 1,  c: 2 }
+          ])
+        }
+        let(:extension){
+          { d: d_ext }
+        }
+        let(:join_attrs) {
+          [:a]
+        }
+
+        # rel(:a, :b).extend(:d).join(rel(:a, :c), [:a]) => [:a, :b, :d, :c]
+        # becomes
+        # rel(:a, :b).join(rel(:a, :c), [:a]).extend(:d) => [:a, :b, :c, :d]
+        it 'pushes the join down the tree' do
+          expect(subject).to be_a(Operator::Extend)
+          expect(subject.send(:extension)).to be(extension)
+          expect(operand(subject)).to be_a(Operator::Join)
+          expect(operand(subject).send(:on)).to eql(join_attrs)
+          expect(left_operand(operand(subject))).to be(relation)
+          expect(right_operand(operand(subject))).to be(right)
+        end
+      end
+    end
+
     context "extend.restrict" do
 
       let(:extension) {

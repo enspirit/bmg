@@ -69,6 +69,15 @@ module Bmg
         end
       end
 
+      def _join(type, right, on)
+        ext_keys = extension.keys
+        if (ext_keys & on).empty?
+          operand.join(right, on).extend(extension)
+        else
+          super
+        end
+      end
+
       def _restrict(type, predicate)
         top, bottom = predicate.and_split(extension.keys)
         if top == predicate
