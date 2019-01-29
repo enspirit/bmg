@@ -72,7 +72,8 @@ module Bmg
           describe test_case.bmg do
 
             it 'compiles to expected SQL for SQlite' do
-              got = clean(compiled(test_case).to_sql)
+              compiled = compiled(test_case)
+              got = clean(compiled.to_sql)
               expected = clean(test_case.sqlite)
               unless got == expected
                 puts
