@@ -2,13 +2,24 @@ require 'spec_helper'
 module Bmg
   describe "allbut optimization" do
 
-    context "allbut.restrict" do
-      let(:relation) {
-        Relation.new([
-          { a: 1,  b: 2 },
-          { a: 11, b: 2 }
-        ])
+    let(:relation) {
+      Relation.new([
+        { a: 1,  b: 2 },
+        { a: 11, b: 2 }
+      ])
+    }
+
+    context 'allbut on empty butlist' do
+      subject{
+        relation.allbut([])
       }
+
+      it 'returns the operand itself' do
+        expect(subject).to be(relation)
+      end
+    end
+
+    context "allbut.restrict" do
 
       let(:predicate) {
         Predicate.gt(:a, 10)
