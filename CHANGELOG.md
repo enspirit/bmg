@@ -1,4 +1,4 @@
-# 0.14.7
+# 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary
   extensions, or simplify them to avoid unnecessary computed attributes.
