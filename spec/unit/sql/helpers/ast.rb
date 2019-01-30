@@ -205,24 +205,36 @@ module SqlHelpers
       sexpr [:qualified_name, [:range_var_name, qualifier], [:column_name, name]]
     end
 
+    def table_as(table_name = "t1", as = table_name)
+      sexpr [:table_as, [:table_name, table_name], [:range_var_name, as]]
+    end
+
     def from_clause
-      sexpr [:from_clause, [:table_as, [:table_name, "t1"], [:range_var_name, "t1"]]]
+      sexpr [:from_clause, table_as]
     end
 
     def from_clause_t2
-      sexpr [:from_clause, [:table_as, [:table_name, "t2"], [:range_var_name, "t2"]]]
+      sexpr [:from_clause, table_as("t2")]
     end
 
     def from_clause_t1_as_t2
-      sexpr [:from_clause, [:table_as, [:table_name, "t1"], [:range_var_name, "t2"]]]
+      sexpr [:from_clause, table_as("t1","t2")]
     end
 
     def from_clause_t3
-      sexpr [:from_clause, [:table_as, [:table_name, "t3"], [:range_var_name, "t3"]]]
+      sexpr [:from_clause, table_as("t3")]
     end
 
     def from_clause_native(as = "t1")
       sexpr [:from_clause, [:native_table_as, "(SELECT * FROM native)", [:range_var_name, as]]]
+    end
+
+    def inner_join(left, right, on)
+      sexpr [ :inner_join, left, right, on ]
+    end
+
+    def cross_join(left, right)
+      sexpr [ :cross_join, left, right ]
     end
 
     def ordering

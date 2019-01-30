@@ -92,65 +92,75 @@
     suppliers
       .join(supplies.join(parts, [:pid]), [:sid])
   sqlite: |-
-    WITH `t4` AS (
-      SELECT
-        `t2`.`sid`,
-        `t2`.`pid`,
-        `t2`.`qty`,
-        `t3`.`name`,
-        `t3`.`color`,
-        `t3`.`weight`,
-        `t3`.`city`
-      FROM
-        `supplies` AS 't2'
-      INNER JOIN
-        `parts` AS 't3' ON (`t2`.`pid` = `t3`.`pid`)
-    )
     SELECT
       `t1`.`sid`,
       `t1`.`name`,
       `t1`.`city`,
       `t1`.`status`,
-      `t4`.`pid`,
-      `t4`.`qty`,
-      `t4`.`color`,
-      `t4`.`weight`
+      `t2`.`pid`,
+      `t2`.`qty`,
+      `t3`.`color`,
+      `t3`.`weight`
     FROM
       `suppliers` AS 't1'
     INNER JOIN
-      `t4` ON (`t1`.`sid` = `t4`.`sid`)
+      `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    INNER JOIN
+      `parts` AS 't3' ON (`t2`.`pid` = `t3`.`pid`)
 - bmg: |-
     suppliers
       .join(cities, [:city])
       .join(supplies.join(parts, [:pid]), [:sid])
   sqlite: |-
-    WITH `t5` AS (
-      SELECT
-        `t3`.`sid`,
-        `t3`.`pid`,
-        `t3`.`qty`,
-        `t4`.`name`,
-        `t4`.`color`,
-        `t4`.`weight`,
-        `t4`.`city`
-      FROM
-        `supplies` AS 't3'
-      INNER JOIN
-        `parts` AS 't4' ON (`t3`.`pid` = `t4`.`pid`)
-    )
     SELECT
       `t1`.`sid`,
       `t1`.`name`,
       `t1`.`city`,
       `t1`.`status`,
       `t2`.`country`,
-      `t5`.`pid`,
-      `t5`.`qty`,
-      `t5`.`color`,
-      `t5`.`weight`
+      `t3`.`pid`,
+      `t3`.`qty`,
+      `t4`.`color`,
+      `t4`.`weight`
     FROM
       `suppliers` AS 't1'
     INNER JOIN
       `cities` AS 't2' ON (`t1`.`city` = `t2`.`city`)
     INNER JOIN
-      `t5` ON (`t1`.`sid` = `t5`.`sid`)
+      `supplies` AS 't3' ON (`t1`.`sid` = `t3`.`sid`)
+    INNER JOIN
+      `parts` AS 't4' ON (`t3`.`pid` = `t4`.`pid`)
+- bmg: |-
+    suppliers
+      .join(cities, [])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      `t2`.`country`
+    FROM
+      `suppliers` AS 't1'
+    CROSS JOIN
+      `cities` AS 't2'
+- bmg: |-
+    suppliers
+      .join(cities, [])
+      .join(parts, [:city])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      `t2`.`country`,
+      `t3`.`pid`,
+      `t3`.`color`,
+      `t3`.`weight`
+    FROM
+      `cities` AS 't2'
+    CROSS JOIN
+      `suppliers` AS 't1'
+    INNER JOIN
+      `parts` AS 't3' ON (`t1`.`city` = `t3`.`city`)

@@ -38,7 +38,7 @@ module Bmg
 
       def on_select_exp(sexpr)
         dataset   = sequel_db.select(1)
-        dataset   = dataset(apply(sexpr.from_clause)) if sexpr.from_clause
+        dataset   = apply(sexpr.from_clause)     if sexpr.from_clause
         #
         selection = apply(sexpr.select_list)
         predicate = apply(sexpr.predicate)       if sexpr.predicate
@@ -84,24 +84,28 @@ module Bmg
       end
 
       def on_from_clause(sexpr)
-        apply(sexpr.table_spec)
+        orderer = Sql::Support::FromClauseOrderer.new
+        ordering = orderer.call(sexpr)
+        ordering.inject(nil) do |ds,(kind,table,on)|
+          if ds.nil?
+            dataset(apply(table))
+          elsif kind == :cross_join
+            ds.cross_join(apply(table))
+          elsif kind == :inner_join
+            options = { qualify: false, table_alias: false }
+            ds.join_table(:inner, apply(table), nil, options){|*args|
+              apply(on)
+            }
+          end
+        end
       end
 
       def on_table_name(sexpr)
         ::Sequel.expr(sexpr.last.to_sym)
       end
 
-      def on_cross_join(sexpr)
-        left, right = apply(sexpr.left), apply(sexpr.right)
-        dataset(left).cross_join(right)
-      end
-
-      def on_inner_join(sexpr)
-        left, right = apply(sexpr.left), apply(sexpr.right)
-        options = {qualify: false, table_alias: false}
-        dataset(left).join_table(:inner, right, nil, options){|*args|
-          apply(sexpr.predicate)
-        }
+      def on_native_table_as(sexpr)
+        sexpr[1].from_self(:alias => sexpr.as_name)
       end
 
       def on_table_as(sexpr)
@@ -110,10 +114,6 @@ module Bmg
 
       def on_subquery_as(sexpr)
         ::Sequel.as(apply(sexpr.subquery), ::Sequel.identifier(sexpr.as_name))
-      end
-
-      def on_native_table_as(sexpr)
-        sexpr[1].from_self(:alias => sexpr.as_name)
       end
 
       def on_order_by_clause(sexpr)

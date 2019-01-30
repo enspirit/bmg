@@ -1,3 +1,10 @@
+# 0.16.0
+
+* Improve SQL compilation of expressions involving multiple JOINs.
+  While the former version used a lot of subqueries and/or common
+  table expressions (aka. WITH) in such cases, this version linarize
+  all joins with CROSS and INNER JOIN clauses.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary
