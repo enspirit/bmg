@@ -14,7 +14,7 @@ module Bmg
         def call(sexpr)
           if unjoinable?(sexpr)
             call(builder.from_self(sexpr))
-          elsif unjoinable?(right) or right.join?
+          elsif unjoinable?(right)
             Join.new(builder.from_self(right), on, builder).call(sexpr)
           else
             super(sexpr)
