@@ -9,6 +9,15 @@ module Bmg
       end
       attr_reader :sequel_db
 
+      def cities_type
+        Type::ANY
+          .with_attrlist([:city, :country])
+      end
+
+      def cities
+        Bmg.sequel(:cities, sequel_db, cities_type)
+      end
+
       def suppliers_type
         Type::ANY
           .with_attrlist([:sid, :name, :city, :status])

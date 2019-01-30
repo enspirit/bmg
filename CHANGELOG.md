@@ -16,6 +16,13 @@
   match operators down the tree when match attributes do not overlap
   with extension attributes.
 
+* Slightly improve SQL compilation to avoid generating WITH expressions
+  on join expressions having only simple terms on right. That is,
+  previously, `x.join(y).join(z)` yield a WITH expression for
+  `x.join(y)`, while inner join clauses are correctly chained now.
+  `x.join(y.join(z))` will still generate a WITH expression for
+  `y.join(z)` though.
+
 # 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for
