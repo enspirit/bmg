@@ -1,4 +1,4 @@
-# 0.16.0
+# 0.16.0-rc1 - 2019/02/01
 
 * Improve SQL compilation of expressions involving multiple JOINs.
   While the former version used a lot of subqueries and/or common
