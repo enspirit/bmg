@@ -34,12 +34,6 @@ module Bmg
             ]
           }
 
-          it 'collects works fine' do
-            tables, joins = collect
-            expect(tables).to eql([table_as("t1")])
-            expect(joins).to eql([])
-          end
-
           it 'works as expected' do
             expect(subject).to eql(expected)
           end
@@ -59,15 +53,6 @@ module Bmg
               [ :cross_join, table_as("t2"), nil ]
             ]
           }
-
-          it 'collects works fine' do
-            tables, joins = collect
-            expect(tables).to eql([
-              table_as("t1"),
-              table_as("t2")
-            ])
-            expect(joins).to eql([])
-          end
 
           it 'works as expected' do
             expect(subject).to eql(expected)
@@ -90,15 +75,6 @@ module Bmg
             ]
           }
 
-          it 'collects works fine' do
-            tables, joins = collect
-            expect(tables).to eql([
-              table_as("t1"),
-              table_as("t2")
-            ])
-            expect(joins).to eql([on("t1","attr","t2","attr")])
-          end
-
           it 'works as expected' do
             expect(subject).to eql(expected)
           end
@@ -113,15 +89,19 @@ module Bmg
                   [:eq, [:qualified_identifier, :t1, :sid], [:qualified_identifier, :t2, :sid]]]]
           }
 
-          it 'collects works fine' do
-            tables, joins = collect
-            expect(tables).to eql([
-              table_as(:suppliers, "t1"),
-              table_as(:supplies, "t2")
-            ])
-            expect(joins).to eql([
-              [:eq, [:qualified_identifier, :t1, :sid], [:qualified_identifier, :t2, :sid]]
-            ])
+          let(:expected){
+            [
+              [:base,
+                [:table_as, [:table_name, :suppliers], [:range_var_name, "t1"]],
+                nil],
+              [:inner_join,
+                [:table_as, [:table_name, :supplies], [:range_var_name, "t2"]],
+                [:eq, [:qualified_identifier, :t1, :sid], [:qualified_identifier, :t2, :sid]]]
+            ]
+          }
+
+          it 'works as expected' do
+            expect(subject).to eql(expected)
           end
         end
 
@@ -150,20 +130,6 @@ module Bmg
               [ :inner_join, table_as("t4"), on("t1", "bar", "t4", "baz") ]
             ]
           }
-
-          it 'collects works fine' do
-            tables, joins = collect
-            expect(tables).to eql([
-              table_as("t2"),
-              table_as("t1"),
-              table_as("t3"),
-              table_as("t4")
-            ])
-            expect(joins).to eql([
-              on("t1", "foo", "t3", "foo"),
-              on("t1", "bar", "t4", "baz")
-            ])
-          end
 
           it 'works as expected' do
             expect(subject).to eql(expected)
