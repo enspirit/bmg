@@ -20,16 +20,16 @@ module Bmg
         it 'forwards all algebra methods' do
           r = spied.restrict(a: 1)
           expect(r).to be_a(Spied)
-          expect(r.operand).to be_a(Operator::Restrict)
-          expect(predicate_of(r.operand)).to eql(Predicate.eq(a: 1))
+          expect(operand(r)).to be_a(Operator::Restrict)
+          expect(predicate_of(operand(r))).to eql(Predicate.eq(a: 1))
         end
 
         it 'unspies right operands' do
           r = spied.matching(base.spied(spy))
           expect(r).to be_a(Spied)
-          expect(r.operand).to be_a(Operator::Matching)
-          expect(r.operand.left).to be(base)
-          expect(r.operand.right).not_to be_a(Operator::Spied)
+          expect(operand(r)).to be_a(Operator::Matching)
+          expect(left_operand(operand(r))).to be(base)
+          expect(right_operand(operand(r))).not_to be_a(Operator::Spied)
         end
 
       end # algebra

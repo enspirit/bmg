@@ -627,7 +627,7 @@ module Bmg
 
       it 'returns a materizalized relation' do
         expect(source.materialize).to be_a(Relation::Materialized)
-        expect(source.materialize.operand).to be(source)
+        expect(operand(source.materialize)).to be(source)
       end
     end
 
