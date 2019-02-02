@@ -8,6 +8,12 @@
 * Optimize `autowrap.autowrap` when applying to the exact same
   options. A single autowrap is kept in such cases.
 
+* Optimize `join.autowrap` in cases the join can be pushed down
+  the tree and autowrapping applied afterwards. Variants of this
+  optimization are implemented using both left and right operands,
+  in the hope to move autowrap up the tree and remove unnecessary
+  ones.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary

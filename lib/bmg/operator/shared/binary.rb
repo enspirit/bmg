@@ -16,6 +16,7 @@ module Bmg
       def operands
         [left, right]
       end
+
     end # module Binary
   end # module Operator
 end # module Bmg

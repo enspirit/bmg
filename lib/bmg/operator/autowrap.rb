@@ -62,6 +62,33 @@ module Bmg
         end
       end
 
+      def _join(type, right, on)
+        if _join_optimizable?(type, right, on)
+          operand.join(right, on).autowrap(options)
+        else
+          super
+        end
+      end
+
+      def _joined_with(type, right, on)
+        if _join_optimizable?(type, right, on)
+          right.join(operand, on).autowrap(options)
+        else
+          super
+        end
+      end
+
+      def _join_optimizable?(type, right, on)
+        return false unless operand.type.knows_attrlist?
+        return false unless right.type.knows_attrlist?
+        # Can't optimize if wrapped roots are used in join clause
+        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
+        return false unless (roots & on).empty?
+        # Can't optimize if other attributes would be autowrapped
+        rroots = Support.wrapped_roots(right.type.to_attrlist, options[:split])
+        rroots.empty?
+      end
+
       def _page(type, ordering, page_index, opts)
         return super unless operand.type.knows_attrlist?
         roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
