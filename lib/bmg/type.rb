@@ -56,6 +56,10 @@ module Bmg
       !self.attrlist.nil?
     end
 
+    def knows_attrlist!
+      raise UnknownAttributesError unless knows_attrlist?
+    end
+
     def to_attrlist
       self.attrlist
     end
