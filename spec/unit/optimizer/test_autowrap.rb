@@ -48,6 +48,119 @@ module Bmg
       end
     end
 
+    context "autowrap.join when left attributes are known" do
+      subject {
+        relation.autowrap(options).join(right, on)
+      }
+
+      let(:type) {
+        Type.new.with_attrlist([:a, :"b-id"])
+      }
+
+      context 'when right attributes are not known' do
+        let(:right){
+          Relation.new([
+            { :a => 1, :b => {id: 2}, :c => 3 }
+          ])
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Join)
+          expect(left_operand(subject)).to be_a(Operator::Autowrap)
+          expect(right_operand(subject)).to be(right)
+        end
+      end
+
+      context 'when right attributes would be wrongly autowrapped' do
+        let(:right){
+          Relation.new([
+            { :a => 1, :"c-id" => 3 }
+          ], Type.new.with_attrlist([:a, :"c-id"]))
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Join)
+          expect(left_operand(subject)).to be_a(Operator::Autowrap)
+          expect(right_operand(subject)).to be(right)
+        end
+      end
+
+      context 'when join attributes are not autowrapped ones' do
+        let(:right){
+          Relation.new([
+            { :a => 1, :b => {id: 2}, :c => 3 }
+          ], Type.new.with_attrlist([:a, :b, :c]))
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'pushes the join down the tree' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("-")
+          expect(operand(subject)).to be_a(Operator::Join)
+          expect(operand(subject).send(:on)).to eql(on)
+        end
+      end
+
+      context 'when join applies the other way round' do
+        subject {
+          relation.join(right.autowrap(options), on)
+        }
+        let(:right){
+          Relation.new([
+            { :a => 1, :c_id => 3 }
+          ], Type.new.with_attrlist([:a, :c_id]))
+        }
+        let(:options) {
+          { :split => '_' }
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'applies the join on the right side' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("_")
+          expect(operand(subject)).to be_a(Operator::Join)
+          expect(operand(subject).send(:on)).to eql(on)
+          expect(left_operand(operand(subject))).to be(relation)
+          expect(right_operand(operand(subject))).to be(right)
+        end
+      end
+
+      context 'when join between two identical autowraps' do
+        subject {
+          relation
+            .autowrap(options)
+            .join(right.autowrap(options), on)
+        }
+        let(:right){
+          Relation.new([
+            { :a => 1, :"c-id" => 3 }
+          ], Type.new.with_attrlist([:a, :"c-id"]))
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'optimizes and keeps only one autowrap' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("-")
+          expect(operand(subject)).to be_a(Operator::Join)
+          expect(operand(subject).send(:on)).to eql(on)
+          expect(left_operand(operand(subject))).to be(relation)
+          expect(right_operand(operand(subject))).to be(right)
+        end
+      end
+    end
+
     context "autowrap.page when attributes are known" do
       subject {
         relation.autowrap(options).page(page_ordering, page_index, page_options)

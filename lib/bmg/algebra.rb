@@ -71,9 +71,14 @@ module Bmg
     end
 
     def _join(type, right, on)
-      Operator::Join.new(type, self, right, on)
+      right.send(:_joined_with, type, self, on)
     end
     protected :_join
+
+    def _joined_with(type, right, on)
+      Operator::Join.new(type, right, self, on)
+    end
+    protected :_joined_with
 
     def matching(right, on = [])
       _matching self.type.matching(right.type, on), right, on
