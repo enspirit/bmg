@@ -54,6 +54,14 @@ module Bmg
 
     protected ### optimization
 
+      def _autowrap(type, opts)
+        if same_options?(opts)
+          self
+        else
+          super
+        end
+      end
+
       def _page(type, ordering, page_index, opts)
         return super unless operand.type.knows_attrlist?
         roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])

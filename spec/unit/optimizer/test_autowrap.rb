@@ -6,19 +6,49 @@ module Bmg
       { :split => '-' }
     }
 
-    let(:data) {
-      [
+    let(:relation) {
+      Relation.new([
         { :a => 1,  :"b-id" => 2 },
         { :a => 11, :"b-id" => 2 }
-      ]
+      ], type)
     }
 
-    let(:relation) {
-      Relation.new(data, type)
+    let(:type) {
+      Type.new.with_attrlist([:a, :"b-id"])
     }
+
+    context "autowrap.autowrap" do
+      subject {
+        relation.autowrap(options).autowrap(options2)
+      }
+
+      context 'when different options' do
+        let(:options2){
+          { :split => '_' }
+        }
+
+        it 'keeps both' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("_")
+          expect(operand(subject)).to be_a(Operator::Autowrap)
+          expect(operand(subject).send(:options)[:split]).to eql("-")
+        end
+      end
+
+      context 'when same options' do
+        let(:options2){
+          { :split => '-' }
+        }
+
+        it 'removes unnecessary one' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("-")
+          expect(operand(subject)).to be(relation)
+        end
+      end
+    end
 
     context "autowrap.page when attributes are known" do
-
       subject {
         relation.autowrap(options).page(page_ordering, page_index, page_options)
       }
