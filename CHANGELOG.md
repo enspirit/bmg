@@ -1,4 +1,4 @@
-# 0.16.0-rc1 - 2019/02/01
+# 0.16.0
 
 * Improve SQL compilation of expressions involving multiple JOINs.
   While the former version used a lot of subqueries and/or common
@@ -13,6 +13,10 @@
   optimization are implemented using both left and right operands,
   in the hope to move autowrap up the tree and remove unnecessary
   ones.
+
+* Optimize `autowrap.rename`, in case the renaming can be safely
+  pushed down the tree, that is, when it does not apply to wrapped
+  attributes and does not yield after-the-fact autowrapping.
 
 # 0.15.0 - 2019/01/30
 

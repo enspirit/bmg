@@ -79,36 +79,46 @@ module Bmg
       end
 
       def _join_optimizable?(type, right, on)
-        return false unless operand.type.knows_attrlist?
-        return false unless right.type.knows_attrlist?
-        # Can't optimize if wrapped roots are used in join clause
-        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
-        return false unless (roots & on).empty?
-        # Can't optimize if other attributes would be autowrapped
-        rroots = Support.wrapped_roots(right.type.to_attrlist, options[:split])
-        rroots.empty?
+        # 1. Can't optimize if wrapped roots are used in join clause
+        # 2. Can't optimize if other attributes would be autowrapped
+        (wrapped_roots! & on).empty? && wrapped_roots_of!(right, options).empty?
+      rescue UnknownAttributesError
+        false
       end
 
       def _page(type, ordering, page_index, opts)
-        return super unless operand.type.knows_attrlist?
-        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
         attrs = ordering.map{|(a,d)| a }
-        if (roots & attrs).empty?
+        if (wrapped_roots! & attrs).empty?
           operand.page(ordering, page_index, opts).autowrap(options)
         else
           super
         end
+      rescue UnknownAttributesError
+        super
+      end
+
+      def _rename(type, renaming)
+        # 1. Can't optimize if renaming applies to a wrapped one
+        return super unless (wrapped_roots! & renaming.keys).empty?
+
+        # 2. Can't optimize if new attributes would be autowrapped
+        new_roots = Support.wrapped_roots(renaming.values, options[:split])
+        return super unless new_roots.empty?
+
+        operand.rename(renaming).autowrap(options)
+      rescue UnknownAttributesError
+        super
       end
 
       def _restrict(type, predicate)
-        return super unless operand.type.knows_attrlist?
-        roots = Support.wrapped_roots(operand.type.to_attrlist, options[:split])
         vars = predicate.free_variables
-        if (roots & vars).empty?
+        if (wrapped_roots! & vars).empty?
           operand.restrict(predicate).autowrap(options)
         else
           super
         end
+      rescue UnknownAttributesError
+        super
       end
 
     protected ### inspect
@@ -118,6 +128,15 @@ module Bmg
       end
 
     private
+
+      def wrapped_roots!
+        @wrapped_roots ||= wrapped_roots_of!(operand, options)
+      end
+
+      def wrapped_roots_of!(r, opts)
+        raise UnknownAttributesError unless r.type.knows_attrlist?
+        Support.wrapped_roots(r.type.to_attrlist, opts[:split])
+      end
 
       def normalize_options(options)
         opts = DEFAULT_OPTIONS.merge(options)

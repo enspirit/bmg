@@ -195,6 +195,45 @@ module Bmg
 
     end
 
+    context "autowrap.rename" do
+      subject {
+        relation.autowrap(options).rename(renaming)
+      }
+
+      context 'when renaming is safe' do
+        let(:renaming) {
+          { :a => :z }
+        }
+
+        it 'pushes the renaming down the tree' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql("-")
+          expect(operand(subject)).to be_a(Operator::Rename)
+          expect(operand(subject).send(:renaming)).to eql(renaming)
+        end
+      end
+
+      context 'when renaming touches an autowrapped attr' do
+        let(:renaming) {
+          { :b => :y }
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Rename)
+        end
+      end
+
+      context 'when renaming would yield a wrong autowrapping' do
+        let(:renaming) {
+          { :a => :"a-id" }
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Rename)
+        end
+      end
+    end
+
     context "autowrap.restrict" do
 
       subject {

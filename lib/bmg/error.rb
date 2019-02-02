@@ -12,4 +12,8 @@ module Bmg
   # Raised when violating types
   class TypeError < Error; end
 
+  # Raised by a type when trying to access attribute list
+  # while unknown
+  class UnknownAttributesError < Error; end
+
 end
