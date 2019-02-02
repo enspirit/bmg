@@ -33,6 +33,21 @@ module Bmg
         self.join(right.rename(renaming), on.keys)
       end
 
+      def tuple_image(right, as, on, options = {})
+        sep = "$#{Kernel.rand(999)}$"
+        if options[:out]
+          self
+            .join(right.prefix(:"#{as}#{sep}", :but => on), on)
+            .autowrap(split: sep)
+        else
+          renaming = Hash[on.map{|a| [a, :"#{as}#{sep}#{a}"]}]
+          self
+            .rename(renaming)
+            .join(right.prefix(:"#{as}#{sep}"), renaming.values)
+            .autowrap(split: sep)
+        end
+      end
+
     end # module Shortcuts
   end # module Algebra
 end # module Bmg
