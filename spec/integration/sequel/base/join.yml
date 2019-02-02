@@ -164,3 +164,25 @@
       `suppliers` AS 't1'
     INNER JOIN
       `parts` AS 't3' ON (`t1`.`city` = `t3`.`city`)
+- bmg: |-
+    supplies
+      .join(suppliers.prefix(:supplier_), :sid => :supplier_sid)
+      .join(parts.prefix(:part_), :pid => :part_pid)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name` AS 'supplier_name',
+      `t2`.`city` AS 'supplier_city',
+      `t2`.`status` AS 'supplier_status',
+      `t3`.`name` AS 'part_name',
+      `t3`.`color` AS 'part_color',
+      `t3`.`weight` AS 'part_weight',
+      `t3`.`city` AS 'part_city'
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `suppliers` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    INNER JOIN
+      `parts` AS 't3' ON (`t1`.`pid` = `t3`.`pid`)
