@@ -29,8 +29,7 @@ module Bmg
         @type = type
         @operand = operand
         @original_options = options
-        @options = DEFAULT_OPTIONS.merge(options)
-        @options[:postprocessor] = NoLeftJoinNoise.new(@options[:postprocessor])
+        @options = normalize_options(options)
       end
 
     private
@@ -38,6 +37,10 @@ module Bmg
       attr_reader :options
 
     public
+
+      def same_options?(opts)
+        normalize_options(opts) == options
+      end
 
       def each
         @operand.each do |tuple|
@@ -80,6 +83,12 @@ module Bmg
       end
 
     private
+
+      def normalize_options(options)
+        opts = DEFAULT_OPTIONS.merge(options)
+        opts[:postprocessor] = NoLeftJoinNoise.new(opts[:postprocessor])
+        opts
+      end
 
       def autowrap_tuple(tuple)
         separator = @options[:split]
@@ -137,6 +146,7 @@ module Bmg
             raise "Invalid remover `#{remover}`"
           end
         end
+        attr_reader :remover
 
         def call(tuple)
           tuple.each_key do |k|
@@ -154,6 +164,14 @@ module Bmg
           @remover_to_s.inspect
         end
         alias :to_s :inspect
+
+        def hash
+          remover.hash
+        end
+
+        def ==(other)
+          other.is_a?(NoLeftJoinNoise) && remover.eql?(other.remover)
+        end
 
       end # NoLeftJoinNoise
 
