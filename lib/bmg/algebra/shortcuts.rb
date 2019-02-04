@@ -9,19 +9,19 @@ module Bmg
         self.restrict(predicate)
       end
 
-      def prefix(prefix)
+      def prefix(prefix, options = {})
         raise "Attrlist must be known to use `prefix`" unless self.type.knows_attrlist?
-        renaming = self.type.to_attrlist.each_with_object({}){|a,r|
-          r[a] = :"#{prefix}#{a}"
-        }
+        attrs = self.type.to_attrlist
+        attrs = attrs - options[:but] if options[:but]
+        renaming = Hash[attrs.map{|a| [a, :"#{prefix}#{a}"] }]
         self.rename(renaming)
       end
 
-      def suffix(suffix)
+      def suffix(suffix, options = {})
         raise "Attrlist must be known to use `suffix`" unless self.type.knows_attrlist?
-        renaming = self.type.to_attrlist.each_with_object({}){|a,r|
-          r[a] = :"#{a}#{suffix}"
-        }
+        attrs = self.type.to_attrlist
+        attrs = attrs - options[:but] if options[:but]
+        renaming = Hash[attrs.map{|a| [a, :"#{a}#{suffix}"] }]
         self.rename(renaming)
       end
 
