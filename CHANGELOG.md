@@ -18,6 +18,9 @@
   pushed down the tree, that is, when it does not apply to wrapped
   attributes and does not yield after-the-fact autowrapping.
 
+* Add a `:but` options to `prefix` and `suffix` that allows excluding
+  certain attributes from the resulting rename.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary
