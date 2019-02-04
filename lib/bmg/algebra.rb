@@ -117,6 +117,8 @@ module Bmg
     protected :_project
 
     def rename(renaming = {})
+      renaming = renaming.reject{|k,v| k==v }
+      return self if renaming.empty?
       _rename self.type.rename(renaming), renaming
     end
 

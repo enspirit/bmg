@@ -2,13 +2,48 @@ require 'spec_helper'
 module Bmg
   describe "rename optimization" do
 
+    let(:relation) {
+      Relation.new([
+        { x: 1,  b: 2 },
+        { x: 11, b: 2 }
+      ])
+    }
+
+    context 'when renaming can be simplified or removed' do
+      subject{
+        relation.rename(renaming)
+      }
+
+      context 'with empty renaming' do
+        let(:renaming){ {} }
+
+        it 'removes it' do
+          expect(subject).to be(relation)
+        end
+      end
+
+      context 'with equality renaming' do
+        let(:renaming){ { :x => :x } }
+
+        it 'removes it' do
+          expect(subject).to be(relation)
+        end
+      end
+
+      context 'with simplifiable renaming' do
+        let(:renaming){ { :x => :x, :b => :z } }
+
+        it 'removes it' do
+          expect(subject).to be_a(Operator::Rename)
+          expect(subject.send(:renaming)).to eql({:b => :z})
+        end
+      end
+    end
+
     context "rename.page" do
 
       subject {
-        Relation.new([
-          { x: 1,  b: 2 },
-          { x: 11, b: 2 }
-        ]).rename(x: :a).page(ordering, 7, page_size: 19)
+        relation.rename(x: :a).page(ordering, 7, page_size: 19)
       }
 
       context 'when the ordering does not touch the renaming' do
@@ -42,10 +77,7 @@ module Bmg
       }
 
       subject {
-        Relation.new([
-          { x: 1,  b: 2 },
-          { x: 11, b: 2 }
-        ]).rename(x: :a).restrict(p)
+        relation.rename(x: :a).restrict(p)
       }
 
       it 'works' do
