@@ -25,6 +25,10 @@
 * Add a `:but` options to `prefix` and `suffix` that allows excluding
   certain attributes from the resulting rename.
 
+* Add `{x1 => y1, ..., xn => yn}` shorthands to `matching`, `not_matching`
+  and `image` operators. Similar to the shorthand introduced in 0.14.6
+  for `join`, based on an inversed renaming on the right operand.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary

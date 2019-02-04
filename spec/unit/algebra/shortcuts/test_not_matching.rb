@@ -1,7 +1,7 @@
 require 'spec_helper'
 module Bmg
   module Algebra
-    describe Shortcuts, "join" do
+    describe Shortcuts, "not_matching" do
 
       let(:left) {
         Relation.new([
@@ -18,11 +18,11 @@ module Bmg
       }
 
       subject {
-        left.join(right, :a => :z)
+        left.not_matching(right, :a => :z)
       }
 
       it 'compiles as expected' do
-        expect(subject).to be_a(Operator::Join)
+        expect(subject).to be_a(Operator::NotMatching)
         expect(left_operand(subject)).to be(left)
         expect(right_operand(subject)).to be_a(Operator::Rename)
         expect(right_operand(subject).send(:renaming)).to eql({:z => :a})
@@ -31,7 +31,7 @@ module Bmg
 
       it 'works as expected' do
         expect(subject.to_a).to eql([
-          { a: "foo", b: 2, c: 4 }
+          { a: "bar", b: 2 }
         ])
       end
 

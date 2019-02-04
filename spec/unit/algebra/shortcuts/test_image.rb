@@ -1,7 +1,7 @@
 require 'spec_helper'
 module Bmg
   module Algebra
-    describe Shortcuts, "join" do
+    describe Shortcuts, "image" do
 
       let(:left) {
         Relation.new([
@@ -18,20 +18,22 @@ module Bmg
       }
 
       subject {
-        left.join(right, :a => :z)
+        left.image(right, :cs, {:a => :z}, array: true)
       }
 
       it 'compiles as expected' do
-        expect(subject).to be_a(Operator::Join)
+        expect(subject).to be_a(Operator::Image)
         expect(left_operand(subject)).to be(left)
         expect(right_operand(subject)).to be_a(Operator::Rename)
         expect(right_operand(subject).send(:renaming)).to eql({:z => :a})
         expect(subject.send(:on)).to eql([:a])
+        expect(subject.send(:as)).to eql(:cs)
       end
 
       it 'works as expected' do
         expect(subject.to_a).to eql([
-          { a: "foo", b: 2, c: 4 }
+          { a: "foo", b: 2, cs: [{c: 4}] },
+          { a: "bar", b: 2, cs: [] }
         ])
       end
 

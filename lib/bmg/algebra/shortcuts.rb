@@ -25,12 +25,28 @@ module Bmg
         self.rename(renaming)
       end
 
+      def image(right, as = :image, on = [], options = {})
+        return super unless on.is_a?(Hash)
+        renaming = Hash[on.map{|k,v| [v,k] }]
+        self.image(right.rename(renaming), as, on.keys, options)
+      end
+
       def join(right, on = [])
         return super unless on.is_a?(Hash)
-        renaming = on.each_pair.inject({}){|r, (k,v)|
-          r.merge(v => k)
-        }
+        renaming = Hash[on.map{|k,v| [v,k] }]
         self.join(right.rename(renaming), on.keys)
+      end
+
+      def matching(right, on = [])
+        return super unless on.is_a?(Hash)
+        renaming = Hash[on.map{|k,v| [v,k] }]
+        self.matching(right.rename(renaming), on.keys)
+      end
+
+      def not_matching(right, on = [])
+        return super unless on.is_a?(Hash)
+        renaming = Hash[on.map{|k,v| [v,k] }]
+        self.not_matching(right.rename(renaming), on.keys)
       end
 
     end # module Shortcuts
