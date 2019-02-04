@@ -18,6 +18,10 @@
   pushed down the tree, that is, when it does not apply to wrapped
   attributes and does not yield after-the-fact autowrapping.
 
+* Optimize `rename` when the actual renaming is empty or canonical
+  (i.e. old and new attribute names are the same). Also simplify the
+  renaming list by removing canonical entries.
+
 * Add a `:but` options to `prefix` and `suffix` that allows excluding
   certain attributes from the resulting rename.
 
