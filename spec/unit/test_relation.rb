@@ -580,6 +580,31 @@ module Bmg
       end
     end
 
+    describe 'summarize' do
+      let(:data) {
+        [
+          { a: 1, b: 2 },
+          { a: 2, b: 4 }
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      subject {
+        relation.summarize([], :a => :sum, :b => :collect, :c => :count)
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 3, b: [2, 4], c: 2 }
+        ])
+      end
+    end
+
     describe 'union' do
       let(:left_data) {
         [

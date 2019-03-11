@@ -247,6 +247,21 @@ module Bmg
 
     end
 
+    describe 'summarize' do
+
+      it 'sets attrlist since they are known' do
+        type = any.summarize([:a], { b: :sum })
+        expect(type.knows_attrlist?).to be(true)
+        expect(type.to_attrlist).to eq([:a, :b])
+      end
+
+      it 'sets by as the key' do
+        type = any.summarize([:a], { b: :sum })
+        expect(type.keys).to eql([[:a]])
+      end
+
+    end
+
     describe 'union' do
 
       it 'keeps attrlist when known' do

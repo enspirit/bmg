@@ -150,6 +150,15 @@ module Bmg
     end
     protected :_restrict
 
+    def summarize(by, summarization = {})
+      _summarize self.type.summarize(by, summarization), by, summarization
+    end
+
+    def _summarize(type, by, summarization)
+      Operator::Summarize.new(type, self, by, summarization)
+    end
+    protected :_summarize
+
     def union(other, options = {})
       return self if other.is_a?(Relation::Empty)
       _union self.type.union(other.type), other, options

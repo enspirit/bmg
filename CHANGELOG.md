@@ -29,6 +29,9 @@
   and `image` operators. Similar to the shorthand introduced in 0.14.6
   for `join`, based on an inversed renaming on the right operand.
 
+* Adds Summarize operator with avg, collect, contact, count, max, min,
+  stddev, sum and variable summarizers.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary

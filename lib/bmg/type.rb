@@ -220,6 +220,13 @@ module Bmg
       }
     end
 
+    def summarize(by, summarization)
+      dup.tap{|x|
+        x.attrlist = by + summarization.keys
+        x.keys     = Keys.new([by])
+      }
+    end
+
     def union(other)
       if typechecked? && knows_attrlist? && other.knows_attrlist?
         missing = self.attrlist - other.attrlist
