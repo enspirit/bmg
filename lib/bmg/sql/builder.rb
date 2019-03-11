@@ -146,6 +146,14 @@ module Bmg
         Predicate::Grammar.sexpr [ :exists, subquery ]
       end
 
+      def group_by_clause(attrlist, &desaliaser)
+        attrlist.map{|name|
+          name = name.to_s
+          (desaliaser && desaliaser[name]) || column_name(name)
+        }.unshift(:group_by_clause)
+      end
+      builder :group_by_clause
+
       def order_by_clause(ordering, &desaliaser)
         ordering.to_a.map{|(name,direction)|
           name = name.to_s

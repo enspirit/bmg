@@ -67,6 +67,10 @@ module Bmg
         from_clause.table_spec
       end
 
+      def group_by_clause
+        find_child(:group_by_clause)
+      end
+
       def order_by_clause
         find_child(:order_by_clause)
       end

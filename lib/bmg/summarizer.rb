@@ -114,6 +114,11 @@ module Bmg
       finalize(enum.inject(least){|m,t| happens(m, t) })
     end
 
+    # Returns the canonical summarizer name
+    def to_summarizer_name
+      self.class.name.downcase[/::([a-z]+)$/, 1].to_sym
+    end
+
   end # class Summarizer
 end # module Bmg
 require_relative 'summarizer/count'

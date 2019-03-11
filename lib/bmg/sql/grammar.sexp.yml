@@ -35,6 +35,7 @@ rules:
         [ select_list, select_star ],
         from_clause,
         where_clause,
+        group_by_clause,
         order_by_clause,
         limit_clause,
         offset_clause ]
@@ -50,6 +51,8 @@ rules:
     - [ table_spec ]
   where_clause:
     - [ predicate ]
+  group_by_clause:
+    - [ a_name ]
   order_by_clause:
     - [ order_by_term+ ]
   order_by_term:
@@ -72,11 +75,19 @@ rules:
   scalar_exp:
     - qualified_name
     - column_name
+    - summarizer
     - literal
+  a_name:
+    - qualified_name
+    - column_name
   qualified_name:
     - [ range_var_name, column_name ]
   column_name:
     - [ name_rgx ]
+  summarizer:
+    - [ summary_func, qualified_name ]
+  summary_func:
+    - "::Symbol"
   table_name:
     - [ name_rgx ]
   range_var_name:

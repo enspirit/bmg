@@ -42,6 +42,7 @@ module Bmg
         #
         selection = apply(sexpr.select_list)
         predicate = apply(sexpr.predicate)       if sexpr.predicate
+        grouping  = apply(sexpr.group_by_clause) if sexpr.group_by_clause
         order     = apply(sexpr.order_by_clause) if sexpr.order_by_clause
         limit     = apply(sexpr.limit_clause)    if sexpr.limit_clause
         offset    = apply(sexpr.offset_clause)   if sexpr.offset_clause
@@ -49,6 +50,7 @@ module Bmg
         dataset   = dataset.select(*selection)
         dataset   = dataset.distinct             if sexpr.distinct?
         dataset   = dataset.where(predicate)     if predicate
+        dataset   = dataset.group(grouping)      if grouping
         dataset   = dataset.order_by(*order)     if order
         dataset   = dataset.limit(limit, offset == 0 ? nil : offset) if limit or offset
         dataset
@@ -68,10 +70,18 @@ module Bmg
         case kind = sexpr.left.first
         when :qualified_name
           left.column == right.value ? left : ::Sequel.as(left, right)
-        when :literal
+        when :literal, :summarizer
           ::Sequel.as(left, right)
         else
           raise NotImplementedError, "Unexpected select item `#{kind}`"
+        end
+      end
+
+      def on_summarizer(sexpr)
+        if sexpr.summary_expr
+          ::Sequel.function(sexpr.summary_func, apply(sexpr.summary_expr))
+        else
+          ::Sequel.function(sexpr.summary_func).*
         end
       end
 
@@ -114,6 +124,11 @@ module Bmg
 
       def on_subquery_as(sexpr)
         ::Sequel.as(apply(sexpr.subquery), ::Sequel.identifier(sexpr.as_name))
+      end
+
+      def on_group_by_clause(sexpr)
+        return nil unless sexpr.size > 1
+        sexpr.sexpr_body.map{|c| apply(c)}
       end
 
       def on_order_by_clause(sexpr)

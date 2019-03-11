@@ -20,12 +20,17 @@ module Bmg
         end
 
         def on_select_exp(sexpr)
-          pred = @predicate.rename(sexpr.desaliaser(true))
-          if sexpr.where_clause
-            sexpr_p = Predicate.new(sexpr.where_clause.predicate)
-            sexpr.with_update(:where_clause, [ :where_clause, (sexpr_p & pred).sexpr ])
+          if sexpr.group_by_clause
+            sexpr = builder.from_self(sexpr)
+            call(sexpr)
           else
-            sexpr.with_insert(4, [ :where_clause, pred.sexpr ])
+            pred = @predicate.rename(sexpr.desaliaser(true))
+            if sexpr.where_clause
+              sexpr_p = Predicate.new(sexpr.where_clause.predicate)
+              sexpr.with_update(:where_clause, [ :where_clause, (sexpr_p & pred).sexpr ])
+            else
+              sexpr.with_insert(4, [ :where_clause, pred.sexpr ])
+            end
           end
         end
 

@@ -30,7 +30,8 @@
   for `join`, based on an inversed renaming on the right operand.
 
 * Adds Summarize operator with avg, collect, contact, count, max, min,
-  stddev, sum and variable summarizers.
+  stddev, sum and variable summarizers. Only avg, count, min, max and sum
+  compile to SQL for now.
 
 # 0.15.0 - 2019/01/30
 

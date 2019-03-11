@@ -114,6 +114,23 @@ module Bmg
         _instance(type, builder, expr)
       end
 
+      def _summarize(type, by, summarization)
+        summarization = Operator::Summarize.compile(summarization)
+        if can_compile_summarization?(summarization)
+          expr = before_use(self.expr)
+          expr = Processor::Summarize.new(by, summarization, builder).call(self.expr)
+          _instance(type, builder, expr)
+        else
+          super
+        end
+      end
+
+      def can_compile_summarization?(summarization)
+        summarization.values.all?{|s|
+          [:avg, :count, :max, :min, :sum].include?(s.to_summarizer_name)
+        }
+      end
+
       def _union(type, right, options)
         if right_expr = extract_compatible_sexpr(right)
           expr = before_use(self.expr)

@@ -13,7 +13,7 @@ module Bmg
         @type = type
         @operand = operand
         @by = by
-        @summarization = compile(summarization)
+        @summarization = Summarize.compile(summarization)
       end
 
     protected
@@ -58,7 +58,9 @@ module Bmg
 
     private
 
-      def compile(summarization)
+      # Compile a summarization hash so that every value is a Summarizer
+      # instance
+      def self.compile(summarization)
         Hash[summarization.map{|k,v|
           summarizer = case v
           when Summarizer then v
