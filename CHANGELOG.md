@@ -2,8 +2,8 @@
 
 * Improve SQL compilation of expressions involving multiple JOINs.
   While the former version used a lot of subqueries and/or common
-  table expressions (aka. WITH) in such cases, this version linarize
-  all joins with CROSS and INNER JOIN clauses.
+  table expressions (aka. WITH) in such cases, this version
+  linearizes all joins with CROSS and INNER JOIN clauses.
 
 * Optimize `autowrap.autowrap` when applying to the exact same
   options. A single autowrap is kept in such cases.
@@ -32,6 +32,14 @@
 * Adds Summarize operator with avg, collect, contact, count, max, min,
   stddev, sum and variable summarizers. Only avg, count, min, max and sum
   compile to SQL for now.
+
+* Prevents unnecessary DISTINCT when making a restrict+allbut chaining
+  that preserves a reduced key, e.g.,
+
+      supplies.restrict(sid: 'SID').allbut([:sid])
+
+  no longers generates a DISTINCT, even is `sid` is originally part of
+  `supplies`'s primary key.
 
 # 0.15.0 - 2019/01/30
 

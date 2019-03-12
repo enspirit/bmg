@@ -22,3 +22,31 @@
       `t1`.`name`
     FROM
       `suppliers` AS 't1'
+- bmg: |-
+    supplies
+      .restrict(sid: "S1")
+      .allbut([:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`pid`,
+      `t1`.`qty`
+    FROM
+      `supplies` AS 't1'
+    WHERE (
+      `t1`.`sid` = 'S1'
+    )
+- bmg: |-
+    supplies
+      .restrict(Predicate.eq(sid: "S1") | Predicate.eq(sid: "S2"))
+      .allbut([:sid])
+  sqlite: |-
+    SELECT DISTINCT
+      `t1`.`pid`,
+      `t1`.`qty`
+    FROM
+      `supplies` AS 't1'
+    WHERE (
+      (`t1`.`sid` = 'S1')
+    OR
+      (`t1`.`sid` = 'S2')
+    )

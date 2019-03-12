@@ -52,6 +52,12 @@ module Bmg
       Keys.new(keys, false)
     end
 
+    def restrict(oldtype, newtype, predicate)
+      return self if (cs = predicate.constant_variables).empty?
+      keys = @keys.map{|k| k - cs }
+      Keys.new(keys, false)
+    end
+
     def union(oldtype, newtype, right_type)
       return nil unless rkeys = right_type.keys
       return nil unless (oldtype.predicate & right_type.predicate).contradiction?

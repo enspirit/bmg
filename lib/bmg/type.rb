@@ -216,7 +216,7 @@ module Bmg
       dup.tap{|x|
         ### attrlist stays the same
         x.predicate = self.predicate & predicate
-        x.keys      = self._keys if knows_keys?
+        x.keys      = self._keys.restrict(self, x, predicate) if knows_keys?
       }
     end
 

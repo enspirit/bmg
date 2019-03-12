@@ -241,8 +241,28 @@ module Bmg
       end
 
       it 'keeps keys when known' do
-        type = suppliers.with_keys([[:sid]]).restrict(Predicate.eq(:sid, "S1"))
+        type = suppliers.with_keys([[:sid]]).restrict(Predicate.eq(:name, "Smith"))
         expect(type.keys).to eql([[:sid]])
+      end
+
+      it 'restrict keys according to predicate invariant' do
+        type = suppliers.with_keys([[:sid]]).restrict(Predicate.eq(:sid, "S1"))
+        expect(type.keys).to eql([[]])
+        type = supplies.with_keys([[:pid, :sid]]).restrict(Predicate.eq(:sid, "S1"))
+        expect(type.keys).to eql([[:pid]])
+      end
+
+      it 'does not do it if restriction is not a constant' do
+        type = supplies
+          .with_keys([[:pid, :sid]])
+        [
+          Predicate.eq(:sid, "S1") | Predicate.eq(:sid, "S2"),
+          Predicate.in(:sid, ["S1", "S2"]),
+          Predicate.neq(:sid, "S1"),
+          Predicate.gt(:sid, "S1")
+        ].each do |p|
+          expect(type.restrict(p).allbut([:sid]).keys).to eql([[:pid, :qty]])
+        end
       end
 
     end
