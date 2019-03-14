@@ -41,6 +41,10 @@
   no longers generates a DISTINCT, even is `sid` is originally part of
   `supplies`'s primary key.
 
+* Add a `:preserve` option to `image` that prevents the application of
+  `allbut(on)` on the tuples of the `right` relation when creating the
+  resulting attribute. Default behavior unchanged.
+
 # 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary

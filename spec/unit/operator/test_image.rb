@@ -45,7 +45,30 @@ module Bmg
         end
       end
 
-      context 'without the option' do
+      context 'with option to preserve the joining attribute' do
+        let(:options) { { array: true, preserve: true } }
+
+        it 'works' do
+          expected = [
+            {
+              id: 1,
+              label: "Main 1",
+              values: [
+                { id: 1, x: "foo", y: "hello" },
+                { id: 1, x: "bar", y: "world" }
+              ]
+            },
+            {
+              id: 2,
+              label: "Main 2",
+              values: []
+            }
+          ]
+          expect(subject.to_a).to eql(expected)
+        end
+      end
+
+      context 'without any option' do
         let(:options) { {  } }
 
         it 'keeps relation as values' do

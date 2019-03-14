@@ -12,7 +12,11 @@ module Bmg
 
         # Whether we need to convert each image as an Array,
         # instead of keeping a Relation instance
-        array: false
+        array: false,
+
+        # Whether the attributes on which the join is made should be kept
+        # in the result or not
+        preserve: false
 
       }
 
@@ -33,9 +37,10 @@ module Bmg
 
       def each
         index = Hash.new{|h,k| h[k] = empty_image }
+        allbut = options[:preserve] ? [] : on
         right.each_with_object(index) do |t, index|
           key = tuple_project(t, on)
-          index[key].operand << tuple_image(t, on)
+          index[key].operand << tuple_image(t, allbut)
         end
         if options[:array]
           index = index.each_with_object({}) do |(k,v),ix|
