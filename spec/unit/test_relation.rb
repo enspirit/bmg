@@ -302,7 +302,7 @@ module Bmg
           [:in_memory, right_data],
           :image,
           [:a],
-          {array: true, strategy: :refilter_right}])
+          {array: true, strategy: :refilter_right, preserve: false}])
       end
     end
 

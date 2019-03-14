@@ -137,6 +137,7 @@ module Bmg
         it 'pushes the page down the tree' do
           expect(subject).to be_a(Operator::Image)
           expect(subject.send(:options)[:array]).to eql(false)
+          expect(subject.send(:options)[:preserve]).to eql(false)
           expect(left_operand).to be_a(Operator::Page)
           expect(left_operand.send(:ordering)).to eql([:a])
           expect(left_operand.send(:page_index)).to eql(7)

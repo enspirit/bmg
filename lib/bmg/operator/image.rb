@@ -26,7 +26,11 @@ module Bmg
         #   resulting operabds. This option only applies when (optimized) `on`
         #   contains one attribute only. ; it fallbacks on :index_right
         #   otherwise.
-        strategy: :refilter_right
+        strategy: :refilter_right,
+
+        # Whether the attributes on which the join is made should be kept
+        # in the result or not
+        preserve: false
 
       }
 
@@ -96,9 +100,10 @@ module Bmg
 
       def build_right_index(right)
         index = Hash.new{|h,k| h[k] = empty_image }
+        butlist = options[:preserve] ? [] : on
         right.each_with_object(index) do |t, index|
           key = tuple_project(t, on)
-          index[key].operand << tuple_image(t, on)
+          index[key].operand << tuple_allbut(t, butlist)
         end
         if opt = options[:array]
           sorter = to_sorter(opt)
@@ -249,8 +254,8 @@ module Bmg
         TupleAlgebra.project(tuple, on)
       end
 
-      def tuple_image(tuple, on)
-        TupleAlgebra.allbut(tuple, on)
+      def tuple_allbut(tuple, butlist)
+        TupleAlgebra.allbut(tuple, butlist)
       end
 
       def image_type

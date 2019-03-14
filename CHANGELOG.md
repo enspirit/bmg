@@ -4,6 +4,10 @@
   are natively supported. The class must respond to `parse` otherwise, which
   works with `Date`, `DateTime`, `URI`, etc.
 
+* Add a `:preserve` option to `image` that prevents the application of
+  `allbut(on)` on the tuples of the `right` relation when creating the
+  resulting attribute. Default behavior unchanged.
+
 # 0.18.6 - 2021-06-10
 
 * Add `ungroup` operator.

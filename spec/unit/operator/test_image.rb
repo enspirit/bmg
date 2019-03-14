@@ -79,6 +79,39 @@ module Bmg
           end
         end
 
+        context 'with option to preserve the joining attribute' do
+          let(:options) { { array: true, preserve: true } }
+
+          let(:right) {
+            Relation.new([
+              { id: 1, x: "foo", y: "hello" },
+              { id: 1, x: "bar", y: "world" },
+              { id: 2, x: "bar2", y: "world2" }
+            ])
+          }
+
+          it 'works' do
+            expected = [
+              {
+                id: 1,
+                label: "Main 1",
+                values: [
+                  { id: 1, x: "foo", y: "hello" },
+                  { id: 1, x: "bar", y: "world" }
+                ]
+              },
+              {
+                id: 2,
+                label: "Main 2",
+                values: [
+                  { id: 2, x: "bar2", y: "world2" }
+                ]
+              }
+            ]
+            expect(subject.to_a).to eql(expected)
+          end
+        end
+
         context 'with option to convert to an array and specifying a desc ordering relation' do
           let(:options) { { array: [[:x, :desc]] } }
 
