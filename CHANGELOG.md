@@ -1,11 +1,4 @@
-# 0.16.1
-
-* Fix Predicate::NotSupportedError being raised when renaming a
-  restriction using a native expression. In such case, type
-  inference now removes the type predicate and replaces it by a
-  tautology.
-
-# 0.16.0
+# 0.16.0 - 2019/05/31
 
 * Improve SQL compilation of expressions involving multiple JOINs.
   While the former version used a lot of subqueries and/or common
@@ -47,6 +40,11 @@
 
   no longers generates a DISTINCT, even is `sid` is originally part of
   `supplies`'s primary key.
+
+* Fix Predicate::NotSupportedError being raised when renaming a
+  restriction using a native expression. In such case, type
+  inference now removes the type predicate and replaces it by a
+  tautology.
 
 # 0.15.0 - 2019/01/30
 
