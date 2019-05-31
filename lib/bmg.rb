@@ -1,5 +1,6 @@
 require 'path'
 require 'predicate'
+require 'forwardable'
 module Bmg
 
   def in_memory(enumerable, type = Type::ANY)
