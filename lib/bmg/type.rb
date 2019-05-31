@@ -204,9 +204,14 @@ module Bmg
         known_attributes!(renaming.keys)
         unknown_attributes!(renaming.values)
       end
+      new_pred = begin
+        self.predicate.rename(renaming)
+      rescue Predicate::NotSupportedError => e
+        Predicate.tautology
+      end
       dup.tap{|x|
         x.attrlist  = self.attrlist.map{|a| renaming[a] || a } if knows_attrlist?
-        x.predicate = self.predicate.rename(renaming)
+        x.predicate = new_pred
         x.keys      = self._keys.rename(self, x, renaming) if knows_keys?
       }
     end

@@ -1,3 +1,10 @@
+# 0.16.1
+
+* Fix Predicate::NotSupportedError being raised when renaming a
+  restriction using a native expression. In such case, type
+  inference now removes the type predicate and replaces it by a
+  tautology.
+
 # 0.16.0
 
 * Improve SQL compilation of expressions involving multiple JOINs.

@@ -230,6 +230,11 @@ module Bmg
         expect(type.keys).to eql([[:id], [:name, :ss]])
       end
 
+      it 'supports a Predicate::NotSupportedError' do
+        type = suppliers.restrict(Predicate.native(->(t){ false })).rename(:sid => :id)
+        expect(type.predicate).to eql(Predicate.tautology)
+      end
+
     end
 
     describe 'restrict' do
