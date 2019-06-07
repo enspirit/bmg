@@ -27,6 +27,45 @@
       (`t1`.`sid` IN ('S1', 'S2'))
 - bmg: |-
     suppliers
+      .restrict(:sid => [nil, 'S1', 'S2'])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE
+      ((`t1`.`sid` IS NULL) OR (`t1`.`sid` IN ('S1', 'S2')))
+- bmg: |-
+    suppliers
+      .restrict(:sid => [nil, 'S2'])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE
+      ((`t1`.`sid` IS NULL) OR (`t1`.`sid` = 'S2'))
+- bmg: |-
+    suppliers
+      .restrict(:sid => [nil])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'
+    WHERE
+      (`t1`.`sid` IS NULL)
+- bmg: |-
+    suppliers
       .rename(:name => :firstname)
       .restrict(:firstname => 'Smith')
   sqlite: |-

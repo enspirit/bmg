@@ -1,3 +1,8 @@
+# 0.16.1 - 2019/06/09
+
+* Fix SQL compilation of restrict expressions using Predicate.in
+  with nil.
+
 # 0.16.0 - 2019/05/31
 
 * Improve SQL compilation of expressions involving multiple JOINs.
