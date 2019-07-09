@@ -63,6 +63,21 @@ module Bmg
           expect(autowrap.to_a).to eql([{ a: 1 }])
         end
 
+        it 'automatically removes the results of deeper nil LEFT JOINs' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_y: nil }], postprocessor: :delete
+          expect(autowrap.to_a).to eql([{ a: 1 }])
+        end
+
+        it 'automatically removes the results of even deeper nil LEFT JOINs' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_y: 3 }], postprocessor: :delete
+          expect(autowrap.to_a).to eql([{ a: 1, b: { y: 3} }])
+        end
+
+        it 'automatically removes the results of even deeper nil LEFT JOINs when not all nil level' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_q_y: 3 }], postprocessor: :delete
+          expect(autowrap.to_a).to eql([{ a: 1, b: { q: { x: nil, y: 3} } }])
+        end
+
       end
 
       context 'when called with :nil post processor' do
@@ -70,6 +85,21 @@ module Bmg
         it 'sets the results of nil LEFT JOINs to nil' do
           autowrap = Autowrap.new Type::ANY, [{ a: 1, b_x: nil, b_y: nil }], postprocessor: :nil
           expect(autowrap.to_a).to eql([{ a: 1, b: nil }])
+        end
+
+        it 'automatically removes the results of deepest nil LEFT JOINs' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_y: nil }], postprocessor: :nil
+          expect(autowrap.to_a).to eql([{ a: 1, b: nil }])
+        end
+
+        it 'automatically removes the results of deepest nil only LEFT JOINs' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_y: 3 }], postprocessor: :nil
+          expect(autowrap.to_a).to eql([{ a: 1, b: { q: nil, y: 3} }])
+        end
+
+        it 'automatically removes the results of even deeper nil LEFT JOINs when not all nil level' do
+          autowrap = Autowrap.new Type::ANY, [{ a: 1, b_q_x: nil, b_q_y: 3 }], postprocessor: :nil
+          expect(autowrap.to_a).to eql([{ a: 1, b: { q: { x: nil, y: 3} } }])
         end
 
       end

@@ -204,6 +204,7 @@ module Bmg
 
         def call(tuple)
           tuple.each_key do |k|
+            call(tuple[k]) if tuple[k].is_a?(Hash)
             @remover.call(tuple, k) if tuple[k].is_a?(Hash) && all_nil?(tuple[k])
           end
           tuple
