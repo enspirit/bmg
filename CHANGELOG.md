@@ -1,3 +1,9 @@
+# 0.16.2 - 2019/07/09
+
+* Fix `autowrap` post-processing on multiple level cases. Guarantees that when
+  the result of `autowrap` contains hashes with only `nil` values, the post-
+  processing will apply.
+
 # 0.16.1 - 2019/06/09
 
 * Fix SQL compilation of restrict expressions using Predicate.in
