@@ -22,6 +22,7 @@ module Bmg
                                   :predicate,
                                   :from_clause,
                                   :table_spec,
+                                  :group_by_clause,
                                   :order_by_clause,
                                   :limit_clause,
                                   :offset_clause,

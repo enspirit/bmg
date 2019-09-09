@@ -33,7 +33,7 @@ module Bmg
         end
 
         def unjoinable?(sexpr)
-          sexpr.set_operator? or sexpr.limit_or_offset?
+          sexpr.set_operator? or sexpr.limit_or_offset? or sexpr.group_by?
         end
 
         def join_set_quantifiers(left, right)

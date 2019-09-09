@@ -35,6 +35,10 @@ module Bmg
         false
       end
 
+      def group_by?
+        not(group_by_clause.nil?)
+      end
+
       def ordering
         obc = order_by_clause
         obc && order_by_clause.to_ordering
