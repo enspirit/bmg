@@ -1,3 +1,7 @@
+# 0.16.3 - 2019/10/09
+
+* Fix SQL generation when joining with a summarize.
+
 # 0.16.2 - 2019/07/09
 
 * Fix `autowrap` post-processing on multiple level cases. Guarantees that when
