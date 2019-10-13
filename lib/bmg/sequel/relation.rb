@@ -13,24 +13,24 @@ module Bmg
       end
 
       def delete
-        dataset.delete
+        base_table.delete
       end
 
       def insert(arg)
         case arg
         when Hash then
-          dataset.insert(arg.merge(type.predicate.constants))
+          base_table.insert(arg.merge(type.predicate.constants))
         when Enumerable then
-          dataset.multi_insert(arg.map { |x|
+          base_table.multi_insert(arg.map { |x|
             x.merge(type.predicate.constants)
           })
         else
-          dataset.insert(arg.merge(type.predicate.constants))
+          base_table.insert(arg.merge(type.predicate.constants))
         end
       end
 
       def update(arg)
-        dataset.update(arg)
+        base_table.update(arg)
       end
 
       def to_ast
@@ -50,6 +50,12 @@ module Bmg
 
       def dataset
         @dataset ||= Translator.new(sequel_db).call(self.expr)
+      end
+
+      def base_table
+        raise InvalidUpdateError unless self.expr.respond_to?(:table_spec)
+        raise InvalidUpdateError unless self.expr.table_spec.first == :table_as
+        sequel_db[self.expr.table_spec.table_name.to_sym]
       end
 
       def _instance(type, builder, expr)
