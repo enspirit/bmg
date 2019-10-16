@@ -28,7 +28,7 @@ module Bmg
     module_function :sequel_params
 
     def infer_type(sequel_db, source)
-      TypeInference.new(sequel_db).call(source) if source.is_a?(Symbol)
+      TypeInference.new(sequel_db).call(source) if source.is_a?(Symbol) || source.is_a?(::Sequel::SQL::QualifiedIdentifier)
     end
     module_function :infer_type
 

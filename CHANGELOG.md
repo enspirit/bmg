@@ -1,3 +1,8 @@
+# 0.16.4 - 2019/10/16
+
+* Allow Sequel's qualified name to be used like Symbols to denote
+  base tables.
+
 # 0.16.3 - 2019/10/09
 
 * Fix SQL generation when joining with a summarize.

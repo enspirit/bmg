@@ -119,7 +119,13 @@ module Bmg
       end
 
       def on_table_as(sexpr)
-        ::Sequel.as(::Sequel.expr(sexpr.table_name.to_sym), ::Sequel.identifier(sexpr.as_name))
+        table_name = case sexpr.table_name
+        when String, Symbol then ::Sequel.expr(sexpr.table_name.to_sym)
+        when ::Sequel::SQL::QualifiedIdentifier then sexpr.table_name
+        else
+          raise ArgumentError, "Invalid table name `#{sexpr.table_name}`"
+        end
+        ::Sequel.as(table_name, ::Sequel.identifier(sexpr.as_name))
       end
 
       def on_subquery_as(sexpr)

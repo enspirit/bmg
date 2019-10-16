@@ -26,6 +26,15 @@ module Bmg
         expect(type.to_attrlist).to eql([:sid, :name, :status, :city])
       end
 
+      it 'supports a qualified table name and Sequel Database' do
+        q_table = ::Sequel.qualify(:main,:suppliers)
+        source, db, type = Sequel.sequel_params(q_table, sequel_db)
+        expect(source).to eql(q_table)
+        expect(db).to be(sequel_db)
+        expect(type).to be_a(Type)
+        expect(type.to_attrlist).to eql([:sid, :name, :status, :city])
+      end
+
       it 'supports a table name, a Sequel Database, and a type' do
         source, db, type = Sequel.sequel_params(:suppliers, sequel_db, a_type)
         expect(source).to eql(:suppliers)

@@ -89,6 +89,7 @@ module Bmg
       def from_clause(table, qualifier)
         arg = case table
         when String, Symbol  then table_as(table, qualifier)
+        when ::Sequel::SQL::QualifiedIdentifier then table_as(table, qualifier)
         when Expr            then subquery_as(table, qualifier)
         else                      native_table_as(table, qualifier)
         end
@@ -98,9 +99,10 @@ module Bmg
 
       def table_as(table, qualifier)
         table = case table
-                when String, Symbol then table_name(table)
-                else table
-                end
+        when String, Symbol then table_name(table)
+        when ::Sequel::SQL::QualifiedIdentifier then table_name(table)
+        else table
+        end
         [:table_as,
           table,
           range_var_name(qualifier) ]
