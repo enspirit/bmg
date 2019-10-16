@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bmg (0.16.3)
+    bmg (0.16.4)
       predicate (~> 2.2)
 
 GEM
