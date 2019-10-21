@@ -152,6 +152,9 @@ module Bmg
           parts[0...-1].each do |part|
             sub = (sub[part] ||= {})
           end
+          unless sub.is_a?(Hash)
+            raise Bmg::Error, "Autowrap conflict on attribute `#{parts[-2]}`"
+          end
           sub[parts[-1]] = v
           h
         }
