@@ -1,3 +1,8 @@
+# 0.16.5 - 2019/12/13
+
+* Add Relation#y_by_x to get a Hash with y (last) value mapped to
+  each x.
+
 # 0.16.4 - 2019/10/16
 
 * Allow Sequel's qualified name to be used like Symbols to denote

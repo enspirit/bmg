@@ -75,10 +75,16 @@ module Bmg
     end
     protected :_visit
 
+    def y_by_x(y, x, options = {})
+      each_with_object({}) do |tuple, h|
+        h[tuple[x]] = tuple[y]
+      end
+    end
+
     def ys_by_x(y, x, options = {})
       ordering = options[:order]
       projection = [y, ordering].compact.uniq
-      by_x = each.each_with_object({}) do |tuple,h|
+      by_x = each_with_object({}) do |tuple,h|
         h[tuple[x]] ||= []
         h[tuple[x]] << TupleAlgebra.project(tuple, projection)
       end
