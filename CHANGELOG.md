@@ -1,3 +1,8 @@
+# 0.16.6 - 2020/01/31
+
+* Force Predicate >= 2.2.1 to avoid an wrong optimizations when
+  chaining restrictions with in and eq on same variable.
+
 # 0.16.5 - 2019/12/13
 
 * Add Relation#y_by_x to get a Hash with y (last) value mapped to
