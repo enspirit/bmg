@@ -22,6 +22,13 @@ module Bmg
           expect(optimized).to be_a(Sequel::Relation)
         end
 
+        it 'supports restriction bindings' do
+          p = Predicate.placeholder
+          unbound = relation.restrict(sid: p)
+          bound = unbound.bind(p => "S1")
+          expect(bound.to_a.size).to eql(1)
+        end
+
         it 'supports projections' do
           optimized = relation.restrict(sid: "S1").project([:name])
           expect(optimized).to be_a(Sequel::Relation)

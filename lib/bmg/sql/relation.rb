@@ -18,6 +18,12 @@ module Bmg
 
     public
 
+      def bind(binding)
+        expr = before_use(self.expr)
+        expr = Processor::Bind.new(binding, builder).call(expr)
+        _instance(type, builder, expr)
+      end
+
       def each(&bl)
         raise NotImplementedError
       end
