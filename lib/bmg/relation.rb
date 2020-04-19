@@ -13,6 +13,10 @@ module Bmg
       Relation::Empty.new(type)
     end
 
+    def bind(binding)
+      self
+    end
+
     def with_typecheck
       dup.tap{|r|
         r.type = r.type.with_typecheck

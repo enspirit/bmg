@@ -3,9 +3,17 @@ module Bmg
     module Nary
       include Operator
 
+      def bind(binding)
+        _with_operands(operands.map{|op| op.bind(binding) })
+      end
+
     protected
 
-      attr_reader :operands
+      attr_accessor :operands
+
+      def _with_operands(operands)
+        dup.tap{|d| d.operands = operands }
+      end
 
       def _visit(parent, visitor)
         visitor.call(self, parent)
