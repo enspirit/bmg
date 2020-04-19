@@ -9,7 +9,7 @@ module Bmg
             h[k.to_s] = builder.next_qualifier!
           }
         end
-        attr_reader :requalify 
+        attr_reader :requalify
 
         alias :on_select_exp :copy_and_apply
         alias :on_missing :copy_and_apply
