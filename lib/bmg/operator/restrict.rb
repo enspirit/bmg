@@ -21,6 +21,10 @@ module Bmg
 
     public
 
+      def bind(binding)
+        Restrict.new(type, operand.bind(binding), predicate.bind(binding))
+      end
+
       def each
         @operand.each do |tuple|
           yield(tuple) if @predicate.evaluate(tuple)

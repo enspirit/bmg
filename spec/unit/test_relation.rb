@@ -301,7 +301,12 @@ module Bmg
       end
 
       it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:image, [:in_memory, left_data], [:in_memory, right_data], :image, [:a], {array: true}])
+        expect(subject.to_ast).to eql([:image,
+          [:in_memory, left_data],
+          [:in_memory, right_data],
+          :image,
+          [:a],
+          {array: true, strategy: :refilter_right}])
       end
     end
 

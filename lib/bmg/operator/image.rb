@@ -12,7 +12,21 @@ module Bmg
 
         # Whether we need to convert each image as an Array,
         # instead of keeping a Relation instance
-        array: false
+        array: false,
+
+        # The strategy to use for actual image algorithm. Default is
+        # :refilter_right. Possible values are:
+        #
+        # - :index_right : builds a memory index with tuples from right, then
+        #   passes left tuples and joins them with the index values.
+        #
+        # - :refilter_right : the left operand is materialized and all
+        #   distinct values collected. The right operand is lately restricted
+        #   to only those matching values. :index_right is then applied on
+        #   resulting operabds. This option only applies when (optimized) `on`
+        #   contains one attribute only. ; it fallbacks on :index_right
+        #   otherwise.
+        strategy: :refilter_right
 
       }
 
@@ -31,7 +45,55 @@ module Bmg
 
     public
 
-      def each
+      def each(*args, &bl)
+        (options[:jit_optimized] ? self : jit_optimize)._each(*args, &bl)
+      end
+
+      def to_ast
+        [ :image, left.to_ast, right.to_ast, as, on, options.dup ]
+      end
+
+    protected
+
+      def _each(*args, &bl)
+        case s = options[:strategy]
+        when :index_right then _each_index_right(*args, &bl)
+        when :refilter_right then _each_refilter_right(*args, &bl)
+        else
+          raise ArgumentError, "Unknown strategy `#{s}`"
+        end
+      end
+
+      def _each_index_right(*args, &bl)
+        left_rel, right_rel = self.left, self.right
+        _each_implem(left_rel, right_rel, *args, &bl)
+      end
+
+      def _each_refilter_right(*args, &bl)
+        left_rel, right_rel = self.left, self.right
+
+        # find matching keys on left and rebind the right
+        # placeholder to them
+        values = left_rel.map{|t| t[on.first] }
+        placeholder = options[:refilter_right][:placeholder]
+        right_rel = right_rel.bind(placeholder => values)
+
+        _each_implem(left_rel, right_rel, *args, &bl)
+      end
+
+      def _each_implem(left_rel, right_rel, *args)
+        # build right index
+        index = build_right_index(right_rel)
+
+        # each left with image from right index
+        left_rel.each do |tuple|
+          key = tuple_project(tuple, on)
+          image = index[key] || (options[:array] ? [] : empty_image)
+          yield tuple.merge(as => image)
+        end
+      end
+
+      def build_right_index(right)
         index = Hash.new{|h,k| h[k] = empty_image }
         right.each_with_object(index) do |t, index|
           key = tuple_project(t, on)
@@ -42,15 +104,54 @@ module Bmg
             ix[k] = v.to_a
           end
         end
-        left.each do |tuple|
-          key = tuple_project(tuple, on)
-          image = index[key] || (options[:array] ? [] : empty_image)
-          yield tuple.merge(as => image)
+        index
+      end
+
+    protected ### jit_optimization
+
+      def jit_optimize
+        case s = options[:strategy]
+        when :index_right then jit_index_right
+        when :refilter_right then jit_refilter_right
+        else
+          raise ArgumentError, "Unknown strategy `#{s}`"
         end
       end
 
-      def to_ast
-        [ :image, left.to_ast, right.to_ast, as, on, options.dup ]
+      def jit_index_right
+        Image.new(
+          type,
+          left,
+          right,
+          as,
+          on,
+          options.merge(jit_optimized: true))
+      end
+
+      def jit_refilter_right
+        ltc = left.type.predicate.constants
+        rtc = right.type.predicate.constants
+        jit_allbut, jit_on = on.partition{|attr|
+          ltc.has_key?(attr) && rtc.has_key?(attr) && ltc[attr] == rtc[attr]
+        }
+        if jit_on.size == 1
+          p = Predicate.placeholder
+          Image.new(
+            type,
+            left.materialize,
+            right.restrict(Predicate.in(jit_on.first, p)).allbut(jit_allbut),
+            as,
+            jit_on,
+            options.merge(jit_optimized: true, refilter_right: { placeholder: p }))
+        else
+          Image.new(
+            type,
+            left,
+            right.allbut(jit_allbut),
+            as,
+            jit_on,
+            options.merge(jit_optimized: true, strategy: :index_right))
+        end
       end
 
     protected ### optimization
@@ -68,7 +169,7 @@ module Bmg
       def _restrict(type, predicate)
         on_as, rest = predicate.and_split([as])
         if rest.tautology?
-          # push none situation: on_as is still the full predicate
+          # push index_right situation: on_as is still the full predicate
           super
         else
           # rest makes no reference to `as` and can be pushed
@@ -124,6 +225,16 @@ module Bmg
 
       def empty_image
         Relation::InMemory.new(image_type, Set.new)
+      end
+
+    public
+
+      def to_s
+        options[:jit_optimized] ? super : jit_optimize.to_s
+      end
+
+      def inspect
+        options[:jit_optimized] ? super : jit_optimize.inspect
       end
 
     end # class Project
