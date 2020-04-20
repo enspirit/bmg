@@ -218,7 +218,10 @@ module Bmg
 
     public
 
-      # Returns a String representing the query plan
+      def to_s
+        options[:jit_optimized] ? super : jit_optimize.to_s
+      end
+
       def inspect
         options[:jit_optimized] ? super : jit_optimize.inspect
       end
