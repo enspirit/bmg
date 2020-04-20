@@ -219,9 +219,8 @@ module Bmg
     public
 
       # Returns a String representing the query plan
-      def debug(max_level = nil, on = STDERR)
-        on.puts(options[:jit_optimized] ? self : jit_optimize)
-        self
+      def inspect
+        options[:jit_optimized] ? super : jit_optimize.inspect
       end
 
     end # class Project
