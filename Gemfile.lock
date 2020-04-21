@@ -9,7 +9,7 @@ GIT
 PATH
   remote: .
   specs:
-    bmg (0.16.6)
+    bmg (0.17.0)
       predicate (~> 2.3, >= 2.3.0)
 
 GEM

@@ -1,3 +1,20 @@
+# 0.17.0 - 2020/04/21
+
+* Optimize Image operator. By default, and when possible, the right
+  operand is restricted to only those matching the left tuples before
+  being iterated.
+
+  This is possible when the join key (`on`) contains exactly one attribute
+  (after having removed attributes that are known to be bound to a single
+  literal). The matching process requires materializing the left operand
+  for extracting its keys. Restrict then uses `Predicate.in(on.first => ...)`.
+
+  This is now the default option, under the assumption that `right` operand
+  is frequently (much) bigger that left (images frequently occur along 1-N
+  foreign keys). The option fallbacks to a simpler algorithm when both
+  operands are filtered in such way that `on` is empty, which is the second
+  most frequent usage.
+
 # 0.16.6 - 2020/01/31
 
 * Force Predicate >= 2.2.1 to avoid an wrong optimizations when
