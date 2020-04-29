@@ -1,3 +1,8 @@
+# 0.17.1 - 2020/04/29
+
+* Bump predicate dependency to min 2.3.1, to get a bug fix on image
+  optimization.
+
 # 0.17.0 - 2020/04/21
 
 * Optimize Image operator. By default, and when possible, the right
