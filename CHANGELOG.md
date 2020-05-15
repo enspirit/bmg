@@ -1,3 +1,8 @@
+# 0.16.7 - 2020/05/15
+
+* Fix SQL compilation of `summarize` when the summarization by has more
+  than one attribute.
+
 # 0.16.6 - 2020/01/31
 
 * Force Predicate >= 2.2.1 to avoid an wrong optimizations when
