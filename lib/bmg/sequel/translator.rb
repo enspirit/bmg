@@ -50,7 +50,7 @@ module Bmg
         dataset   = dataset.select(*selection)
         dataset   = dataset.distinct             if sexpr.distinct?
         dataset   = dataset.where(predicate)     if predicate
-        dataset   = dataset.group(grouping)      if grouping
+        dataset   = dataset.group(*grouping)     if grouping
         dataset   = dataset.order_by(*order)     if order
         dataset   = dataset.limit(limit, offset == 0 ? nil : offset) if limit or offset
         dataset

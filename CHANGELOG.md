@@ -1,3 +1,8 @@
+# 0.17.2 - 2020/05/15
+
+* Fix SQL compilation of `summarize` when the summarization by has more
+  than one attribute.
+
 # 0.17.1 - 2020/04/29
 
 * Bump predicate dependency to min 2.3.1, to get a bug fix on image
