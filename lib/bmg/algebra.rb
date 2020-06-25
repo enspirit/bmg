@@ -80,6 +80,19 @@ module Bmg
     end
     protected :_joined_with
 
+    def left_join(right, on = [], default_right_tuple = {})
+      drt = default_right_tuple
+      _left_join self.type.left_join(right.type, on, drt), right, on, drt
+    end
+
+    def _left_join(type, right, on, default_right_tuple)
+      Operator::Join.new(type, self, right, on, {
+        variant: :left,
+        default_right_tuple: default_right_tuple
+      })
+    end
+    protected :_left_join
+
     def matching(right, on = [])
       _matching self.type.matching(right.type, on), right, on
     end

@@ -175,6 +175,15 @@ module Bmg
       }
     end
 
+    def left_join(right, on, default_right_tuple)
+      join_compatible!(right, on) if typechecked? && knows_attrlist?
+      dup.tap{|x|
+        x.attrlist  = (knows_attrlist? and right.knows_attrlist?) ? (self.attrlist + right.attrlist).uniq : nil
+        x.predicate = Predicate.tautology
+        x.keys      = nil
+      }
+    end
+
     def matching(right, on)
       join_compatible!(right, on) if typechecked? && knows_attrlist?
       self

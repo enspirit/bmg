@@ -8,16 +8,19 @@ module Bmg
     class Join
       include Operator::Binary
 
-      def initialize(type, left, right, on)
+      DEFAULT_OPTIONS = {}
+
+      def initialize(type, left, right, on, options = {})
         @type = type
         @left = left
         @right = right
         @on = on
+        @options = DEFAULT_OPTIONS.merge(options)
       end
 
     private
 
-      attr_reader :on
+      attr_reader :on, :options
 
     public
 
@@ -34,12 +37,24 @@ module Bmg
             to_join.each do |right|
               yield right.merge(tuple)
             end
+          elsif left_join?
+            yield(tuple.merge(default_right_tuple))
           end
         end
       end
 
       def to_ast
-        [ :join, left.to_ast, right.to_ast, on ]
+        [ :join, left.to_ast, right.to_ast, on, extra_opts ].compact
+      end
+
+    protected
+
+      def left_join?
+        options[:variant] == :left
+      end
+
+      def default_right_tuple
+        options[:default_right_tuple]
       end
 
     protected ### optimization
@@ -63,8 +78,13 @@ module Bmg
 
     protected ### inspect
 
+      def extra_opts
+        extra = options.dup.delete_if{|k,v| DEFAULT_OPTIONS[k] == v }
+        extra.empty? ? nil : extra
+      end
+
       def args
-        [ on ]
+        [ on, extra_opts ].compact
       end
 
     private

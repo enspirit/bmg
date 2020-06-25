@@ -35,6 +35,21 @@ module Bmg
         expect(op.to_a). to eql([])
       end
 
+      it 'supports a left_join variant' do
+        expected = [
+          { a: 1, b: 1, c:  8, x: "a" },
+          { a: 1, b: 1, c:  9, x: "a" },
+          { a: 1, b: 2, c:  8, x: "b" },
+          { a: 1, b: 2, c:  9, x: "b" },
+          { a: 2, b: 7, c: 10, x: "c" },
+        ]
+        op = Join.new Type::ANY, left, right, [:a], {
+          :variant => :left,
+          :default_right_tuple => { c: 10 }
+        }
+        expect(op.to_a). to eql(expected)
+      end
+
     end
   end
 end
