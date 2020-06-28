@@ -1,0 +1,31 @@
+---
+- bmg: |-
+    suppliers
+      .left_join(supplies, [:sid], {})
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      `t2`.`pid`,
+      `t2`.`qty`
+    FROM
+      `suppliers` AS 't1'
+    LEFT JOIN
+      `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+- bmg: |-
+    suppliers
+      .left_join(supplies, [:sid], { pid: 'P9', qty: 0 })
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      coalesce(`t2`.`pid`, 'P9') AS 'pid',
+      coalesce(`t2`.`qty`, 0) AS 'qty'
+    FROM
+      `suppliers` AS 't1'
+    LEFT JOIN
+      `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)

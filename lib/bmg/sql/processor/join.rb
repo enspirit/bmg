@@ -4,18 +4,19 @@ module Bmg
       class Join < Processor
         include JoinSupport
 
-        def initialize(right, on, builder)
+        def initialize(right, on, options, builder)
           super(builder)
           @right = right
           @on = on
+          @options = options
         end
-        attr_reader :right, :on
+        attr_reader :right, :on, :options
 
         def call(sexpr)
           if unjoinable?(sexpr)
             call(builder.from_self(sexpr))
           elsif unjoinable?(right)
-            Join.new(builder.from_self(right), on, builder).call(sexpr)
+            Join.new(builder.from_self(right), on, options, builder).call(sexpr)
           else
             super(sexpr)
           end
@@ -45,14 +46,21 @@ module Bmg
           left_list, right_list = left.select_list, right.select_list
           list = left_list.dup
           right_list.each_child do |child, index|
-            list << child unless left_list.knows?(child.as_name)
+            next if left_list.knows?(child.as_name)
+            if left_join?
+              list << coalesced(child)
+            else
+              list << child
+            end
           end
           list
         end
 
         def join_from_clauses(left, right)
           joincon = join_predicate(left, right, on)
-          join = if joincon.tautology?
+          join = if left_join?
+            [:left_join, left.table_spec, right.table_spec, joincon]
+          elsif joincon.tautology?
             [:cross_join, left.table_spec, right.table_spec]
           else
             [:inner_join, left.table_spec, right.table_spec, joincon]
@@ -73,6 +81,26 @@ module Bmg
           order_by = [ left.order_by_clause, right.order_by_clause ].compact
           return order_by.first if order_by.size <= 1
           order_by.first + order_by.last.sexpr_body
+        end
+
+      private
+
+        def left_join?
+          options[:kind] == :left
+        end
+
+        def coalesced(child)
+          drt, as_name = options[:default_right_tuple], child.as_name.to_sym
+          if drt && drt.has_key?(as_name)
+            child.with_update(1, [
+              :func_call,
+              :coalesce,
+              child.left,
+              [:literal, drt[as_name]]
+            ])
+          else
+            child
+          end
         end
 
       end # class Join

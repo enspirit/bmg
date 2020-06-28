@@ -233,6 +233,10 @@ module SqlHelpers
       sexpr [ :inner_join, left, right, on ]
     end
 
+    def left_join(left, right, on)
+      sexpr [ :left_join, left, right, on ]
+    end
+
     def cross_join(left, right)
       sexpr [ :cross_join, left, right ]
     end

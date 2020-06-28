@@ -2,18 +2,7 @@ module Bmg
   module Sql
     module CrossJoin
       include Expr
-
-      def join?
-        true
-      end
-
-      def left
-        self[1]
-      end
-
-      def right
-        self[2]
-      end
+      include Join
 
       def to_sql(buffer, dialect)
         each_child do |child, index|

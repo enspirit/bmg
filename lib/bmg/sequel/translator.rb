@@ -70,11 +70,16 @@ module Bmg
         case kind = sexpr.left.first
         when :qualified_name
           left.column == right.value ? left : ::Sequel.as(left, right)
-        when :literal, :summarizer
+        when :literal, :summarizer, :func_call
           ::Sequel.as(left, right)
         else
           raise NotImplementedError, "Unexpected select item `#{kind}`"
         end
+      end
+
+      def on_func_call(sexpr)
+        args = sexpr.func_args.map{|fa| apply(fa) }
+        ::Sequel.function(sexpr.func_name, *args)
       end
 
       def on_summarizer(sexpr)
@@ -106,6 +111,13 @@ module Bmg
             ds.join_table(:inner, apply(table), nil, options){|*args|
               apply(on)
             }
+          elsif kind == :left_join
+            options = { qualify: false, table_alias: false }
+            ds.join_table(:left, apply(table), nil, options){|*args|
+              apply(on)
+            }
+          else
+            raise IllegalArgumentError, "Unrecognized from clause: `#{sexpr}`"
           end
         end
       end

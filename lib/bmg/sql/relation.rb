@@ -62,7 +62,21 @@ module Bmg
         if right_expr = extract_compatible_sexpr(right)
           right_expr = Processor::Requalify.new(builder).call(right_expr)
           expr = before_use(self.expr)
-          expr = Processor::Join.new(right_expr, on, builder).call(expr)
+          expr = Processor::Join.new(right_expr, on, {}, builder).call(expr)
+          _instance(type, builder, expr)
+        else
+          super
+        end
+      end
+
+      def _left_join(type, right, on, default_right_tuple)
+        if right_expr = extract_compatible_sexpr(right)
+          right_expr = Processor::Requalify.new(builder).call(right_expr)
+          expr = before_use(self.expr)
+          expr = Processor::Join.new(right_expr, on, {
+            kind: :left,
+            default_right_tuple: default_right_tuple
+          }, builder).call(expr)
           _instance(type, builder, expr)
         else
           super

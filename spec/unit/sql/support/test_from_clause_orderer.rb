@@ -76,6 +76,80 @@ module Bmg
           }
 
           it 'works as expected' do
+            require 'json'
+            expect(subject).to eql(expected)
+          end
+        end
+
+        context 'on a simple left join' do
+          let(:expr){
+            sexpr [ :from_clause,
+              left_join(
+                table_as("t1"),
+                table_as("t2"),
+                on("t1","attr","t2","attr"))
+            ]
+          }
+          let(:expected) {
+            [
+              [ :base,      table_as("t1"), nil ],
+              [ :left_join, table_as("t2"), on("t1","attr","t2","attr") ]
+            ]
+          }
+
+          it 'works as expected' do
+            expect(subject).to eql(expected)
+          end
+        end
+
+        context 'on an inner join followed by a left join' do
+          let(:expr){
+            sexpr [ :from_clause,
+              left_join(
+                inner_join(
+                  table_as("t1"),
+                  table_as("t2"),
+                  on("t1","attr","t2","attr")),
+                table_as("t3"),
+                on("t1","attr","t3","attr")
+              )
+            ]
+          }
+          let(:expected) {
+            [
+              [ :base,       table_as("t1"), nil ],
+              [ :inner_join, table_as("t2"), on("t1","attr","t2","attr") ],
+              [ :left_join,  table_as("t3"), on("t1","attr","t3","attr") ]
+            ]
+          }
+
+          it 'works as expected' do
+            expect(subject).to eql(expected)
+          end
+        end
+
+        context 'on an left join followed by an inner join' do
+          let(:expr){
+            sexpr [ :from_clause,
+              inner_join(
+                left_join(
+                  table_as("t1"),
+                  table_as("t2"),
+                  on("t1","attr","t2","attr")),
+                table_as("t3"),
+                on("t1","attr","t3","attr")
+              )
+            ]
+          }
+          let(:expected) {
+            [
+              [ :base,       table_as("t1"), nil ],
+              [ :inner_join, table_as("t3"), on("t1","attr","t3","attr") ],
+              [ :left_join,  table_as("t2"), on("t1","attr","t2","attr") ]
+            ]
+          }
+
+          it 'works as expected' do
             expect(subject).to eql(expected)
           end
         end

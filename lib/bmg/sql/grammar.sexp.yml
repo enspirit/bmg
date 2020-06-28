@@ -24,9 +24,12 @@ rules:
   join_exp:
     - cross_join
     - inner_join
+    - left_join
   cross_join:
     - [ table_spec, table_spec ]
   inner_join:
+    - [ table_spec, table_spec, predicate ]
+  left_join:
     - [ table_spec, table_spec, predicate ]
   using:
     - [ column_name+ ]
@@ -76,6 +79,7 @@ rules:
     - qualified_name
     - column_name
     - summarizer
+    - func_call
     - literal
   a_name:
     - qualified_name
@@ -88,6 +92,10 @@ rules:
     - [ summary_func, qualified_name ]
   summary_func:
     - "::Symbol"
+  func_call:
+    - [ func_name, scalar_exp+ ]
+  func_name:
+    - "::Symbol"
   table_name:
     - [ name_rgx ]
   range_var_name:
@@ -96,6 +104,8 @@ rules:
     - [ integer ]
   offset_clause:
     - [ integer ]
+  default_right_tuple:
+    - "::Hash"
   integer:
     - "::Integer"
   literal:

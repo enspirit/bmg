@@ -1,3 +1,16 @@
+# 0.17.3
+
+* Add Relation#left_join operator, with support for SQL generation.
+
+  Left join is NOT relational, as it introduces NULLs. For this reason
+  Bmg's left join allows specifying a default_right_tuple to replace
+  those generated NULLs by actual values.
+
+  SQL support: Mixing normal `join`s and `left_join`s in an arbitrary
+  order may yield SQL anomalies or semantically wrong generated SQL
+  code. It is currently good practice to avoid normal joins as soon
+  as a `left_join` has been used.
+
 # 0.17.2 - 2020/05/15
 
 * Fix SQL compilation of `summarize` when the summarization by has more

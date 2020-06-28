@@ -1,15 +1,15 @@
 module Bmg
   module Sql
-    module InnerJoin
+    module LeftJoin
       include Expr
       include Join
 
-      INNER = "INNER".freeze
+      LEFT = "LEFT".freeze
 
       def type
-        INNER
+        LEFT
       end
 
-    end # module InnerJoin
+    end # module LeftJoin
   end # module Sql
 end # module Bmg

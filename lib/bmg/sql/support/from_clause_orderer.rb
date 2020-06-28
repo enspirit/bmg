@@ -23,14 +23,14 @@ module Bmg
         # Generates a relationally equivalent list of (type,table,predicate)
         # triplets, where:
         #
-        # - type is :base, :cross_join or :inner_join
+        # - type is :base, :cross_join, :inner_join, or :left_join
         # - table is table_as, native_table_as or subquery_as
         # - predicate is a join predicate `ti.attri = tj.attrj AND ...`
         #
         # So that
         #
         # 1) the types are observed in strict increasing order (one :base, zero
-        #    or more :cross_join, zero or more :inner_join)
+        #    or more :cross_join, zero or more :inner_join, zero or more :left_join)
         #
         # 2) the list is such that it can be safely written as an expression
         #    of the following SQL syntax:
@@ -40,6 +40,7 @@ module Bmg
         #       cross_join t3                 # [ :cross_join, t3, nil ]
         #       inner_join t4 ON p4           # [ :inner_join, t4, p4 ]
         #       inner_join t5 ON p5           # [ :inner_join, t5, p5 ]
+        #       left_join t6 ON p6            # [ :left_join, t6, p6 ]
         #
         #   that is, the linearization is correct only if each predicate `pi`
         #   only makes reference to tables introduced before it (no forward
@@ -87,13 +88,18 @@ module Bmg
         #    reference to tables not introduced yet)
         #
         def order_all(tables, joins)
-          # Our first strategy is simple: let sort the tables by moving the ones
-          # not referenced in join clauses at the beginning of the list => they
-          # will yield the base an cross join clauses first.
-          tables = tables.sort{|t1,t2|
-            t1js = joins.select{|j| uses?(j, t1) }.size
-            t2js = joins.select{|j| uses?(j, t2) }.size
-            t1js == 0 ? (t2js == 0 ? 0 : -1) : (t2js == 0 ? 1 : 0)
+          # Our first strategy is simple: let sort the tables by moving the
+          # all left joins at the end, and all not referenced in join clauses
+          # at the beginning of the list => they will yield the base an cross
+          # join clauses first.
+          tables = tables.sort{|(t1,k1),(t2,k2)|
+            if k1 == :left_join || k2 == :left_join
+              k1 == k2 ? 0 : (k1 == :left_join ? 1 : -1)
+            else
+              t1js = joins.select{|j| uses?(j, t1) }.size
+              t2js = joins.select{|j| uses?(j, t2) }.size
+              t1js == 0 ? (t2js == 0 ? 0 : -1) : (t2js == 0 ? 1 : 0)
+            end
           }
 
           # Then order all recursively in that order of tables, filling a result
@@ -119,7 +125,15 @@ module Bmg
 
             # Decide which kind of join it is, according to the result and
             # the number of join clauses that will be used
-            join_kind = result.empty? ? :base : (on.empty? ? :cross_join : :inner_join)
+            join_kind = if result.empty?
+              :base
+            elsif table.last == :left_join
+              :left_join
+            elsif on.empty?
+              :cross_join
+            else
+              :inner_join
+            end
 
             # Compute the AND([eq]) predicate on selected join clauses
             predicate = on.inject(nil){|p,clause|
@@ -127,7 +141,7 @@ module Bmg
             }
 
             # Recurse with that new clause in the result
-            clause = [ join_kind, table, predicate ]
+            clause = [ join_kind, table[0], predicate ]
             _order_all(tables_tail, joins_tail, result + [clause])
           end
         end
@@ -139,13 +153,13 @@ module Bmg
         # `ti` and making no reference to non introduced tables, and the others.
         def split_joins(joins, table, tables_tail)
           joins.partition{|j|
-            uses?(j, table) && !tables_tail.find{|t|
-              uses?(j, t)
+            uses?(j, table[0]) && !tables_tail.find{|t|
+              uses?(j, t[0])
             }
           }
         end
 
-        # Returns whether the join
+        # Returns whether the join conditions references the given table
         def uses?(condition, table)
           name = table.as_name.to_s
           left_name = var_name(condition[1])
@@ -172,23 +186,27 @@ module Bmg
         def collect(sexpr)
           tables = []
           joins  = []
-          _collect(sexpr, tables, joins)
+          _collect(sexpr, tables, joins, :base)
           [ tables, joins ]
         end
 
-        def _collect(sexpr, tables, joins)
+        def _collect(sexpr, tables, joins, kind)
           case sexpr.first
           when :from_clause
-            _collect(sexpr.table_spec, tables, joins)
+            _collect(sexpr.table_spec, tables, joins, kind)
           when :table_as, :native_table_as, :subquery_as
-            tables << sexpr
+            tables << [sexpr, kind]
+          when :cross_join
+            _collect(sexpr.left, tables, joins, :cross_join)
+            _collect(sexpr.right, tables, joins, :cross_join)
           when :inner_join
             _collect_joins(sexpr.predicate, joins)
-            _collect(sexpr.left, tables, joins)
-            _collect(sexpr.right, tables, joins)
-          when :cross_join
-            _collect(sexpr.left, tables, joins)
-            _collect(sexpr.right, tables, joins)
+            _collect(sexpr.left, tables, joins, :inner_join)
+            _collect(sexpr.right, tables, joins, :inner_join)
+          when :left_join
+            _collect_joins(sexpr.predicate, joins)
+            _collect(sexpr.left, tables, joins, kind)
+            _collect(sexpr.right, tables, joins, :left_join)
           end
         end
 
