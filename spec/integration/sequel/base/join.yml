@@ -186,3 +186,65 @@
       `suppliers` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
     INNER JOIN
       `parts` AS 't3' ON (`t1`.`pid` = `t3`.`pid`)
+- bmg: |-
+    supplies
+      .restrict(pid: 'P1')
+      .join(parts.restrict(pid: 'P1'), [:pid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name`,
+      `t2`.`color`,
+      `t2`.`weight`,
+      `t2`.`city`
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `parts` AS 't2' ON (`t1`.`pid` = `t2`.`pid`)
+    WHERE (
+      (`t1`.`pid` = 'P1')
+    AND
+      (`t2`.`pid` = 'P1')
+    )
+- bmg: |-
+    supplies
+      .restrict(pid: 'P1')
+      .join(parts.restrict(name: 'Nut'), [:pid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name`,
+      `t2`.`color`,
+      `t2`.`weight`,
+      `t2`.`city`
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `parts` AS 't2' ON (`t1`.`pid` = `t2`.`pid`)
+    WHERE (
+      (`t1`.`pid` = 'P1')
+    AND
+      (`t2`.`name` = 'Nut')
+    )
+- bmg: |-
+    supplies
+      .restrict(pid: 'P1')
+      .join(supplies.restrict(pid: 'P2'), [:sid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    WHERE (
+      (`t1`.`pid` = 'P1')
+    AND
+      (`t2`.`pid` = 'P2')
+    )
