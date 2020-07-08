@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     bmg (0.17.2)
-      predicate (~> 2.3, >= 2.3.2)
+      predicate (~> 2.3, >= 2.3.3)
 
 GEM
   remote: https://rubygems.org/
@@ -12,7 +12,7 @@ GEM
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     path (2.0.1)
-    predicate (2.3.2)
+    predicate (2.3.3)
       sexpr (~> 0.6.0)
     rake (10.5.0)
     roo (2.8.3)
