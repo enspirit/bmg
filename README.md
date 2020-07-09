@@ -32,6 +32,7 @@ by_city = suppliers
   .group([:sid, :name, :status], :suppliers_in)
 
 puts JSON.pretty_generate(by_city)
+# [{...},...]
 ```
 
 ## Connecting to a SQL database
@@ -47,12 +48,63 @@ DB = Sequel.connect("sqlite://suppliers-and-parts.db")
 
 suppliers = Bmg.sequel(:suppliers, DB)
 
-puts suppliers
+big_suppliers = suppliers
   .restrict(Predicate.neq(status: 30))
-  .to_sql
 
+puts big_suppliers.to_sql
 # SELECT `t1`.`sid`, `t1`.`name`, `t1`.`status`, `t1`.`city` FROM `suppliers` AS 't1' WHERE (`t1`.`status` != 30)
+
+puts JSON.pretty_generate(big_suppliers)
+# [{...},...]
 ```
+
+## How is this different from similar libraries?
+
+1. The libraries you probably know (Sequel, Arel, SQLAlchemy, Korma, jOOQ,
+   etc.) do not implement a genuine relational algebra: their support for
+   chaining relational operators is limited (yielding errors or wrong SQL
+   queries). Bmg **always** allows chaining operators. If it does not, it's
+   a bug. In other words, the following query is 100% valid:
+
+       relation
+         .restrict(...)    # aka where
+         .union(...)
+         .summarize(...)   # aka group by
+         .restrict(...)
+
+2. Bmg supports in memory relations, json relations, csv relations, SQL
+   relations and so on. It's not tight to SQL generation, and supports
+   queries accross multiple data sources.
+
+3. Bmg makes a best effort to optimize queries, simplifying both generated
+   SQL code (low-level accesses to datasources) and in-memory operations.
+
+4. Bmg supports various *structuring* operators (group, image, autowrap,
+   autosummarize, etc.) and allows building 'non flat' relations.
+
+## How is this different from Alf?
+
+1. Bmg's implementation is much simpler than Alf, and uses no ruby core
+   extention.
+
+2. We are confident using Bmg in production. Systematic inspection of query
+   plans is suggested though. Alf was a bit too experimental to be used on
+   (critical) production systems.
+
+2. Alf exposes a functional syntax, command line tool, restful tools and
+   many more. Bmg is limited to the core algebra, main Relation abstraction
+   and SQL generation.
+
+3. Bmg is less strict regarding conformance to relational theory, and
+   may actually expose non relational features (such as support for null,
+   left_join operator, etc.). Sharp tools hurt, use them with great care.
+
+4. Bmg does not yet implement all operators documented on try-alf.org, even
+   if we plan to eventually support them all.
+
+5. Bmg has a few additional operators that prove very useful on real
+   production use cases: prefix, suffix, autowrap, autosummarize, left_join,
+   rxmatch, etc.
 
 ## Supported operators
 
@@ -82,3 +134,13 @@ r.summarize([:a, :b, ...], x: :sum)          # relational summarization
 r.suffix(:_foo, but: [:a, ...])              # suffix kind of renaming
 r.union(right)                               # relational union
 ```
+
+## Who is behind Bmg?
+
+Bernard Lambeau (bernard@klaro.cards) is Alf & Bmg main engineer & maintainer.
+
+Enspirit (https://enspirit.be) and Klaro App (https://klaro.cards) are both
+actively using and contributing to the library.
+
+Feel free to contact us for help, ideas and/or contributions. Please use github
+issues and pull requests if possible if code is involved.
