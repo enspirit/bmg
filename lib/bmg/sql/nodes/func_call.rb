@@ -11,6 +11,10 @@ module Bmg
         self[2..-1]
       end
 
+      def is_computed?
+        true
+      end
+
       def to_sql(buffer, dialect)
         buffer << summary_name.upcase << "("
         buffer << func_args.map{|fa| fa.to_sql("", dialect) }.join(', ')

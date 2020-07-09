@@ -20,6 +20,10 @@ module Bmg
         as_name
       end
 
+      def is_computed?
+        false
+      end
+
       def to_sql(buffer, dialect)
         self[1].to_sql(buffer, dialect)
         buffer << '.'

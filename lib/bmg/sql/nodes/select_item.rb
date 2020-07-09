@@ -23,6 +23,10 @@ module Bmg
         last.as_name
       end
 
+      def is_computed?
+        left.is_computed?
+      end
+
       def to_sql(buffer, dialect)
         self[1].to_sql(buffer, dialect)
         unless would_be_name == as_name

@@ -29,3 +29,112 @@
       `suppliers` AS 't1'
     LEFT JOIN
       `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+- bmg: |-
+    supplies
+      .left_join(suppliers, [:sid])
+      .left_join(parts, [:pid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name`,
+      `t2`.`city`,
+      `t2`.`status`,
+      `t3`.`color`,
+      `t3`.`weight`
+    FROM
+      `supplies` AS 't1'
+    LEFT JOIN
+      `suppliers` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    LEFT JOIN
+      `parts` AS 't3' ON (`t1`.`pid` = `t3`.`pid`)
+- bmg: |-
+    supplies
+      .join(suppliers, [:sid])
+      .left_join(parts, [:pid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name`,
+      `t2`.`city`,
+      `t2`.`status`,
+      `t3`.`color`,
+      `t3`.`weight`
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `suppliers` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    LEFT JOIN
+      `parts` AS 't3' ON (`t1`.`pid` = `t3`.`pid`)
+- bmg: |-
+    supplies
+      .left_join(suppliers, [:sid])
+      .join(parts, [:pid])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t2`.`name`,
+      `t2`.`city`,
+      `t2`.`status`,
+      `t3`.`color`,
+      `t3`.`weight`
+    FROM
+      `supplies` AS 't1'
+    INNER JOIN
+      `parts` AS 't3' ON (`t1`.`pid` = `t3`.`pid`)
+    LEFT JOIN
+      `suppliers` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+- bmg: |-
+    suppliers
+      .left_join(supplies, [:sid])
+      .restrict(qty: 50)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      `t2`.`pid`,
+      `t2`.`qty`
+    FROM
+      `suppliers` AS 't1'
+    LEFT JOIN
+      `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    WHERE (
+      `t2`.`qty` = 50
+    )
+- bmg: |-
+    suppliers
+      .left_join(supplies, [:sid], { pid: 'P9', qty: 1 })
+      .restrict(qty: 50)
+  sqlite: |-
+    WITH `t3` AS (
+      SELECT
+        `t1`.`sid`,
+        `t1`.`name`,
+        `t1`.`city`,
+        `t1`.`status`,
+        coalesce(`t2`.`pid`, 'P9') AS 'pid',
+        coalesce(`t2`.`qty`, 1) AS 'qty'
+      FROM
+        `suppliers` AS 't1'
+      LEFT JOIN
+        `supplies` AS 't2' ON (`t1`.`sid` = `t2`.`sid`)
+    )
+    SELECT
+      `t3`.`sid`,
+      `t3`.`name`,
+      `t3`.`city`,
+      `t3`.`status`,
+      `t3`.`pid`,
+      `t3`.`qty`
+    FROM
+      `t3` AS 't3'
+    WHERE (
+      `t3`.`qty` = 50
+    )

@@ -20,7 +20,7 @@ module Bmg
         end
 
         def on_select_exp(sexpr)
-          if sexpr.group_by_clause
+          if sexpr.group_by_clause || sexpr.has_computed_attributes?
             sexpr = builder.from_self(sexpr)
             call(sexpr)
           else

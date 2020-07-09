@@ -23,6 +23,10 @@ module Bmg
         Builder::IS_TABLE_DEE == self
       end
 
+      def has_computed_attributes?
+        sexpr_body.any?{|item| item.is_computed? }
+      end
+
       def knows?(as_name)
         find_child{|child| child.as_name == as_name }
       end

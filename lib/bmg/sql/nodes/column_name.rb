@@ -15,6 +15,10 @@ module Bmg
         last
       end
 
+      def is_computed?
+        false
+      end
+
       def to_sql(buffer, dialect)
         buffer << dialect.quote_identifier(last)
         buffer

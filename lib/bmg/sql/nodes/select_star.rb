@@ -11,6 +11,10 @@ module Bmg
         }
       end
 
+      def has_computed_attributes?
+        false
+      end
+
       def to_sql(buffer, dialect)
         last.to_sql(buffer, dialect)
         buffer << DOT << STAR

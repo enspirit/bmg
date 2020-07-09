@@ -11,6 +11,10 @@ module Bmg
         self.last
       end
 
+      def is_computed?
+        true
+      end
+
       def to_sql(buffer, dialect)
         buffer << summary_func.upcase << "("
         summary_expr.to_sql(buffer, dialect)

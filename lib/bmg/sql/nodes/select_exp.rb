@@ -27,6 +27,10 @@ module Bmg
         set_quantifier.all?
       end
 
+      def has_computed_attributes?
+        select_list.has_computed_attributes?
+      end
+
       def join?
         from_clause && from_clause.join?
       end
