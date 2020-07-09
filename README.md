@@ -66,6 +66,8 @@ r.group([:a, :b, ...], :x)                   # relation-valued attribute from at
 r.image(right, :x, [:a, :b, ...])            # relation-valued attribute from another relation
 r.join(right, [:a, :b, ...])                 # natural join on a join key
 r.join(right, :a => :x, :b => :y, ...)       # natural join after right reversed renaming
+r.left_join(right, [:a, :b, ...], {...})     # left join with optional default right tuple
+r.left_join(right, {:a => :x, ...}, {...})   # left join after right reversed renaming
 r.matching(right, [:a, :b, ...])             # semi join, aka where exists
 r.matching(right, :a => :x, :b => :y, ...)   # semi join, after right reversed renaming
 r.not_matching(right, [:a, :b, ...])         # inverse semi join, aka where not exists

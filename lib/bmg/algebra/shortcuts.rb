@@ -37,6 +37,12 @@ module Bmg
         self.join(right.rename(renaming), on.keys)
       end
 
+      def left_join(right, on = [], *args)
+        return super unless on.is_a?(Hash)
+        renaming = Hash[on.map{|k,v| [v,k] }]
+        self.left_join(right.rename(renaming), on.keys, *args)
+      end
+
       def matching(right, on = [])
         return super unless on.is_a?(Hash)
         renaming = Hash[on.map{|k,v| [v,k] }]
