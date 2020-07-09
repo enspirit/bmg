@@ -1,10 +1,8 @@
-# 0.17.4
+# 0.17.3 - 2020/07/09
 
 * Fix SQL compilation of JOIN when operands restrict on attributes
   having the same name (without being part of the JOIN clause
   itself). A bug in Predicate was loosing one AND term.
-
-# 0.17.3
 
 * Add Relation#left_join operator, with support for SQL generation.
 
