@@ -14,7 +14,7 @@ also much simpler, and make its easier to implement user-defined relations.
 
 ## Example
 
-```
+```ruby
 require 'bmg'
 require 'json'
 
@@ -39,7 +39,7 @@ puts JSON.pretty_generate(by_city)
 
 Bmg requires `sequel >= 3.0` to connect to SQL databases.
 
-```
+```ruby
 require 'sqlite3'
 require 'bmg'
 require 'bmg/sequel'
@@ -108,7 +108,7 @@ puts JSON.pretty_generate(big_suppliers)
 
 ## Supported operators
 
-```
+```ruby
 r.allbut([:a, :b, ...])                      # remove specified attributes
 r.autowrap(split: '_')                       # structure a flat relation, split: '_' is the default
 r.autosummarize([:a, :b, ...], x: :sum)      # (experimental) usual summarizers supported
