@@ -1,4 +1,4 @@
-# 0.17.4
+# 0.17.4 - 2020/07/23
 
 * Fix SQL compilation when using INTERSECT predicates. INTERSECT
   was seen as SQL's INTERSECT, which exists too.
