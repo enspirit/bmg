@@ -1,3 +1,8 @@
+# 0.17.4
+
+* Fix SQL compilation when using INTERSECT predicates. INTERSECT
+  was seen as SQL's INTERSECT, which exists too.
+
 # 0.17.3 - 2020/07/09
 
 * Fix SQL compilation of JOIN when operands restrict on attributes

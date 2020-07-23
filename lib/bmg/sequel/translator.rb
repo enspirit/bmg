@@ -41,7 +41,7 @@ module Bmg
         dataset   = apply(sexpr.from_clause)     if sexpr.from_clause
         #
         selection = apply(sexpr.select_list)
-        predicate = apply(sexpr.predicate)       if sexpr.predicate
+        predicate = compile_predicate(sexpr.predicate) if sexpr.predicate
         grouping  = apply(sexpr.group_by_clause) if sexpr.group_by_clause
         order     = apply(sexpr.order_by_clause) if sexpr.order_by_clause
         limit     = apply(sexpr.limit_clause)    if sexpr.limit_clause
@@ -109,12 +109,12 @@ module Bmg
           elsif kind == :inner_join
             options = { qualify: false, table_alias: false }
             ds.join_table(:inner, apply(table), nil, options){|*args|
-              apply(on)
+              compile_predicate(on)
             }
           elsif kind == :left_join
             options = { qualify: false, table_alias: false }
             ds.join_table(:left, apply(table), nil, options){|*args|
-              apply(on)
+              compile_predicate(on)
             }
           else
             raise IllegalArgumentError, "Unrecognized from clause: `#{sexpr}`"
@@ -165,22 +165,35 @@ module Bmg
         sexpr.last
       end
 
-    public ### Predicate hack
-
-      def on_opaque(sexpr)
-        apply(sexpr.last)
-      end
-
-      def on_exists(sexpr)
-        apply(sexpr.last).exists
-      end
-
     private
 
       def dataset(expr)
         return expr if ::Sequel::Dataset===expr
         sequel_db[expr]
       end
+
+      def compile_predicate(predicate)
+        PredicateTranslator.new(self).call(predicate)
+      end
+
+    class PredicateTranslator < Sexpr::Processor
+      include ::Predicate::ToSequel::Methods
+
+      def initialize(parent)
+        @parent = parent
+      end
+
+    public ### Predicate hack
+
+      def on_opaque(sexpr)
+        @parent.apply(sexpr.last)
+      end
+
+      def on_exists(sexpr)
+        @parent.apply(sexpr.last).exists
+      end
+
+    end
 
     end # class Translator
   end # module Sequel
