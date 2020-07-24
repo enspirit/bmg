@@ -105,6 +105,19 @@ module Bmg
       to_a.to_json(*args, &bl)
     end
 
+    # Writes the relation data to CSV.
+    #
+    # `string_or_io` and `options` are what CSV::new itself
+    # recognizes, default options are CSV's.
+    #
+    # When no string_or_io is used, the method uses a string.
+    #
+    # The method always returns the string_or_io.
+    def to_csv(options = {}, string_or_io = nil)
+      options, string_or_io = {}, options unless options.is_a?(Hash)
+      Writer::Csv.new(options).call(self, string_or_io)
+    end
+
     # Converts to an sexpr expression.
     def to_ast
       raise "Bmg is missing a feature!"

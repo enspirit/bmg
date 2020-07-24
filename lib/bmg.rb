@@ -38,6 +38,7 @@ module Bmg
   require_relative 'bmg/operator'
 
   require_relative 'bmg/reader'
+  require_relative 'bmg/writer'
 
   require_relative 'bmg/relation/empty'
   require_relative 'bmg/relation/in_memory'
