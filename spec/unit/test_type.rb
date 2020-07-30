@@ -287,6 +287,59 @@ module Bmg
 
     end
 
+    describe 'transform' do
+
+      it 'keeps attrlist' do
+        type = suppliers.transform(:to_s)
+        expect(type.to_attrlist).to eql(suppliers.to_attrlist)
+      end
+
+      it 'drops all keys by default' do
+        type = suppliers
+          .with_keys([[:sid]])
+          .transform(:to_s)
+        expect(type.keys).to eql([suppliers.to_attrlist])
+      end
+
+      it 'drops predicate by default' do
+        type = suppliers
+          .with_predicate(Predicate.eq(:sid, "S1"))
+          .transform(:to_s)
+        expect(type.predicate).to eql(Predicate.tautology)
+      end
+
+      it 'preserves the keys when explicitely requested' do
+        type = suppliers
+          .with_keys([[:sid]])
+          .transform(:to_s, key_preserving: true)
+        expect(type.keys).to eql([[:sid]])
+      end
+
+      it 'detects wrong usages when typechecked is set' do
+        expect {
+          suppliers
+          .with_typecheck
+          .transform(:foo => :to_s)
+        }.to raise_error(TypeError)
+      end
+
+      it 'automatically preserves untouched keys' do
+        type = suppliers
+          .with_keys([[:sid]])
+          .transform(:name => :upcase)
+        expect(type.keys).to eql([[:sid]])
+      end
+
+      it 'automatically preserves predicate when possible' do
+        pred = Predicate.eq(:sid, "S2") & Predicate.eq(:name, "Smith")
+        type = suppliers
+          .with_predicate(pred)
+          .transform(:name => :upcase)
+        expect(type.predicate).to eql(Predicate.eq(:sid, "S2"))
+      end
+
+    end
+
     describe 'union' do
 
       it 'keeps attrlist when known' do

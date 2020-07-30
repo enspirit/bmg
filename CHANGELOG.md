@@ -3,6 +3,29 @@
 * Add a Relation::Proxy module that helps constructing object collections
   on top of Bmg Relations.
 
+* Add Relation#transform, for easier attribute transformations than
+  #extend.
+
+  TRANSFORM uses ruby semantics for now, is not compiled to SQL, and
+  provides no optimization so far. It makes various transformation
+  much easier than before:
+
+      # Will apply attr.to_s on every attribute
+      relation.transform(:to_s)
+      relation.transform(&:to_s)
+
+      # Will apply attr.to_s.upcase on every tuple attribute
+      relation.transform([:to_s, :upcase])
+
+      # Will selectively apply on attributes
+      relation.transform(:foo => :upcase, :bar => ->(bar){ bar*2 })
+
+  EXTEND is supposed to be used for adding attributes only, not
+  transforming existing ones. The introduction of TRANSFORM make this
+  clearer by providing an official alternative. The aim is to make
+  formal logic (e.g. optimizer) slightly more powerful, through PRE
+  strengtening (in 1.0) along those rules.
+
 # 0.17.5 - 2020/08/17
 
 * Add Relation#to_csv, for easier .csv file generation from relational

@@ -172,6 +172,16 @@ module Bmg
     end
     protected :_summarize
 
+    def transform(transformation = nil, options = {}, &proc)
+      transformation, options = proc, (transformation || {}) unless proc.nil?
+      _transform(self.type.transform(transformation, options), transformation, options)
+    end
+
+    def _transform(type, transformation, options)
+      Operator::Transform.new(type, self, transformation, options)
+    end
+    protected :_transform
+
     def union(other, options = {})
       return self if other.is_a?(Relation::Empty)
       _union self.type.union(other.type), other, options
