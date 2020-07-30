@@ -7,6 +7,10 @@ module Bmg
 
   public ## tools
 
+    def select(&bl)
+      Keys.new(@keys.select(&bl), false)
+    end
+
   public ## algebra
 
     def allbut(oldtype, newtype, butlist)

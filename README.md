@@ -132,6 +132,10 @@ r.restrict(a: "foo", b: "bar", ...)          # relational restriction, aka where
 r.rxmatch([:a, :b, ...], /xxx/)              # regex match kind of restriction
 r.summarize([:a, :b, ...], x: :sum)          # relational summarization
 r.suffix(:_foo, but: [:a, ...])              # suffix kind of renaming
+t.transform(:to_s)                           # all-attrs transformation
+t.transform(&:to_s)                          # similar, but Proc-driven
+t.transform(:foo => :upcase, ...)            # specific-attrs tranformation
+t.transform([:to_s, :upcase])                # chain-transformation
 r.union(right)                               # relational union
 ```
 

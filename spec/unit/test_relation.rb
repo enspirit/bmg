@@ -653,6 +653,79 @@ module Bmg
       end
     end
 
+    describe 'transform' do
+      let(:data) {
+        [
+          { a: "foo", b: 2 },
+          { a: "bar", b: 4 }
+        ]
+      }
+
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      context 'when used with a single symbol' do
+        subject {
+          relation.transform(:to_s)
+        }
+
+        it_behaves_like "an operator method"
+
+        it 'applies the transformation to all attributes' do
+          expect(subject.to_a).to eql([
+            { a: "foo", b: "2" },
+            { a: "bar", b: "4" }
+          ])
+        end
+      end
+
+      context 'when used with an array of symbols' do
+        subject {
+          relation.transform([:to_s, :upcase])
+        }
+
+        it_behaves_like "an operator method"
+
+        it 'applies the transformationS to all attributes' do
+          expect(subject.to_a).to eql([
+            { a: "FOO", b: "2" },
+            { a: "BAR", b: "4" }
+          ])
+        end
+      end
+
+      context 'when used with an Hash' do
+        subject {
+          relation.transform(a: :upcase)
+        }
+
+        it_behaves_like "an operator method"
+
+        it 'applies the transformation to specified attributes' do
+          expect(subject.to_a).to eql([
+            { a: "FOO", b: 2 },
+            { a: "BAR", b: 4 }
+          ])
+        end
+      end
+
+      context 'when used with a Proc' do
+        subject {
+          relation.transform(&:to_s)
+        }
+
+        it_behaves_like "an operator method"
+
+        it 'applies the transformation to all attributes' do
+          expect(subject.to_a).to eql([
+            { a: "foo", b: "2" },
+            { a: "bar", b: "4" }
+          ])
+        end
+      end
+    end
+
     describe 'union' do
       let(:left_data) {
         [

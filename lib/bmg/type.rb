@@ -241,6 +241,25 @@ module Bmg
       }
     end
 
+    def transform(transformation, options = {})
+      transformer = TupleTransformer.new(transformation)
+      if typechecked? && knows_attrlist? && transformer.knows_attrlist?
+        known_attributes!(transformer.to_attrlist)
+      end
+      keys = if options[:key_preserving]
+        self._keys
+      elsif transformer.knows_attrlist? && knows_keys?
+        touched_attrs = transformer.to_attrlist
+        keys = self._keys.select{|k| (k & touched_attrs).empty? }
+      else
+        nil
+      end
+      dup.tap{|x|
+        x.keys = keys
+        x.predicate = Predicate.tautology
+      }
+    end
+
     def union(other)
       if typechecked? && knows_attrlist? && other.knows_attrlist?
         missing = self.attrlist - other.attrlist
