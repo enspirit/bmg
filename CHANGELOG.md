@@ -3,6 +3,8 @@
 * Add Relation#to_csv, for easier .csv file generation from relational
   data.
 
+* Fix path dependency.
+
 # 0.17.4 - 2020/07/23
 
 * Fix SQL compilation when using INTERSECT predicates. INTERSECT
