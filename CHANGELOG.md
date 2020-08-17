@@ -1,4 +1,4 @@
-# 0.17.5
+# 0.17.5 - 2020/08/17
 
 * Add Relation#to_csv, for easier .csv file generation from relational
   data.
