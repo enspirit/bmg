@@ -44,6 +44,7 @@ module Bmg
   require_relative 'bmg/relation/in_memory'
   require_relative 'bmg/relation/spied'
   require_relative 'bmg/relation/materialized'
+  require_relative 'bmg/relation/proxy'
 
   # Deprecated
   Leaf = Relation::InMemory

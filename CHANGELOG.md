@@ -1,3 +1,8 @@
+# 0.17.6
+
+* Add a Relation::Proxy module that helps constructing object collections
+  on top of Bmg Relations.
+
 # 0.17.5 - 2020/08/17
 
 * Add Relation#to_csv, for easier .csv file generation from relational
