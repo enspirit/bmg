@@ -1,4 +1,4 @@
-# 0.17.6
+# 0.17.6 - 2020/08/28
 
 * Add a Relation::Proxy module that helps constructing object collections
   on top of Bmg Relations.
