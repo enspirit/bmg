@@ -75,6 +75,18 @@ module Bmg
         end
       end
 
+      context 'when specifying an ordering preference' do
+        let(:args){ [ {}, { attributes_ordering: [:name, :id] } ] }
+
+        it 'works' do
+          expected = <<~CSV
+            Bernard Lambeau,1
+            Yoann;Guyot,2
+          CSV
+          expect(subject).to eql(expected)
+        end
+      end
+
     end
   end
 end

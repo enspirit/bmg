@@ -1,3 +1,8 @@
+# 0.17.8
+
+* Relation#to_csv now accepts an OutputPreference object (or hash)
+  allowing to specify an attributes ordering.
+
 # 0.17.7 - 2020/09/10
 
 * TupleTransformer now allows using a Hash as attribute transformation.

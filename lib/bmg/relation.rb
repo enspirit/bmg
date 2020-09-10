@@ -113,9 +113,10 @@ module Bmg
     # When no string_or_io is used, the method uses a string.
     #
     # The method always returns the string_or_io.
-    def to_csv(options = {}, string_or_io = nil)
+    def to_csv(options = {}, string_or_io = nil, preferences = nil)
       options, string_or_io = {}, options unless options.is_a?(Hash)
-      Writer::Csv.new(options).call(self, string_or_io)
+      string_or_io, preferences = nil, string_or_io if string_or_io.is_a?(Hash)
+      Writer::Csv.new(options, preferences).call(self, string_or_io)
     end
 
     # Converts to an sexpr expression.
