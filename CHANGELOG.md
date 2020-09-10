@@ -1,4 +1,4 @@
-# 0.17.7
+# 0.17.7 - 2020/09/10
 
 * TupleTransformer now allows using a Hash as attribute transformation.
   E.g.,
