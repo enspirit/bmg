@@ -1,4 +1,4 @@
-# 0.17.8
+# 0.17.8 - 2020/09/10
 
 * Relation#to_csv now accepts an OutputPreference object (or hash)
   allowing to specify an attributes ordering.
