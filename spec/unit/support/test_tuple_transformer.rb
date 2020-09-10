@@ -4,7 +4,8 @@ module Bmg
 
     let(:tuple){{
       :foo => 2,
-      :bar => "a"
+      :bar => "a",
+      :baz => "1"
     }}
 
     describe "new" do
@@ -31,7 +32,8 @@ module Bmg
         it 'works' do
           expect(subject).to eql({
             foo: "2",
-            bar: "a"
+            bar: "a",
+            baz: "1"
           })
         end
       end
@@ -44,7 +46,8 @@ module Bmg
         it 'works' do
           expect(subject).to eql({
             foo: "2",
-            bar: "A"
+            bar: "A",
+            baz: "1"
           })
         end
       end
@@ -57,21 +60,24 @@ module Bmg
         it 'works' do
           expect(subject).to eql({
             foo: "2",
-            bar: "a"
+            bar: "a",
+            baz: "1"
           })
         end
       end
 
-      context 'when used with a Hash with Symbols' do
+      context 'when used with a Hash with various transformers' do
         let(:arg){{
           :foo => :to_s,
-          :bar => ->(attr){ attr.upcase }
+          :bar => ->(attr){ attr.upcase },
+          :baz => { "1" => "a", "2" => "b" }
         }}
 
         it 'works' do
           expect(subject).to eql({
             foo: "2",
-            bar: "A"
+            bar: "A",
+            baz: "a"
           })
         end
       end

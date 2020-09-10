@@ -53,6 +53,8 @@ module Bmg
           value.send(with)
         when Proc
           with.call(value)
+        when Hash
+          with[value]
         else
           raise ArgumentError, "Unexpected transformation `#{with.inspect}`"
         end

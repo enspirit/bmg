@@ -1,3 +1,12 @@
+# 0.17.7
+
+* TupleTransformer now allows using a Hash as attribute transformation.
+  E.g.,
+
+      r = Bmg::Relation.new [{:foo => "x"}, {:foo => "y"}]
+      r2 = r.transform(foo: { "x" => 1, "y" => 2 })
+      r2.to_a  # [{:foo => 1}, {:foo => 2}]
+
 # 0.17.6 - 2020/08/28
 
 * Add a Relation::Proxy module that helps constructing object collections
