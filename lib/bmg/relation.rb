@@ -17,6 +17,12 @@ module Bmg
       self
     end
 
+    def with_type(type)
+      dup.tap{|r|
+        r.type = type
+      }
+    end
+
     def with_typecheck
       dup.tap{|r|
         r.type = r.type.with_typecheck
