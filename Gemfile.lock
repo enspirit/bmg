@@ -38,7 +38,7 @@ GEM
     sqlite3 (1.4.2)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-18
 
 DEPENDENCIES
   bmg!
@@ -49,4 +49,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.1.4
+   2.2.2
