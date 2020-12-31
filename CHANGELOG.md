@@ -1,3 +1,8 @@
+# 0.17.9
+
+* Bmg::Relation already provides a `type` implementation, that returns
+  Bmg::Type::ANY.
+
 # 0.17.8 - 2020/09/10
 
 * Relation#to_csv now accepts an OutputPreference object (or hash)
