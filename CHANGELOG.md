@@ -1,7 +1,9 @@
 # 0.17.9
 
 * Bmg::Relation already provides a `type` implementation, that returns
-  Bmg::Type::ANY.
+  Bmg::Type::ANY
+
+* Add TupleAlgebra#symbolize_keys
 
 # 0.17.8 - 2020/09/10
 

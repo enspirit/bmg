@@ -19,5 +19,11 @@ module Bmg
     end
     module_function :rename
 
+    def symbolize_keys(h)
+      return h if h.empty?
+      h.each_with_object({}){|(k,v),h| h[k.to_sym] = v }
+    end
+    module_function :symbolize_keys
+
   end # module TupleAlgebra
 end # module Bmg

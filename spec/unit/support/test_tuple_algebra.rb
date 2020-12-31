@@ -54,4 +54,17 @@ module Bmg
     end
 
   end
+  describe TupleAlgebra, "symbolize_keys" do
+    include TupleAlgebra
+
+    it 'works' do
+      expect(symbolize_keys({"a" => 1, "b" => 2})).to eql({a: 1, b: 2})
+    end
+
+    it 'works on empty' do
+      h = {}
+      expect(symbolize_keys(h)).to be(h)
+    end
+
+  end
 end
