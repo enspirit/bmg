@@ -21,7 +21,7 @@
   #extend.
 
   TRANSFORM uses ruby semantics for now, is not compiled to SQL, and
-  provides no optimization so far. It makes various transformation
+  provides no optimization so far. It makes various transformations
   much easier than before:
 
       # Will apply attr.to_s on every attribute
@@ -35,7 +35,7 @@
       relation.transform(:foo => :upcase, :bar => ->(bar){ bar*2 })
 
   EXTEND is supposed to be used for adding attributes only, not
-  transforming existing ones. The introduction of TRANSFORM make this
+  transforming existing ones. The introduction of TRANSFORM makes this
   clearer by providing an official alternative. The aim is to make
   formal logic (e.g. optimizer) slightly more powerful, through PRE
   strengtening (in 1.0) along those rules.
