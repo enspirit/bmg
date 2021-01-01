@@ -38,6 +38,20 @@ module Bmg
         end
       end
 
+      context 'when used with a Regexp' do
+        let(:arg){
+          /[a-z]/
+        }
+
+        it 'works' do
+          expect(subject).to eql({
+            foo: nil,
+            bar: "a",
+            baz: nil
+          })
+        end
+      end
+
       context 'when used with an Array of Symbols' do
         let(:arg){
           [:to_s, :upcase]

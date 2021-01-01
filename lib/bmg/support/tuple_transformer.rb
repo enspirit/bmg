@@ -26,11 +26,7 @@ module Bmg
 
       def transform_tuple(tuple, with)
         case with
-        when Symbol
-          tuple.each_with_object({}){|(k,v),dup|
-            dup[k] = transform_attr(v, with)
-          }
-        when Proc
+        when Symbol, Proc, Regexp
           tuple.each_with_object({}){|(k,v),dup|
             dup[k] = transform_attr(v, with)
           }
@@ -51,6 +47,9 @@ module Bmg
         case with
         when Symbol
           value.send(with)
+        when Regexp
+          m = with.match(value.to_s)
+          m.nil? ? m : m.to_s
         when Proc
           with.call(value)
         when Hash

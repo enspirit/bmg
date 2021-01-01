@@ -5,6 +5,10 @@
 
 * Add TupleAlgebra#symbolize_keys
 
+* Relation#transform now supports Regexp transformation. When a match
+  is found, transformed value is the match's `to_s`, otherwise it is
+  nil.
+
 # 0.17.8 - 2020/09/10
 
 * Relation#to_csv now accepts an OutputPreference object (or hash)
