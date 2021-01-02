@@ -2,3 +2,4 @@ pkg/*
 .bundle
 /vendor
 Gemfile.lock
+/spec/regression/**/*.db

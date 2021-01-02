@@ -17,6 +17,13 @@ namespace :test do
   end
   tests << :integration
 
+  desc "Runs github regression tests"
+  RSpec::Core::RakeTask.new(:regression) do |t|
+    t.pattern = "spec/regression/**/test_*.rb"
+    t.rspec_opts = ["-Ilib", "-Ispec/regression", "--fail-fast", "--color", "--backtrace", "--format=progress"]
+  end
+  tests << :regression
+
   task :all => tests
 end
 
