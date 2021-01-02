@@ -2,6 +2,14 @@ module Bmg
   module Algebra
     module Shortcuts
 
+      def where(predicate)
+        restrict(predicate)
+      end
+
+      def exclude(predicate)
+        restrict(!Predicate.coerce(predicate))
+      end
+
       def rxmatch(attrs, matcher, options = {})
         predicate = attrs.inject(Predicate.contradiction){|p,a|
           p | Predicate.match(a, matcher, options)

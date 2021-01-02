@@ -9,6 +9,10 @@
   is found, transformed value is the match's `to_s`, otherwise it is
   nil.
 
+* Add Relation#where(p) as an alias for restrict(p)
+
+* Add Relation#exclude(p), a shortcut for restrict(!p)
+
 # 0.17.8 - 2020/09/10
 
 * Relation#to_csv now accepts an OutputPreference object (or hash)

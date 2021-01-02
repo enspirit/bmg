@@ -114,6 +114,7 @@ r.autowrap(split: '_')                       # structure a flat relation, split:
 r.autosummarize([:a, :b, ...], x: :sum)      # (experimental) usual summarizers supported
 r.constants(x: 12, ...)                      # add constant attributes (sometimes useful in unions)
 r.extend(x: ->(t){ ... }, ...)               # add computed attributes
+r.exclude(predicate)                         # shortcut for restrict(!predicate)
 r.group([:a, :b, ...], :x)                   # relation-valued attribute from attributes
 r.image(right, :x, [:a, :b, ...])            # relation-valued attribute from another relation
 r.join(right, [:a, :b, ...])                 # natural join on a join key
@@ -137,6 +138,7 @@ t.transform(&:to_s)                          # similar, but Proc-driven
 t.transform(:foo => :upcase, ...)            # specific-attrs tranformation
 t.transform([:to_s, :upcase])                # chain-transformation
 r.union(right)                               # relational union
+r.where(predicate)                           # alias for restrict(predicate)
 ```
 
 ## Who is behind Bmg?
