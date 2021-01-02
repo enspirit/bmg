@@ -1,6 +1,9 @@
-# 0.17.9
+# 0.18.0
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
+
+* Add Bmg.text_file to easily parse then query text files,
+  with out of the box support for named regular expressions.
 
 * Add Relation#with_type
 

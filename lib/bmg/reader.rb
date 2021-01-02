@@ -9,3 +9,4 @@ module Bmg
 end
 require_relative "reader/csv"
 require_relative "reader/excel"
+require_relative "reader/text_file"

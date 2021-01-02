@@ -8,6 +8,11 @@ module Bmg
   end
   module_function :in_memory
 
+  def text_file(path, options = {}, type = Type::ANY)
+    Reader::TextFile.new(type, path, options).spied(main_spy)
+  end
+  module_function :text_file
+
   def csv(path, options = {}, type = Type::ANY)
     Reader::Csv.new(type, path, options).spied(main_spy)
   end
