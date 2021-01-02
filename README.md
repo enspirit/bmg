@@ -15,9 +15,9 @@ see a section further down this README.
 * [Where are base relations coming from?](#where-are-base-relations-coming-from)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
 * [List of supported operators](#supported-operators)
-* [How is this different](#how-is-this-different)
-  * [From similar libraries](#from-similar-libraries)
-  * [From Alf](#from-alf)
+* [How is this different?](#how-is-this-different)
+  * [... from similar libraries](#-from-similar-libraries)
+  * [... from Alf](#-from-alf)
 
 ## Example
 
@@ -41,6 +41,8 @@ by_city = suppliers
 puts JSON.pretty_generate(by_city)
 # [{...},...]
 ```
+
+## Where are base relations coming from?
 
 ### Connecting to SQL databases
 
