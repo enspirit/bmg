@@ -2,15 +2,27 @@
 
 Bmg is a relational algebra implemented as a ruby library. It implements the
 [Relation as First-Class Citizen](http://www.try-alf.org/blog/2013-10-21-relations-as-first-class-citizen)
-paradigm contributed with Alf a few years ago.
+paradigm contributed with [Alf](http://www.try-alf.org/) a few years ago.
 
-Like Alf, Bmg can be used to query relations in memory, from various files,
-SQL databases, and any data sources that can be seen as serving relations.
-Cross data-sources joins are supported, as with Alf.
+Bmg can be used to query relations in memory, from various files, SQL databases,
+and any data source that can be seen as serving relations. Cross data-sources
+joins are supported, as with Alf. For differences with Alf, see a section
+further down this README.
 
-Unlike Alf, Bmg does not make any core ruby extension and exposes the
-object-oriented syntax only (not Alf's functional one). Bmg implementation is
-also much simpler, and make its easier to implement user-defined relations.
+## Outline
+
+* [Example](#example)
+* [Where are base relations coming from?](#where-are-base-relations-coming-from)
+  * [Memory relations](#memory-relations)
+  * [Connecting to SQL databases](#connecting-to-sql-databases)
+  * [Reading files (csv, excel, text)](#reading-files-csv-excel-text)
+  * [Your own relations](#your-own-relations)
+* [List of supported operators](#supported-operators)
+* [How is this different?](#how-is-this-different)
+  * [... from similar libraries](#-from-similar-libraries)
+  * [... from Alf](#-from-alf)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## Example
 
@@ -27,7 +39,7 @@ suppliers = Bmg::Relation.new([
 ])
 
 by_city = suppliers
-  .restrict(Predicate.neq(status: 30))
+  .exclude(status: 30)
   .extend(upname: ->(t){ t[:name].upcase })
   .group([:sid, :name, :status], :suppliers_in)
 
@@ -35,76 +47,158 @@ puts JSON.pretty_generate(by_city)
 # [{...},...]
 ```
 
-## Connecting to a SQL database
+## Where are base relations coming from?
 
-Bmg requires `sequel >= 3.0` to connect to SQL databases.
+Bmg sees relations as sets/enumerable of symbolized Ruby hashes. The following
+sections show you how to get them in the first place, to enter Relationland.
+
+### Memory relations
+
+If you have an Array of Hashes -- in fact any Enumerable -- you can easily get
+a Relation using either `Bmg::Relation.new` or `Bmg.in_memory`.
+
+```ruby
+# this...
+r = Bmg::Relation.new [{id: 1}, {id: 2}]
+
+# is the same as this...
+r = Bmg.in_memory [{id: 1}, {id: 2}]
+
+# entire algebra is available on `r`
+```
+
+### Connecting to SQL databases
+
+Bmg currently requires `sequel >= 3.0` to connect to SQL databases. You also
+need to require `bmg/sequel`.
 
 ```ruby
 require 'sqlite3'
 require 'bmg'
 require 'bmg/sequel'
-
-DB = Sequel.connect("sqlite://suppliers-and-parts.db")
-
-suppliers = Bmg.sequel(:suppliers, DB)
-
-big_suppliers = suppliers
-  .restrict(Predicate.neq(status: 30))
-
-puts big_suppliers.to_sql
-# SELECT `t1`.`sid`, `t1`.`name`, `t1`.`status`, `t1`.`city` FROM `suppliers` AS 't1' WHERE (`t1`.`status` != 30)
-
-puts JSON.pretty_generate(big_suppliers)
-# [{...},...]
 ```
 
-## How is this different from similar libraries?
+Then `Bmg.sequel` serves relations for tables of your SQL database:
 
-1. The libraries you probably know (Sequel, Arel, SQLAlchemy, Korma, jOOQ,
-   etc.) do not implement a genuine relational algebra: their support for
-   chaining relational operators is limited (yielding errors or wrong SQL
-   queries). Bmg **always** allows chaining operators. If it does not, it's
-   a bug. In other words, the following query is 100% valid:
+```ruby
+DB = Sequel.connect("sqlite://suppliers-and-parts.db")
+suppliers = Bmg.sequel(:suppliers, DB)
+```
 
-       relation
-         .restrict(...)    # aka where
-         .union(...)
-         .summarize(...)   # aka group by
-         .restrict(...)
+The entire algebra is available on those relations. As long as you keep using
+operators that can be translated to SQL, results remain SQL-able:
 
-2. Bmg supports in memory relations, json relations, csv relations, SQL
-   relations and so on. It's not tight to SQL generation, and supports
-   queries accross multiple data sources.
+```ruby
+big_suppliers = suppliers
+  .exclude(status: 30)
+  .project([:sid, :name])
 
-3. Bmg makes a best effort to optimize queries, simplifying both generated
-   SQL code (low-level accesses to datasources) and in-memory operations.
+puts big_suppliers.to_sql
+# SELECT `t1`.`sid`, `t1`.`name` FROM `suppliers` AS 't1' WHERE (`t1`.`status` != 30)
+```
 
-4. Bmg supports various *structuring* operators (group, image, autowrap,
-   autosummarize, etc.) and allows building 'non flat' relations.
+Operators not translatable to SQL are available too (such as `group` below).
+Bmg fallbacks to memory operators for them, but remains capable of pushing some
+operators down the tree as illustrated below (the restriction on `:city` is
+pushed to the SQL server):
 
-## How is this different from Alf?
+```ruby
+Bmg.sequel(:suppliers, sequel_db)
+  .project([:sid, :name, :city])
+  .group([:sid, :name], :suppliers_in)
+  .restrict(city: ["Paris", "London"])
+  .debug
 
-1. Bmg's implementation is much simpler than Alf, and uses no ruby core
-   extention.
+# (group
+#   (sequel SELECT `t1`.`sid`, `t1`.`name`, `t1`.`city` FROM `suppliers` AS 't1' WHERE (`t1`.`city` IN ('Paris', 'London')))
+#   [:sid, :name, :status]
+#   :suppliers_in
+#   {:array=>false})
+```
 
-2. We are confident using Bmg in production. Systematic inspection of query
-   plans is suggested though. Alf was a bit too experimental to be used on
-   (critical) production systems.
+### Reading files (csv, excel, text)
 
-2. Alf exposes a functional syntax, command line tool, restful tools and
-   many more. Bmg is limited to the core algebra, main Relation abstraction
-   and SQL generation.
+Bmg provides simple adapters to read files and reach Relationland as soon as
+possible.
 
-3. Bmg is less strict regarding conformance to relational theory, and
-   may actually expose non relational features (such as support for null,
-   left_join operator, etc.). Sharp tools hurt, use them with great care.
+#### CSV files
 
-4. Bmg does not yet implement all operators documented on try-alf.org, even
-   if we plan to eventually support them all.
+```ruby
+csv_options = { col_sep: ",", quote_char: '"' }
+r = Bmg.csv("path/to/a/file.csv", csv_options)
+```
 
-5. Bmg has a few additional operators that prove very useful on real
-   production use cases: prefix, suffix, autowrap, autosummarize, left_join,
-   rxmatch, etc.
+Options are directly transmitted to `::CSV.new`, check ruby's standard
+library.
+
+#### Excel files
+
+You will need to add [`roo`](https://github.com/roo-rb/roo) to your Gemfile to
+read `.xls` and `.xlsx` files with Bmg.
+
+```ruby
+roo_options = { skip: 1 }
+r = Bmg.excel("path/to/a/file.xls", roo_options)
+```
+
+Options are directly transmitted to `Roo::Spreadsheet.open`, check roo's
+documentation.
+
+#### Text files
+
+There is also a straightforward way to read text files and convert lines to
+tuples.
+
+```ruby
+r = Bmg.text_file("path/to/a/file.txt")
+r.type.attrlist
+# => [:line, :text]
+```
+
+Without options tuples will have `:line` and `:text` attributes, the former
+being the line number (starting at 1) and the latter being the line itself
+(stripped).
+
+The are a couple of options (see `Bmg::Reader::Textfile`). The most useful one
+is the use a of a Regexp with named captures to automatically extract
+attributes:
+
+```ruby
+r = Bmg.text_file("path/to/a/file.txt", parse: /GET (?<url>([^\s]+))/)
+r.type.attrlist
+# => [:line, :url]
+```
+
+In this scenario, non matching lines are skipped. The `:line` attribute keeps
+being used to have at least one candidate key (so to speak).
+
+### Your own relations
+
+As noted earlier, Bmg has a simple relation interface where you only have to
+provide an iteration of symbolized tuples.
+
+```ruby
+class MyRelation
+  include Bmg::Relation
+
+  def each
+    yield(id: 1, name: "Alf", year: 2014)
+    yield(id: 2, name: "Bmg", year: 2018)
+  end
+end
+
+MyRelation.new
+  .restrict(Predicate.gt(:year, 2015))
+  .allbut([:year])
+```
+
+As shown, creating adapters on top of various data source is straighforward.
+Adapters can also participate to query optimization (such as pushing
+restrictions down the tree) by overriding the underscored version of operators
+(e.g. `_restrict`).
+
+Have a look at `Bmg::Algebra` for the protocol and `Bmg::Sql::Relation` for an
+example. Keep in touch with the team if you need some help.
 
 ## Supported operators
 
@@ -141,12 +235,92 @@ r.union(right)                               # relational union
 r.where(predicate)                           # alias for restrict(predicate)
 ```
 
-## Who is behind Bmg?
+## How is this different?
 
-Bernard Lambeau (bernard@klaro.cards) is Alf & Bmg main engineer & maintainer.
+### ... from similar libraries?
+
+1. The libraries you probably know (Sequel, Arel, SQLAlchemy, Korma, jOOQ,
+   etc.) do not implement a genuine relational algebra. Their support for
+   chaining relational operators is thus limited (restricting your expression
+   power and/or raising errors and/or outputting wrong or counterintuitive
+   SQL code). Bmg **always** allows chaining operators. If it does not, it's
+   a bug.
+
+   For instance the expression below is 100% valid in Bmg. The last where
+   clause applies to the result of the summarize (while SQL requires a `HAVING`
+   clause, or a `SELECT ... FROM (SELECT ...) r`).
+
+      ```ruby
+      relation
+        .where(...)
+        .union(...)
+        .summarize(...)   # aka group by
+        .where(...)
+      ```
+
+2. Bmg supports in memory relations, json relations, csv relations, SQL
+   relations and so on. It's not tight to SQL generation, and supports
+   queries accross multiple data sources.
+
+3. Bmg makes a best effort to optimize queries, simplifying both generated
+   SQL code (low-level accesses to datasources) and in-memory operations.
+
+4. Bmg supports various *structuring* operators (group, image, autowrap,
+   autosummarize, etc.) and allows building 'non flat' relations.
+
+5. Bmg can use full ruby power when that helps (e.g. regular expressions in
+   WHERE clauses or ruby code in EXTEND clauses). This may prevent Bmg from
+   delegating work to underlying data sources (e.g. SQL server) and should
+   therefore be used with care though.
+
+### ... from Alf?
+
+If you use Alf (or used it in the past), below are the main differences between
+Bmg and Alf. Bmg has NOT been written to be API-compatible with Alf and will
+probably never be.
+
+1. Bmg's implementation is much simpler than Alf and uses no ruby core
+   extention.
+
+2. We are confident using Bmg in production. Systematic inspection of query
+   plans is advised though. Alf was a bit too experimental to be used on
+   (critical) production systems.
+
+3. Alf exposes a functional syntax, command line tool, restful tools and
+   many more. Bmg is limited to the core algebra, main Relation abstraction
+   and SQL generation.
+
+4. Bmg is less strict regarding conformance to relational theory, and
+   may actually expose non relational features (such as support for null,
+   left_join operator, etc.). Sharp tools hurt, use them with care.
+
+5. Unlike Alf::Relation instances of Bmg::Relation capture query-trees, not
+   values. Currently two instances `r1` and `r2` are not equal even if they
+   define the same mathematical relation. As a consequence joining on
+   relation-valued attributes does not work as expected in Bmg until further
+   notice.
+
+6. Bmg does not implement all operators documented on try-alf.org, even if
+   we plan to eventually support most of them.
+
+7. Bmg has a few additional operators that prove very useful on real
+   production use cases: prefix, suffix, autowrap, autosummarize, left_join,
+   rxmatch, etc.
+
+8. Bmg optimizes queries and compiles them to SQL on the fly, while Alf was
+   building an AST internally first. Strictly speaking this makes Bmg less
+   powerful than Alf since optimizations cannot be turned off for now.
+
+## Contribute
+
+Please use github issues and pull requests for all questions, bug reports,
+and contributions. Don't hesitate to get in touch with us with an early code
+spike if you plan to add non trivial features.
+
+## Licence
+
+This software is distributed by Enspirit SRL under a MIT Licence. Please
+contact Bernard Lambeau (blambeau@gmail.com) with any question.
 
 Enspirit (https://enspirit.be) and Klaro App (https://klaro.cards) are both
 actively using and contributing to the library.
-
-Feel free to contact us for help, ideas and/or contributions. Please use github
-issues and pull requests if possible if code is involved.
