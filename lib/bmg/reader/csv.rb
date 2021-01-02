@@ -18,7 +18,7 @@ module Bmg
 
       def each
         require 'csv'
-        ::CSV.foreach(@path, "r", @options) do |row|
+        ::CSV.foreach(@path, @options) do |row|
           yield tuple(row)
         end
       end
