@@ -1,7 +1,8 @@
 # 0.17.9
 
-* Bmg::Relation already provides a `type` implementation, that returns
-  Bmg::Type::ANY
+* Default Relation#type is provided, that returns Bmg::Type::ANY
+
+* Add Relation#with_type
 
 * Add TupleAlgebra#symbolize_keys
 
