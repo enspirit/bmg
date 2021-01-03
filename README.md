@@ -16,6 +16,7 @@ further down this README.
   * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
   * [Reading files (csv, excel, text)](#reading-files-csv-excel-text)
+  * [Your own relations](#your-own-relations)
 * [List of supported operators](#supported-operators)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
@@ -170,6 +171,34 @@ r.type.attrlist
 
 In this scenario, non matching lines are skipped. The `:line` attribute keeps
 being used to have at least one candidate key (so to speak).
+
+### Your own relations
+
+As noted earlier, Bmg has a simple relation interface where you only have to
+provide an iteration of symbolized tuples.
+
+```ruby
+class MyRelation
+  include Bmg::Relation
+
+  def each
+    yield(id: 1, name: "Alf", year: 2014)
+    yield(id: 2, name: "Bmg", year: 2018)
+  end
+end
+
+MyRelation.new
+  .restrict(Predicate.gt(:year, 2015))
+  .allbut([:year])
+```
+
+As shown, creating adapters on top of various data source is straighforward.
+Adapters can also participate to query optimization (such as pushing
+restrictions down the tree) by overriding the underscored version of operators
+(e.g. `_restrict`).
+
+Have a look at `Bmg::Algebra` for the protocol and `Bmg::Sql::Relation` for an
+example. Keep in touch with the team if you need some help.
 
 ## Supported operators
 
