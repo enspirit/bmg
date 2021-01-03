@@ -15,6 +15,7 @@ further down this README.
 * [Where are base relations coming from?](#where-are-base-relations-coming-from)
   * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
+  * [Reading files (csv, excel, text)](#reading-files-csv-excel-text)
 * [List of supported operators](#supported-operators)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
@@ -96,8 +97,8 @@ puts big_suppliers.to_sql
 ```
 
 Operators not translatable to SQL are available too (such as `group` below).
-Bmg fallbacks to memory operators for them, but remain capable of pushing some
-operators down the tree, as illustrated below (the restriction on `:city` is
+Bmg fallbacks to memory operators for them, but remains capable of pushing some
+operators down the tree as illustrated below (the restriction on `:city` is
 pushed to the SQL server):
 
 ```ruby
@@ -113,6 +114,62 @@ Bmg.sequel(:suppliers, sequel_db)
 #   :suppliers_in
 #   {:array=>false})
 ```
+
+### Reading files (csv, excel, text)
+
+Bmg provides simple adapters to read files and reach Relationland as soon as
+possible.
+
+#### CSV files
+
+```ruby
+csv_options = { col_sep: ",", quote_char: '"' }
+r = Bmg.csv("path/to/a/file.csv", csv_options)
+```
+
+Options are directly transmitted to `::CSV.new`, check ruby's standard
+library.
+
+#### Excel files
+
+You will need to add [`roo`](https://github.com/roo-rb/roo) to your Gemfile to
+read `.xls` and `.xlsx` files with Bmg.
+
+```
+roo_options = { skip: 1 }
+r = Bmg.excel("path/to/a/file.xls", roo_options)
+```
+
+Options are directly transmitted to `Roo::Spreadsheet.open`, check roo's
+documentation.
+
+#### Text files
+
+There is also a straightforward way to read text files and convert lines to
+tuples.
+
+```ruby
+r = Bmg.text_file("path/to/a/file.txt")
+r.type.attrlist
+# => [:line, :text]
+```
+
+Without options tuples will have `:line` and `:text` attributes, the former
+being the line number (starting at 1) and the latter being the line itself
+(stripped).
+
+The are a couple of options (see `Bmg::Reader::Textfile`). The most useful one
+is the use a of a Regexp with named captures to automatically extract
+attributes:
+
+```ruby
+r = Bmg.text_file("path/to/a/file.txt", parse: /GET (?<url>([^\s]+))/)
+r.type.attrlist
+# => [:line, :url]
+```
+
+In this scenario, non matching lines are skipped. The `:line` attribute keeps
+being used to have at least one candidate key (so to speak).
 
 ## Supported operators
 
