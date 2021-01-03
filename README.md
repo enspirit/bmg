@@ -4,20 +4,23 @@ Bmg is a relational algebra implemented as a ruby library. It implements the
 [Relation as First-Class Citizen](http://www.try-alf.org/blog/2013-10-21-relations-as-first-class-citizen)
 paradigm contributed with [Alf](http://www.try-alf.org/) a few years ago.
 
-Like Alf, Bmg can be used to query relations in memory, from various files,
-SQL databases, and any data sources that can be seen as serving relations.
-Cross data-sources joins are supported, as with Alf. For differences with Alf,
-see a section further down this README.
+Bmg can be used to query relations in memory, from various files, SQL databases,
+and any data source that can be seen as serving relations. Cross data-sources
+joins are supported, as with Alf. For differences with Alf, see a section
+further down this README.
 
 ## Outline
 
 * [Example](#example)
 * [Where are base relations coming from?](#where-are-base-relations-coming-from)
+  * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
 * [List of supported operators](#supported-operators)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
   * [... from Alf](#-from-alf)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## Example
 
@@ -44,27 +47,71 @@ puts JSON.pretty_generate(by_city)
 
 ## Where are base relations coming from?
 
+Bmg sees relations as sets/enumerable of symbolized Ruby hashes. The following
+sections show you how to get them in the first place, to enter Relationland.
+
+### Memory relations
+
+If you have an Array of Hashes -- in fact any Enumerable -- you can easily get
+a Relation using either `Bmg::Relation.new` or `Bmg.in_memory`.
+
+```
+# this...
+r = Bmg::Relation.new [{id: 1}, {id: 2}]
+
+# is the same as this...
+r = Bmg.in_memory [{id: 1}, {id: 2}]
+
+# entire algebra is available on `r`
+```
+
 ### Connecting to SQL databases
 
-Bmg requires `sequel >= 3.0` to connect to SQL databases.
+Bmg currently requires `sequel >= 3.0` to connect to SQL databases. You also
+need to require `bmg/sequel`.
 
 ```ruby
 require 'sqlite3'
 require 'bmg'
 require 'bmg/sequel'
+```
 
+Then `Bmg.sequel` serves relations for tables of your SQL database:
+
+```ruby
 DB = Sequel.connect("sqlite://suppliers-and-parts.db")
-
 suppliers = Bmg.sequel(:suppliers, DB)
+```
 
+The entire algebra is available on those relations. As long as you keep using
+operators that can be translated to SQL, results remain SQL-able:
+
+```ruby
 big_suppliers = suppliers
-  .restrict(Predicate.neq(status: 30))
+  .exclude(status: 30)
+  .project([:sid, :name])
 
 puts big_suppliers.to_sql
-# SELECT `t1`.`sid`, `t1`.`name`, `t1`.`status`, `t1`.`city` FROM `suppliers` AS 't1' WHERE (`t1`.`status` != 30)
+# SELECT `t1`.`sid`, `t1`.`name` FROM `suppliers` AS 't1' WHERE (`t1`.`status` != 30)
+```
 
-puts JSON.pretty_generate(big_suppliers)
-# [{...},...]
+Operators not translatable to SQL are available too (such as `group` below).
+Bmg fallbacks to memory operators for them, but remain capable of pushing some
+operators down the tree, as illustrated below (the restriction on `:city` is
+pushed to the SQL server):
+
+```ruby
+Bmg.sequel(:suppliers, sequel_db)
+  .project([:sid, :name, :city])
+  .group([:sid, :name], :suppliers_in)
+  .restrict(city: ["Paris", "London"])
+  .debug
+
+# (group
+#   (sequel SELECT `t1`.`sid`, `t1`.`name`, `t1`.`city` FROM `suppliers` AS 't1' WHERE (`t1`.`city` IN ('Paris', 'London')))
+#   [:sid, :name, :status]
+#   :suppliers_in
+#   {:array=>false})
 ```
 
 ## Supported operators
@@ -160,12 +207,16 @@ never be.
    building an AST internally first. Strictly speaking this makes Bmg less
    powerful than Alf since optimizations cannot be turned off for now.
 
-## Who is behind Bmg?
+## Contribute
 
-Bernard Lambeau (bernard@klaro.cards) is Alf & Bmg main engineer & maintainer.
+Please use github issues and pull requests for all questions, bug reports,
+and contributions. Don't hesitate to get in touch with us with an early code
+spike if you plan to add non trivial features.
+
+## Licence
+
+This software is distributed by Enspirit SRL under a MIT Licence. Please
+contact Bernard Lambeau (blambeau@gmail.com) with any question.
 
 Enspirit (https://enspirit.be) and Klaro App (https://klaro.cards) are both
 actively using and contributing to the library.
-
-Feel free to contact us for help, ideas and/or contributions. Please use github
-issues and pull requests if possible if code is involved.
