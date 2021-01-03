@@ -240,17 +240,22 @@ r.where(predicate)                           # alias for restrict(predicate)
 ### ... from similar libraries?
 
 1. The libraries you probably know (Sequel, Arel, SQLAlchemy, Korma, jOOQ,
-   etc.) do not implement a genuine relational algebra: their support for
-   chaining relational operators is limited (yielding errors or wrong SQL
-   queries). Bmg **always** allows chaining operators. If it does not, it's
-   a bug. In other words, the following query is 100% valid:
+   etc.) do not implement a genuine relational algebra. Their support for
+   chaining relational operators is thus limited (restricting your expression
+   power and/or raising errors and/or outputting wrong or counterintuitive
+   SQL code). Bmg **always** allows chaining operators. If it does not, it's
+   a bug.
+
+   For instance the expression below is 100% valid in Bmg. The last where
+   clause applies to the result of the summarize (while SQL requires a `HAVING`
+   clause, or a `SELECT ... FROM (SELECT ...) r`).
 
       ```ruby
       relation
         .where(...)
         .union(...)
         .summarize(...)   # aka group by
-        .restrict(...)
+        .where(...)
       ```
 
 2. Bmg supports in memory relations, json relations, csv relations, SQL
@@ -263,13 +268,18 @@ r.where(predicate)                           # alias for restrict(predicate)
 4. Bmg supports various *structuring* operators (group, image, autowrap,
    autosummarize, etc.) and allows building 'non flat' relations.
 
+5. Bmg can use full ruby power when that helps (e.g. regular expressions in
+   WHERE clauses or ruby code in EXTEND clauses). This may prevent Bmg from
+   delegating work to underlying data sources (e.g. SQL server) and should
+   therefore be used with care though.
+
 ### ... from Alf?
 
-If you use Alf in the past, below are the main differences between Bmg and
-Alf. Bmg has NOT been written to be API-compatible with Alf and will probably
-never be.
+If you use Alf (or used it in the past), below are the main differences between
+Bmg and Alf. Bmg has NOT been written to be API-compatible with Alf and will
+probably never be.
 
-1. Bmg's implementation is much simpler than Alf, and uses no ruby core
+1. Bmg's implementation is much simpler than Alf and uses no ruby core
    extention.
 
 2. We are confident using Bmg in production. Systematic inspection of query
@@ -284,14 +294,20 @@ never be.
    may actually expose non relational features (such as support for null,
    left_join operator, etc.). Sharp tools hurt, use them with care.
 
-5. Bmg does not implement all operators documented on try-alf.org, even if
+5. Unlike Alf::Relation instances of Bmg::Relation capture query-trees, not
+   values. Currently two instances `r1` and `r2` are not equal even if they
+   define the same mathematical relation. As a consequence joining on
+   relation-valued attributes does not work as expected in Bmg until further
+   notice.
+
+6. Bmg does not implement all operators documented on try-alf.org, even if
    we plan to eventually support most of them.
 
-6. Bmg has a few additional operators that prove very useful on real
+7. Bmg has a few additional operators that prove very useful on real
    production use cases: prefix, suffix, autowrap, autosummarize, left_join,
    rxmatch, etc.
 
-7. Bmg optimizes queries and compiles them to SQL on the fly, while Alf was
+8. Bmg optimizes queries and compiles them to SQL on the fly, while Alf was
    building an AST internally first. Strictly speaking this makes Bmg less
    powerful than Alf since optimizations cannot be turned off for now.
 
