@@ -245,11 +245,13 @@ r.where(predicate)                           # alias for restrict(predicate)
    queries). Bmg **always** allows chaining operators. If it does not, it's
    a bug. In other words, the following query is 100% valid:
 
-       relation
-         .where(...)
-         .union(...)
-         .summarize(...)   # aka group by
-         .restrict(...)
+      ```ruby
+      relation
+        .where(...)
+        .union(...)
+        .summarize(...)   # aka group by
+        .restrict(...)
+      ```
 
 2. Bmg supports in memory relations, json relations, csv relations, SQL
    relations and so on. It's not tight to SQL generation, and supports
