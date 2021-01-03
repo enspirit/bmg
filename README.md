@@ -56,7 +56,7 @@ sections show you how to get them in the first place, to enter Relationland.
 If you have an Array of Hashes -- in fact any Enumerable -- you can easily get
 a Relation using either `Bmg::Relation.new` or `Bmg.in_memory`.
 
-```
+```ruby
 # this...
 r = Bmg::Relation.new [{id: 1}, {id: 2}]
 
@@ -135,7 +135,7 @@ library.
 You will need to add [`roo`](https://github.com/roo-rb/roo) to your Gemfile to
 read `.xls` and `.xlsx` files with Bmg.
 
-```
+```ruby
 roo_options = { skip: 1 }
 r = Bmg.excel("path/to/a/file.xls", roo_options)
 ```
