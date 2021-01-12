@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/enspirit/bmg.svg?branch=master)](https://travis-ci.com/enspirit/bmg)
 # Bmg, a relational algebra (Alf's successor)!
 
 Bmg is a relational algebra implemented as a ruby library. It implements the
