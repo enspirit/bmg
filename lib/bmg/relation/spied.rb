@@ -24,7 +24,7 @@ module Bmg
       protected :type=
 
       def each(&bl)
-        spy.call(self)
+        spy.call(self) if bl
         operand.each(&bl)
       end
 

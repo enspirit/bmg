@@ -1,4 +1,4 @@
-# 0.18.0
+# 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
 
