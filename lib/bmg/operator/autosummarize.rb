@@ -24,6 +24,22 @@ module Bmg
 
     public
 
+      def self.same(*args)
+        Same.new(*args)
+      end
+
+      def self.group(*args)
+        Group.new(*args)
+      end
+
+      def self.y_by_x(*args)
+        YByX.new(*args)
+      end
+
+      def self.ys_by_x(*args)
+        YsByX.new(*args)
+      end
+
       def each(&bl)
         h = {}
         @operand.each do |tuple|
@@ -175,11 +191,11 @@ module Bmg
         end
 
         def init(v)
-          [v]
+          v.nil? ? [] : [v]
         end
 
         def sum(v1, v2)
-          v1 << v2
+          v2.nil? ? v1 : (v1 << v2)
         end
 
         def term(v)
@@ -211,11 +227,11 @@ module Bmg
         end
 
         def init(v)
-          [v]
+          v.nil? ? [] : [v]
         end
 
         def sum(v1, v2)
-          v1 << v2
+          v2.nil? ? v1 : (v1 << v2)
         end
 
         def term(v)

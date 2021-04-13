@@ -122,6 +122,17 @@ module Bmg
             { id: 1, a: { "foo" => "baz", "gri" => "gra" } }
           ])
         end
+
+        it 'it supports nil tuples' do
+          autosummarize = Autosummarize.new Type::ANY, [
+            { id: 1, a: nil },
+            { id: 1, a: { x: "foo", y: "baz" } },
+            { id: 1, a: nil }
+          ], by, sums
+          expect(autosummarize.to_a).to eql([
+            { id: 1, a: { "foo" => "baz" } }
+          ])
+        end
       end
 
       context 'with a YByX preserving nulls' do
@@ -155,6 +166,19 @@ module Bmg
           ], by, sums
           expect(autosummarize.to_a).to eql([
             { id: 1, a: { 1 => [3, 2], 2 => [7] } },
+            { id: 2, a: { 1 => [1] } }
+          ])
+        end
+
+        it 'supports nil tuples' do
+          autosummarize = Autosummarize.new Type::ANY, [
+            { id: 1, a: nil },
+            { id: 1, a: { x: 1, y: 2 } },
+            { id: 2, a: { x: 1, y: 1 } },
+            { id: 1, a: nil }
+          ], by, sums
+          expect(autosummarize.to_a).to eql([
+            { id: 1, a: { 1 => [2] } },
             { id: 2, a: { 1 => [1] } }
           ])
         end

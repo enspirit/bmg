@@ -3,6 +3,12 @@
 * Image's :array option now support an ordering relation. The
   tuples will then be sorted in the resulting array.
 
+* Autosummarize now has `same`, `group`, `y_by_x` and `ys_by_x`
+  factory methods.
+
+* Autosummarize `y_by_x` and `ys_by_x` now support `nil` and
+  simply ignore them.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
