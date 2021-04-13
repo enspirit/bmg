@@ -52,6 +52,41 @@ module Bmg
           end
         end
 
+        context 'with option to convert to an array and specifying an ordering relation' do
+          let(:options) { { array: [:x] } }
+
+          let(:expected) {
+            Relation.new([
+              {
+                id: 1,
+                label: "Main 1",
+                values: [
+                  { x: "bar", y: "world" },
+                  { x: "foo", y: "hello" }
+                ]
+              },
+              {
+                id: 2,
+                label: "Main 2",
+                values: [
+                ]
+              }
+            ])
+          }
+
+          it 'works' do
+            expect(subject.to_a).to eql(expected.to_a)
+          end
+        end
+
+        context 'with option to convert to an array and specifying a desc ordering relation' do
+          let(:options) { { array: [[:x, :desc]] } }
+
+          it 'works' do
+            expect(subject.to_a).to eql(expected.to_a)
+          end
+        end
+
         context 'with option index_right strategy' do
           let(:options) { { array: true, strategy: :index_right } }
 

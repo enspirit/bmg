@@ -99,9 +99,10 @@ module Bmg
           key = tuple_project(t, on)
           index[key].operand << tuple_image(t, on)
         end
-        if options[:array]
+        if opt = options[:array]
+          sorter = to_sorter(opt)
           index = index.each_with_object({}) do |(k,v),ix|
-            ix[k] = v.to_a
+            ix[k] = sorter ? v.to_a.sort(&sorter) : v.to_a
           end
         end
         index
@@ -225,6 +226,11 @@ module Bmg
 
       def empty_image
         Relation::InMemory.new(image_type, Set.new)
+      end
+
+      def to_sorter(opt)
+        return nil unless opt.is_a?(Array)
+        Ordering.new(opt).comparator
       end
 
     public

@@ -45,13 +45,7 @@ module Bmg
     protected ### inspect
 
       def comparator
-        ->(t1, t2) {
-          ordering.each do |(attr,direction)|
-            c = t1[attr] <=> t2[attr]
-            return (direction == :desc ? -c : c) unless c==0
-          end
-          0
-        }
+        Ordering.new(@ordering).comparator
       end
 
       def args

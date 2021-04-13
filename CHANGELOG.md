@@ -1,3 +1,8 @@
+# 0.18.1
+
+* Image's :array option now support an ordering relation. The
+  tuples will then be sorted in the resulting array.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
