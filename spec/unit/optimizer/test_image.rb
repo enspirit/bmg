@@ -24,6 +24,66 @@ module Bmg
       Relation.new(right_data)
     }
 
+    context 'image.allbut' do
+
+      context 'when the butlist includes the new attribute' do
+
+        subject{
+          left.image(right, :image, [:a]).allbut([:image, :b])
+        }
+
+        it 'strips the image completely' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.butlist).to eql([:b])
+          expect(operand).to be(left)
+        end
+
+      end
+
+      context 'when the butlist includes the new attribute only' do
+
+        subject{
+          left.image(right, :image, [:a]).allbut([:image])
+        }
+
+        it 'strips the image & the allbut completely' do
+          expect(subject).to be(left)
+        end
+
+      end
+
+      context 'when the butlist does not have the new attribute at all' do
+
+        subject{
+          left.image(right, :image, [:a]).allbut([:b])
+        }
+
+        it 'pushes the allbut down the tree' do
+          expect(subject).to be_a(Operator::Image)
+          expect(left_operand).to be_a(Operator::Allbut)
+          expect(left_operand.butlist).to eql([:b])
+        end
+
+      end
+
+      context 'when the butlist intersects with on attrlist' do
+
+        subject{
+          left.image(right, :image, [:a]).allbut([:a])
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.butlist).to eql([:a])
+          expect(operand).to be_a(Operator::Image)
+          expect(left_operand(operand)).to be(left)
+          expect(right_operand(operand)).to be(right)
+        end
+
+      end
+
+    end
+
     context "image.page" do
 
       context 'when the ordering does not touch the new attribute' do

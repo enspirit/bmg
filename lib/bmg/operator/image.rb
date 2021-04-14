@@ -157,6 +157,16 @@ module Bmg
 
     protected ### optimization
 
+      def _allbut(type, butlist)
+        if butlist.include?(as)
+          left.allbut(butlist - [as])
+        elsif (butlist & on).empty?
+          left.allbut(butlist).image(right, as, on, options)
+        else
+          super
+        end
+      end
+
       def _page(type, ordering, page_index, opts)
         if ordering.map{|(k,v)| k}.include?(as)
           super

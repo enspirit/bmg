@@ -15,6 +15,9 @@
 * Optimize `allbut.allbut`. But lists are merged and only one `allbut`
   is kept.
 
+* Optimize `image.allbut` in case where the new image attribute is
+  thrown away. The image can be removed alltogether.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
