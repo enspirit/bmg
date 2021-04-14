@@ -39,6 +39,12 @@ module Bmg
         self.image(right.rename(renaming), as, on.keys, options)
       end
 
+      def images(rights, on = [], options = {})
+        rights.each_pair.inject(self){|memo,(as,right)|
+          memo.image(right, as, on, options)
+        }
+      end
+
       def join(right, on = [])
         return super unless on.is_a?(Hash)
         renaming = Hash[on.map{|k,v| [v,k] }]

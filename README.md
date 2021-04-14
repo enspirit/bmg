@@ -213,6 +213,7 @@ r.extend(x: ->(t){ ... }, ...)               # add computed attributes
 r.exclude(predicate)                         # shortcut for restrict(!predicate)
 r.group([:a, :b, ...], :x)                   # relation-valued attribute from attributes
 r.image(right, :x, [:a, :b, ...])            # relation-valued attribute from another relation
+r.images({:x => r1, :y => r2}, [:a, ...])    # shortcut over image(r1, :x, ...).image(r2, :y, ...)
 r.join(right, [:a, :b, ...])                 # natural join on a join key
 r.join(right, :a => :x, :b => :y, ...)       # natural join after right reversed renaming
 r.left_join(right, [:a, :b, ...], {...})     # left join with optional default right tuple

@@ -9,6 +9,9 @@
 * Autosummarize `y_by_x` and `ys_by_x` now support `nil` and
   simply ignore them.
 
+* Add `images` shortcut, that (currently) compiles to a sequence
+  of `image`.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
