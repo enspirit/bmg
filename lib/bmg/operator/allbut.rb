@@ -63,6 +63,10 @@ module Bmg
 
     protected ### optimization
 
+      def _allbut(type, butlist)
+        operand.allbut(self.butlist|butlist)
+      end
+
       def _restrict(type, predicate)
         operand.restrict(predicate).allbut(butlist)
       end

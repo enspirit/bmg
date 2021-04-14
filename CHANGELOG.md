@@ -12,6 +12,9 @@
 * Add `images` shortcut, that (currently) compiles to a sequence
   of `image`.
 
+* Optimize `allbut.allbut`. But lists are merged and only one `allbut`
+  is kept.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY

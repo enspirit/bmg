@@ -4,8 +4,8 @@ module Bmg
 
     let(:relation) {
       Relation.new([
-        { a: 1,  b: 2 },
-        { a: 11, b: 2 }
+        { a: 1,  b: 2, c: 3 },
+        { a: 11, b: 2, c: 33 }
       ])
     }
 
@@ -40,5 +40,32 @@ module Bmg
 
     end
 
+    context "allbut.allbut" do
+
+      context 'when butlist are disjoint' do
+        subject{
+          relation.allbut([:a]).allbut([:b])
+        }
+
+        it 'optimizes by unioning butlists' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.send(:butlist)).to eql([:a, :b])
+          expect(operand).to be(relation)
+        end
+      end
+
+      context 'when butlist are not disjoint (make no sense, but ok)' do
+        subject{
+          relation.allbut([:a]).allbut([:b, :a])
+        }
+
+        it 'optimizes by unioning butlists' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.send(:butlist)).to eql([:a, :b])
+          expect(operand).to be(relation)
+        end
+      end
+
+    end
   end
 end
