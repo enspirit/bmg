@@ -174,6 +174,7 @@ module Bmg
 
     def transform(transformation = nil, options = {}, &proc)
       transformation, options = proc, (transformation || {}) unless proc.nil?
+      return self if transformation.is_a?(Hash) && transformation.empty?
       _transform(self.type.transform(transformation, options), transformation, options)
     end
 

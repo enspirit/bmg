@@ -23,7 +23,7 @@ module Bmg
 
     protected
 
-      attr_reader :transformation
+      attr_reader :transformation, :options
 
     public
 
@@ -39,6 +39,21 @@ module Bmg
       end
 
     protected ### optimization
+
+      def _allbut(type, butlist)
+        # `allbut` can always be pushed down the tree. unlike
+        # `extend` the Proc that might be used cannot use attributes
+        # in butlist, so it's safe to strip them away.
+        if transformer.knows_attrlist?
+          # We just need to clean the transformation
+          attrlist = transformer.to_attrlist
+          thrown = attrlist & butlist
+          t = transformation.dup.reject{|k,v| thrown.include?(k) }
+          operand.allbut(butlist).transform(t, options)
+        else
+          operand.allbut(butlist).transform(transformation, options)
+        end
+      end
 
     protected ### inspect
 
