@@ -71,7 +71,18 @@ module Bmg
         operand.restrict(predicate).allbut(butlist)
       end
 
+      def _page(type, ordering, page_index, options)
+        return super unless self.preserving_key?
+        operand.page(ordering, page_index, options).allbut(butlist)
+      end
+
     protected ### inspect
+
+      def preserving_key?
+        operand.type.knows_keys? && operand.type.keys.find{|k|
+          (k & butlist).empty?
+        }
+      end
 
       def args
         [ butlist ]
