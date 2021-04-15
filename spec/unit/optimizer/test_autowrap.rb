@@ -161,6 +161,50 @@ module Bmg
       end
     end
 
+    context "autowrap.matching" do
+      subject {
+        relation.autowrap(options).matching(right, on)
+      }
+
+      context 'when the matching applies to attributes untouched by autowrap' do
+        let(:right){
+          Relation.new([
+            { :a => 1 }
+          ])
+        }
+        let(:on){
+          [:a]
+        }
+
+        it 'pushes the matching down the tree' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(operand).to be_a(Operator::Matching)
+          expect(operand.on).to eql(on)
+          expect(left_operand(operand)).to be(relation)
+          expect(right_operand(operand)).to be(right)
+        end
+      end
+
+      context 'when the matching applies to at least one attribute touched by autowrap' do
+        let(:right){
+          Relation.new([
+            { :b => { :id => 2 } }
+          ])
+        }
+        let(:on){
+          [:b]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Matching)
+          expect(subject.on).to eql(on)
+          expect(left_operand).to be_a(Operator::Autowrap)
+          expect(operand(left_operand)).to be(relation)
+          expect(right_operand).to be(right)
+        end
+      end
+    end
+
     context "autowrap.page when attributes are known" do
       subject {
         relation.autowrap(options).page(page_ordering, page_index, page_options)

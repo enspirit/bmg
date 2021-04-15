@@ -86,6 +86,14 @@ module Bmg
         false
       end
 
+      def _matching(type, right, on)
+        if (wrapped_roots! & on).empty?
+          operand.matching(right, on).autowrap(options)
+        else
+          super
+        end
+      end
+
       def _page(type, ordering, page_index, opts)
         attrs = ordering.map{|(a,d)| a }
         if (wrapped_roots! & attrs).empty?
