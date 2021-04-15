@@ -33,6 +33,9 @@
 * Optimize `allbut.matching`. Push the matching down the tree, it's
   always possible.
 
+* Optimize `page.matching`. Push the matching down the tree, as long
+  as the join clause does not use the new image attribute.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY

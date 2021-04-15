@@ -84,6 +84,48 @@ module Bmg
 
     end
 
+    context "image.matching" do
+      subject{
+        left.image(right, :image, [:a]).matching(third, on)
+      }
+
+      let(:third) {
+        Relation.new [
+          { a: 1, d: 4 },
+          { a: 1, d: 5 }
+        ]
+      }
+
+      context 'when the matching does not use the newly attribute' do
+        let(:on) {
+          [:a]
+        }
+
+        it 'pushes the matching down the tree' do
+          expect(subject).to be_a(Operator::Image)
+          expect(subject.on).to eql([:a])
+          expect(subject.as).to eql(:image)
+          expect(left_operand).to be_a(Operator::Matching)
+          expect(left_operand.on).to eql(on)
+          expect(left_operand(left_operand)).to be(left)
+          expect(right_operand(left_operand)).to be(third)
+          expect(right_operand).to be(right)
+        end
+      end
+
+      context 'when the matching does use the newly attribute' do
+        let(:on) {
+          [:image, :a]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Matching)
+          expect(subject.on).to eql(on)
+          expect(left_operand).to be_a(Operator::Image)
+        end
+      end
+    end
+
     context "image.page" do
 
       context 'when the ordering does not touch the new attribute' do

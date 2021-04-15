@@ -167,6 +167,14 @@ module Bmg
         end
       end
 
+      def _matching(type, m_right, m_on)
+        if m_on.include?(as)
+          super
+        else
+          left.matching(m_right, m_on).image(right, as, on, options)
+        end
+      end
+
       def _page(type, ordering, page_index, opts)
         if ordering.map{|(k,v)| k}.include?(as)
           super
