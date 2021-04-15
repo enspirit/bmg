@@ -155,5 +155,68 @@ module Bmg
         end
       end
     end
+
+    context "transform.restrict" do
+      subject {
+        relation.transform(transformation).restrict(predicate)
+      }
+
+      context 'when the transformation applies to attributes only, not those of the predicate' do
+        let(:transformation){{
+          :a => :to_s
+        }}
+        let(:predicate) {
+          { :b => 1 }
+        }
+
+        it 'pushes the restrict down the tree' do
+          expect(subject).to be_a(Operator::Transform)
+          expect(subject.transformation).to eql(transformation)
+          expect(operand).to be_a(Operator::Restrict)
+          expect(operand.predicate).to eql(Predicate.eq(:b, 1))
+          expect(operand(operand)).to be(relation)
+        end
+      end
+
+      context 'when the transformation & predicate overlap' do
+        let(:transformation){{
+          :a => :to_s
+        }}
+        let(:predicate) {
+          {
+            :b => 1,
+            :a => "1"
+          }
+        }
+
+        it 'the restriction is split' do
+          expect(subject).to be_a(Operator::Restrict)
+          expect(subject.predicate).to eql(Predicate.eq(:a, "1"))
+          expect(operand).to be_a(Operator::Transform)
+          expect(operand.transformation).to eql(transformation)
+          expect(operand(operand)).to be_a(Operator::Restrict)
+          expect(operand(operand).predicate).to eql(Predicate.eq(:b, 1))
+          expect(operand(operand(operand))).to be(relation)
+        end
+      end
+
+      context 'when the transformation is not a Hash' do
+        let(:transformation){
+          [:to_s]
+        }
+        let(:predicate) {
+          { :b => 1 }
+        }
+
+        it 'no optimization is possible' do
+          expect(subject).to be_a(Operator::Restrict)
+          expect(subject.predicate).to eql(Predicate.eq(:b, 1))
+          expect(operand).to be_a(Operator::Transform)
+          expect(operand.transformation).to eql(transformation)
+          expect(operand(operand)).to be(relation)
+        end
+      end
+    end
+
   end
 end

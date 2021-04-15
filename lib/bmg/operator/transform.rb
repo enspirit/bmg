@@ -64,6 +64,19 @@ module Bmg
         end
       end
 
+      def _restrict(type, predicate)
+        return super unless transformer.knows_attrlist?
+        top, bottom = predicate.and_split(transformer.to_attrlist)
+        if top == predicate
+          super
+        else
+          operand
+            .restrict(bottom)
+            .transform(transformation, options)
+            .restrict(top)
+        end
+      end
+
     protected ### inspect
 
       def args

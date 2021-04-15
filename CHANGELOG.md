@@ -24,6 +24,9 @@
 * Optimize `transform.project`. The project can always be pushed down
   the tree.
 
+* Optimize `transform.restrict`. Push whatever can be pushed down the
+  tree.
+
 # 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
