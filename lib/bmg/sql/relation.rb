@@ -10,7 +10,6 @@ module Bmg
       end
 
       attr_accessor :type
-      protected :type=
 
     protected
 
