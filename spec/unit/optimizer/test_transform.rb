@@ -13,6 +13,9 @@ module Bmg
       class Operator::Transform
         public :transformation
       end
+      class Operator::Project
+        public :attrlist
+      end
     end
 
     context 'extend with empty transformation' do
@@ -92,6 +95,62 @@ module Bmg
           expect(subject.transformation).to eql(:to_s)
           expect(operand).to be_a(Operator::Allbut)
           expect(operand.butlist).to eql(butlist)
+          expect(operand(operand)).to be(relation)
+        end
+      end
+    end
+
+    context "transform.project" do
+      subject {
+        relation.transform(transformation).project(attrlist)
+      }
+
+      context 'when the transformation & attrlist do not intersect' do
+        let(:transformation){{
+          :a => :to_s
+        }}
+        let(:attrlist) {
+          [:b]
+        }
+
+        it 'the transformation is removed' do
+          expect(subject).to be_a(Operator::Project)
+          expect(subject.attrlist).to eql(attrlist)
+          expect(operand).to be(relation)
+        end
+      end
+
+      context 'when the transformation & attrlist do intersect' do
+        let(:transformation){{
+          :a => :to_s,
+          :b => :to_s
+        }}
+        let(:attrlist) {
+          [:b]
+        }
+
+        it 'the projection is pushed, and transformation simplified' do
+          expect(subject).to be_a(Operator::Transform)
+          expect(subject.transformation).to eql(:b => :to_s)
+          expect(operand).to be_a(Operator::Project)
+          expect(operand.attrlist).to eql(attrlist)
+          expect(operand(operand)).to be(relation)
+        end
+      end
+
+      context 'when transformation attributes are unknown' do
+        let(:transformation){
+          :to_s
+        }
+        let(:attrlist) {
+          [:b]
+        }
+
+        it 'the projection is pushed, and transformation kept unchanged' do
+          expect(subject).to be_a(Operator::Transform)
+          expect(subject.transformation).to eql(:to_s)
+          expect(operand).to be_a(Operator::Project)
+          expect(operand.attrlist).to eql(attrlist)
           expect(operand(operand)).to be(relation)
         end
       end

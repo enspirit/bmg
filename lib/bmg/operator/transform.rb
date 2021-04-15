@@ -55,6 +55,15 @@ module Bmg
         end
       end
 
+      def _project(type, attrlist)
+        if transformer.knows_attrlist?
+          t = transformation.dup.select{|k,v| attrlist.include?(k) }
+          operand.project(attrlist).transform(t, options)
+        else
+          operand.project(attrlist).transform(transformation, options)
+        end
+      end
+
     protected ### inspect
 
       def args
