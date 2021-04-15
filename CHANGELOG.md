@@ -1,4 +1,4 @@
-# 0.18.1
+# 0.18.1 - 2021/04/15
 
 * Image's :array option now support an ordering relation. The
   tuples will then be sorted in the resulting array.
