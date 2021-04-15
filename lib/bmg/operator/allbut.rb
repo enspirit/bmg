@@ -67,6 +67,13 @@ module Bmg
         operand.allbut(self.butlist|butlist)
       end
 
+      def _matching(type, right, on)
+        # Always possible to push the matching, since by construction
+        # `on` can only use attributes that have not been trown away,
+        # hence they exist on `operand` too.
+        operand.matching(right, on).allbut(butlist)
+      end
+
       def _restrict(type, predicate)
         operand.restrict(predicate).allbut(butlist)
       end

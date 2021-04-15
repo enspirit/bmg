@@ -13,6 +13,9 @@ module Bmg
       class Operator::Page
         public :ordering, :page_index, :options
       end
+      class Operator::Matching
+        public :on
+      end
     end
 
     context 'allbut on empty butlist' do
@@ -22,6 +25,37 @@ module Bmg
 
       it 'returns the operand itself' do
         expect(subject).to be(relation)
+      end
+    end
+
+    context 'allbut.matching' do
+      subject{
+        relation.allbut(butlist).matching(right, on)
+      }
+
+      let(:right) {
+        Relation.new([
+          { a: 1,  d: 4 },
+          { a: 11, d: 44 }
+        ])
+      }
+
+      context 'in all cases' do
+        let(:butlist){
+          [:b]
+        }
+        let(:on) {
+          [:a]
+        }
+
+        it 'pushes the matching down the tree' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.butlist).to eql(butlist)
+          expect(operand).to be_a(Operator::Matching)
+          expect(left_operand(operand)).to be(relation)
+          expect(right_operand(operand)).to be(right)
+          expect(operand.on).to eql(on)
+        end
       end
     end
 
