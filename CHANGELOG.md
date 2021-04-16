@@ -1,3 +1,7 @@
+# 0.18.2
+
+* Optimize `allbut.project`, push the projection down the tree.
+
 # 0.18.1 - 2021/04/15
 
 * Image's :array option now support an ordering relation. The

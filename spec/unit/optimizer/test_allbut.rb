@@ -106,6 +106,18 @@ module Bmg
       end
     end
 
+    context "allbut.project" do
+      subject{
+        relation.allbut([:a]).project([:d])
+      }
+
+      it 'pushes the project down the tree and removes the allbut' do
+        expect(subject).to be_a(Operator::Project)
+        expect(subject.send(:attrlist)).to eql([:d])
+        expect(operand).to be(relation)
+      end
+    end
+
     context "allbut.restrict" do
 
       let(:predicate) {

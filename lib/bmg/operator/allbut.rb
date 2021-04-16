@@ -74,13 +74,17 @@ module Bmg
         operand.matching(right, on).allbut(butlist)
       end
 
-      def _restrict(type, predicate)
-        operand.restrict(predicate).allbut(butlist)
-      end
-
       def _page(type, ordering, page_index, options)
         return super unless self.preserving_key?
         operand.page(ordering, page_index, options).allbut(butlist)
+      end
+
+      def _project(type, attrlist)
+        operand.project(attrlist)
+      end
+
+      def _restrict(type, predicate)
+        operand.restrict(predicate).allbut(butlist)
       end
 
     protected ### inspect
