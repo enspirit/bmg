@@ -1,4 +1,4 @@
-# 0.18.2
+# 0.18.2 - 2021/04/16
 
 * Add Relation#count that returns the exact number of tuples in
   the relation.
