@@ -31,7 +31,7 @@ module Bmg
       def each
         seen = {}
         @operand.each do |tuple|
-          projected = project(tuple)
+          projected = tuple_project(tuple)
           unless seen.has_key?(projected)
             yield(projected)
             seen[projected] = true
@@ -74,7 +74,7 @@ module Bmg
 
     private
 
-      def project(tuple)
+      def tuple_project(tuple)
         tuple.dup.delete_if{|k,_| !@attrlist.include?(k) }
       end
 

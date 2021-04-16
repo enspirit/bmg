@@ -2,6 +2,11 @@
 
 * Optimize `allbut.project`, push the projection down the tree.
 
+* Optimize `image.project`, push the projection down the tree if
+  possible. If the newly introduced attribute is kept no optimization
+  is down (yet). In particular a sub-projection is not pushed down
+  the tree, as the semantics need careful thinking.
+
 # 0.18.1 - 2021/04/15
 
 * Image's :array option now support an ordering relation. The

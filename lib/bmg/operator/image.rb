@@ -185,6 +185,14 @@ module Bmg
         end
       end
 
+      def _project(type, attrlist)
+        if attrlist.include?(as)
+          super
+        else
+          left.project(attrlist)
+        end
+      end
+
       def _restrict(type, predicate)
         on_as, rest = predicate.and_split([as])
         if rest.tautology?

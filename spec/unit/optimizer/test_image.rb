@@ -160,6 +160,36 @@ module Bmg
 
     end
 
+    context "image.project" do
+      context 'when the image attributes is projected away' do
+        subject{
+          left.image(right, :image, [:a]).project([:a])
+        }
+
+        it 'removes the image completely' do
+          expect(subject).to be_a(Operator::Project)
+          expect(subject.send(:attrlist)).to eql([:a])
+          expect(operand).to be(left)
+        end
+      end
+
+      context 'when the image attributes is kept' do
+        subject{
+          left.image(right, :image, [:a]).project([:image])
+        }
+
+        it 'keeps the image operator' do
+          expect(subject).to be_a(Operator::Project)
+          expect(subject.send(:attrlist)).to eql([:image])
+          expect(operand).to be_a(Operator::Image)
+          expect(operand.send(:as)).to eql(:image)
+          expect(operand.send(:on)).to eql([:a])
+          expect(left_operand(operand)).to be(left)
+          expect(right_operand(operand)).to be(right)
+        end
+      end
+    end
+
     context "image.restrict" do
 
       subject{
