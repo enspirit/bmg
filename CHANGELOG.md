@@ -7,6 +7,9 @@
   is down (yet). In particular a sub-projection is not pushed down
   the tree, as the semantics need careful thinking.
 
+* Optimize `autowrap.project`, push the projection down the tree if
+  possible.
+
 # 0.18.1 - 2021/04/15
 
 * Image's :array option now support an ordering relation. The

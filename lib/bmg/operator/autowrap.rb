@@ -92,12 +92,24 @@ module Bmg
         else
           super
         end
+      rescue UnknownAttributesError
+        super
       end
 
       def _page(type, ordering, page_index, opts)
         attrs = ordering.map{|(a,d)| a }
         if (wrapped_roots! & attrs).empty?
           operand.page(ordering, page_index, opts).autowrap(options)
+        else
+          super
+        end
+      rescue UnknownAttributesError
+        super
+      end
+
+      def _project(type, attrlist)
+        if (wrapped_roots! & attrlist).empty?
+          operand.project(attrlist).autowrap(options)
         else
           super
         end

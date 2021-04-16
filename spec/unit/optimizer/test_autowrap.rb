@@ -241,6 +241,38 @@ module Bmg
 
     end
 
+    context "autowrap.project" do
+      subject {
+        relation.autowrap(options).project(ps)
+      }
+
+      context 'when the attrlist has only unwrapped attributes' do
+        let(:ps){
+          [:a]
+        }
+
+        it 'pushes the projection down the tree' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(operand).to be_a(Operator::Project)
+          expect(operand.send(:attrlist)).to eql([:a])
+          expect(operand(operand)).to be(relation)
+        end
+      end
+
+      context 'when the attrlist has wrapped attributes' do
+        let(:ps){
+          [:a, :b]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Project)
+          expect(subject.send(:attrlist)).to eql([:a, :b])
+          expect(operand).to be_a(Operator::Autowrap)
+          expect(operand(operand)).to be(relation)
+        end
+      end
+    end
+
     context "autowrap.rename" do
       subject {
         relation.autowrap(options).rename(renaming)
