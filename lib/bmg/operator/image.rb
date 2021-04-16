@@ -155,6 +155,12 @@ module Bmg
         end
       end
 
+    public ### for internal reasons
+
+      def _count
+        left._count
+      end
+
     protected ### optimization
 
       def _allbut(type, butlist)

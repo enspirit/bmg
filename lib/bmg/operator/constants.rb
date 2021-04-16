@@ -54,6 +54,12 @@ module Bmg
         [ :constants, operand.to_ast, constants.dup ]
       end
 
+    public ### for internal reasons
+
+      def _count
+        operand._count
+      end
+
     protected ### optimization
 
       def _page(type, ordering, page_index, options)

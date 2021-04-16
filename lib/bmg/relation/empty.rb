@@ -19,6 +19,10 @@ module Bmg
       def each(&bl)
       end
 
+      def _count
+        0
+      end
+
       def to_ast
         [ :empty ]
       end

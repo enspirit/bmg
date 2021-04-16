@@ -110,6 +110,18 @@ module Bmg
       end
     end
 
+    def count
+      if type.knows_keys?
+        project(type.keys.first)._count
+      else
+        self._count
+      end
+    end
+
+    def _count
+      to_a.size
+    end
+
     # Returns a json representation
     def to_json(*args, &bl)
       to_a.to_json(*args, &bl)

@@ -52,6 +52,12 @@ module Bmg
         [ :autowrap, operand.to_ast, @original_options.dup ]
       end
 
+    public ### for internal reasons
+
+      def _count
+        operand._count
+      end
+
     protected ### optimization
 
       def _autowrap(type, opts)

@@ -8,6 +8,10 @@ module Bmg
         expect(subject).to be_a(Relation)
       end
 
+      it 'supports calling count' do
+        expect(subject.count).not_to be(nil)
+      end
+
     end
 
     describe 'new' do

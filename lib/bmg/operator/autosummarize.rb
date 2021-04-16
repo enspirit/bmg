@@ -57,6 +57,12 @@ module Bmg
         [:autosummarize, operand.to_ast, by.dup, sums.dup]
       end
 
+    public ### for internal reasons
+
+      def _count
+        operand._count
+      end
+
     protected
 
       def _restrict(type, predicate)

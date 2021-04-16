@@ -18,6 +18,12 @@ module Bmg
 
     public
 
+      def _count
+        operand._count
+      end
+
+    public
+
       def each(&bl)
         @operand = Relation::InMemory.new(operand.type, operand.to_a) unless @operand.is_a?(Relation::InMemory)
         @operand.each(&bl)

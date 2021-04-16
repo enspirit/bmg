@@ -17,6 +17,16 @@ module Bmg
         @operand.each(&bl)
       end
 
+      def _count
+        if operand.respond_to?(:count)
+          operand.count
+        elsif operand.respond_to?(:size)
+          operand.size
+        else
+          super
+        end
+      end
+
       def to_ast
         [ :in_memory, operand ]
       end

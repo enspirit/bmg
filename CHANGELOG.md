@@ -1,5 +1,14 @@
 # 0.18.2
 
+* Add Relation#count that returns the exact number of tuples in
+  the relation.
+
+  The default implementation consumes the tuples to count them.
+  Push-down optimizations implemented for base operators that do not
+  affect the number of resulting tuples.
+
+  Sequel::Relation pushes a `SELECT COUNT(*)` to the SQL engine.
+
 * Optimize `allbut.project`, push the projection down the tree.
 
 * Optimize `image.project`, push the projection down the tree if

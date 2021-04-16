@@ -33,6 +33,10 @@ module Bmg
         base_table.update(arg)
       end
 
+      def _count
+        dataset.count
+      end
+
       def to_ast
         [:sequel, dataset.sql]
       end

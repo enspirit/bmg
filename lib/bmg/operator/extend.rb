@@ -53,6 +53,12 @@ module Bmg
         [ :extend, operand.to_ast, extension.dup ]
       end
 
+    public ### for internal reasons
+
+      def _count
+        operand._count
+      end
+
     protected ### optimization
 
       def _allbut(type, butlist)

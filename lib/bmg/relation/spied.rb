@@ -28,6 +28,11 @@ module Bmg
         operand.each(&bl)
       end
 
+      def count
+        spy.call(self) if bl
+        operand.count
+      end
+
       def to_ast
         [ :spied, operand.to_ast, spy ]
       end

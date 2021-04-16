@@ -60,6 +60,12 @@ module Bmg
         [ :rename, operand.to_ast, renaming.dup ]
       end
 
+    public ### for internal reasons
+
+      def _count
+        operand._count
+      end
+
     protected ### optimization
 
       def _page(type, ordering, page_index, options)
