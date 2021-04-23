@@ -1,5 +1,9 @@
 # 0.18.3
 
+* Add `Relation#to_xlsx` to create Excel files from Relations. The
+  feature requires 'bmg/writer/xlsx' and the 'write_xlsx' ruby gem,
+  the latter being not a dependency of Bmg at this point.
+
 * `distinct` summarizer as beed added. Collects distinct values as
   and array.
 
