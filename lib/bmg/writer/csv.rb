@@ -26,17 +26,6 @@ module Bmg
         to_s ? string_or_io.string : string_or_io
       end
 
-    private
-
-      def infer_headers(from)
-        attrlist = if from.is_a?(Type) && from.knows_attrlist?
-          from.to_attrlist
-        elsif from.is_a?(Hash)
-          from.keys
-        end
-        attrlist ? output_preferences.order_attrlist(attrlist) : nil
-      end
-
     end # class Csv
   end # module Writer
 end # module Bmg

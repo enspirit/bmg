@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3.6"
   s.add_development_dependency "roo", ">= 2.8"
+  s.add_development_dependency "write_xlsx", "~> 1.0"
   s.add_development_dependency "sequel"
   s.add_development_dependency "sqlite3"
 end

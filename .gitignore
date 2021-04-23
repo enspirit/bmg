@@ -3,3 +3,4 @@ pkg/*
 /vendor
 Gemfile.lock
 /spec/regression/**/*.db
+/spec/unit/writer/result.xlsx
