@@ -65,6 +65,7 @@ module Bmg
           summarizer = case v
           when Summarizer then v
           when Symbol     then Summarizer.send(v, k)
+          when Proc       then Summarizer.by_proc(&v)
           else
             raise ArgumentError, "Unexpected summarizer #{k} => #{v}"
           end

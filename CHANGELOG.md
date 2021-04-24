@@ -1,3 +1,12 @@
+# 0.18.3
+
+* `distinct` summarizer as beed added. Collects distinct values as
+  and array.
+
+* `Summarizer.by_proc(least){|t,memo| ... }` can now be used to factor a
+  summarizer that works like `each_with_object`. `least` is the initial
+  value, and defaults to nil.
+
 # 0.18.2 - 2021/04/16
 
 * Add Relation#count that returns the exact number of tuples in

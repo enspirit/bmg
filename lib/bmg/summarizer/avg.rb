@@ -16,13 +16,13 @@ module Bmg
       end
 
       # Collects one more value + the sum of all
-      def _happens(memo, val) 
+      def _happens(memo, val)
         [memo.first + val, memo.last + 1]
       end
 
       # Finalizes the computation.
-      def finalize(memo) 
-        memo.first / memo.last 
+      def finalize(memo)
+        memo.first / memo.last
       end
 
     end # class Avg

@@ -80,7 +80,16 @@ module Bmg
     # @param the current iterated tuple
     # @return updated memo value
     def happens(memo, tuple)
-      value = @functor.is_a?(Proc) ? @functor.call(tuple) : tuple[@functor]
+      value = case @functor
+      when Proc
+        @functor.call(tuple)
+      when NilClass
+        tuple
+      when Symbol
+        tuple[@functor]
+      else
+        tuple[@functor]
+      end
       _happens(memo, value)
     end
 
@@ -129,4 +138,6 @@ require_relative 'summarizer/avg'
 require_relative 'summarizer/variance'
 require_relative 'summarizer/stddev'
 require_relative 'summarizer/collect'
+require_relative 'summarizer/distinct'
 require_relative 'summarizer/concat'
+require_relative 'summarizer/by_proc'
