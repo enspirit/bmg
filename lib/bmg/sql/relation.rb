@@ -133,8 +133,8 @@ module Bmg
         _instance(type, builder, expr)
       end
 
-      def _summarize(type, by, summarization)
-        summarization = Operator::Summarize.compile(summarization)
+      def _summarize(type, by, defs)
+        summarization = ::Bmg::Summarizer.summarization(defs)
         if can_compile_summarization?(summarization)
           expr = before_use(self.expr)
           expr = Processor::Summarize.new(by, summarization, builder).call(self.expr)

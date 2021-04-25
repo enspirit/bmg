@@ -13,7 +13,7 @@ module Bmg
         @type = type
         @operand = operand
         @by = by
-        @summarization = Summarize.compile(summarization)
+        @summarization = Summarizer.summarization(summarization)
       end
 
     protected
@@ -54,23 +54,6 @@ module Bmg
 
       def args
         [ by, summarization ]
-      end
-
-    private
-
-      # Compile a summarization hash so that every value is a Summarizer
-      # instance
-      def self.compile(summarization)
-        Hash[summarization.map{|k,v|
-          summarizer = case v
-          when Summarizer then v
-          when Symbol     then Summarizer.send(v, k)
-          when Proc       then Summarizer.by_proc(&v)
-          else
-            raise ArgumentError, "Unexpected summarizer #{k} => #{v}"
-          end
-          [ k, summarizer ]
-        }]
       end
 
     end # class Summarize

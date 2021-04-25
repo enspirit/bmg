@@ -50,6 +50,21 @@ module Bmg
       end
     end
 
+    # Converts some summarization definitions to a Hash of
+    # summarizers.
+    def self.summarization(defs)
+      Hash[defs.map{|k,v|
+        summarizer = case v
+        when Summarizer then v
+        when Symbol     then Summarizer.send(v, k)
+        when Proc       then Summarizer.by_proc(&v)
+        else
+          raise ArgumentError, "Unexpected summarizer #{k} => #{v}"
+        end
+        [ k, summarizer ]
+      }]
+    end
+
     # Returns the default options to use
     #
     # @return the default aggregation options
@@ -142,3 +157,4 @@ require_relative 'summarizer/collect'
 require_relative 'summarizer/distinct'
 require_relative 'summarizer/concat'
 require_relative 'summarizer/by_proc'
+require_relative 'summarizer/multiple'
