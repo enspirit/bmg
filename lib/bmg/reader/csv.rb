@@ -13,14 +13,18 @@ module Bmg
         @type = type
         @path_or_io = path_or_io
         @options = DEFAULT_OPTIONS.merge(options)
-        @options[:col_sep] ||= infer_col_sep if @options[:smart]
-        @options[:quote_char] ||= infer_quote_char if @options[:smart]
+        if @options[:smart] && !@path_or_io.is_a?(IO)
+          @options[:col_sep] ||= infer_col_sep
+          @options[:quote_char] ||= infer_quote_char
+        end
       end
 
       def each
         require 'csv'
-        ::CSV.foreach(@path_or_io, csv_options) do |row|
-          yield tuple(row)
+        with_io do |io|
+          ::CSV.new(io, csv_options).each do |row|
+            yield tuple(row)
+          end
         end
       end
 
@@ -48,7 +52,16 @@ module Bmg
       end
 
       def text_portion
-        @text_portion ||= File.foreach(@path_or_io).first(10).join("\n")
+        @text_portion ||= with_io{|io| io.readlines(10).join("\n") }
+      end
+
+      def with_io(&bl)
+        case @path_or_io
+        when IO, StringIO
+          bl.call(@path_or_io)
+        else
+          File.open(@path_or_io, "r", &bl)
+        end
       end
 
       # Finds the best candidate among `candidates` for a separator

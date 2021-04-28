@@ -7,9 +7,13 @@
 * `Bmg.csv`'s options now support a `:smart` flag that can be set to
   true (resp. false) if you want (resp. don't want) Bmg to to identify
   quotes and separators by itself. The flag is currently true by default
-  for backward compatibility reasons but will likely be set to false
-  in the future. Consider using the flag explicitely to prevent
-  surprises.
+  (unless input is an IO) for backward compatibility reasons but will
+  likely be set to false in the future. Consider using the flag explicitely
+  to prevent surprises.
+
+* `Bmg.csv` now correctly handles `IO` and `StringIO` input instances.
+  Using such an input with `:smart => true` might lead to problems unless
+  the io can be read multiple times in a row.
 
 * `distinct` summarizer as beed added. Collects distinct values as
   and array.

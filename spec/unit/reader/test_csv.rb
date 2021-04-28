@@ -14,12 +14,21 @@ module Bmg
 
       it 'supports an io object' do
         (Path.dir/("example.csv")).open('r') do |io|
-          csv = Csv.new(Type::ANY, io)
+          csv = Csv.new(Type::ANY, io, col_sep: ";", quote_char: '"')
           expect(csv.to_a).to eql([
             {id: "1", name: "Bernard Lambeau"},
             {id: "2", name: "Yoann;Guyot"}
           ])
         end
+      end
+
+      it 'supports a StringIO io object' do
+        io = StringIO.new((Path.dir/"example.csv").read)
+        csv = Csv.new(Type::ANY, io)
+        expect(csv.to_a).to eql([
+          {id: "1", name: "Bernard Lambeau"},
+          {id: "2", name: "Yoann;Guyot"}
+        ])
       end
 
     end
