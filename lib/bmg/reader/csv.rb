@@ -5,30 +5,31 @@ module Bmg
 
       DEFAULT_OPTIONS = {
         :headers => true,
-        :return_headers => false
+        :return_headers => false,
+        :smart => true
       }
 
-      def initialize(type, path, options = {})
+      def initialize(type, path_or_io, options = {})
         @type = type
-        @path = path
+        @path_or_io = path_or_io
         @options = DEFAULT_OPTIONS.merge(options)
-        @options[:col_sep] ||= infer_col_sep
-        @options[:quote_char] ||= infer_quote_char
+        @options[:col_sep] ||= infer_col_sep if @options[:smart]
+        @options[:quote_char] ||= infer_quote_char if @options[:smart]
       end
 
       def each
         require 'csv'
-        ::CSV.foreach(@path, @options) do |row|
+        ::CSV.foreach(@path_or_io, csv_options) do |row|
           yield tuple(row)
         end
       end
 
       def to_ast
-        [ :csv, @path, @options ]
+        [ :csv, @path_or_io, @options ]
       end
 
       def to_s
-        "(csv #{path})"
+        "(csv #{@path_or_io})"
       end
       alias :inspect :to_s
 
@@ -47,7 +48,7 @@ module Bmg
       end
 
       def text_portion
-        @text_portion ||= File.foreach(@path).first(10).join("\n")
+        @text_portion ||= File.foreach(@path_or_io).first(10).join("\n")
       end
 
       # Finds the best candidate among `candidates` for a separator
@@ -59,6 +60,10 @@ module Bmg
         }
         snif = snif.sort {|a,b| b[1] <=> a[1] }
         snif.size > 0 ? snif[0][0] : default
+      end
+
+      def csv_options
+        @csv_options ||= @options.dup.tap{|opts| opts.delete(:smart) }
       end
 
     end # class Csv

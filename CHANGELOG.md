@@ -4,6 +4,13 @@
   feature requires 'bmg/writer/xlsx' and the 'write_xlsx' ruby gem,
   the latter being not a dependency of Bmg at this point.
 
+* `Bmg.csv`'s options now support a `:smart` flag that can be set to
+  true (resp. false) if you want (resp. don't want) Bmg to to identify
+  quotes and separators by itself. The flag is currently true by default
+  for backward compatibility reasons but will likely be set to false
+  in the future. Consider using the flag explicitely to prevent
+  surprises.
+
 * `distinct` summarizer as beed added. Collects distinct values as
   and array.
 
