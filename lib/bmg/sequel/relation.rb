@@ -9,6 +9,7 @@ module Bmg
       attr_reader :sequel_db
 
       def each(&bl)
+        return to_enum unless block_given?
         dataset.each(&bl)
       end
 

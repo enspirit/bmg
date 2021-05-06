@@ -25,6 +25,8 @@
   summarizer that works like `each_with_object`. `least` is the initial
   value, and defaults to nil.
 
+* Relation#each now returns an Enumerator when called without block.
+
 # 0.18.2 - 2021/04/16
 
 * Add Relation#count that returns the exact number of tuples in

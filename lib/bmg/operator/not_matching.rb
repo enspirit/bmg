@@ -23,6 +23,7 @@ module Bmg
     public
 
       def each
+        return to_enum unless block_given?
         index = Hash.new
         right.each_with_object(index) do |t, index|
           key = tuple_project(t, on)

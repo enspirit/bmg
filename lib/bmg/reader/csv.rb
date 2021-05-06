@@ -20,6 +20,7 @@ module Bmg
       end
 
       def each
+        return to_enum unless block_given?
         require 'csv'
         with_io do |io|
           ::CSV.new(io, csv_options).each do |row|

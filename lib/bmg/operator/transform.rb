@@ -28,6 +28,7 @@ module Bmg
     public
 
       def each
+        return to_enum unless block_given?
         t = transformer
         @operand.each do |tuple|
           yield t.call(tuple)

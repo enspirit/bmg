@@ -32,6 +32,7 @@ module Bmg
     public
 
       def each(&bl)
+        return to_enum unless block_given?
         index = Hash.new{|h,k| h[k] = k.merge(as => empty_group) }
         operand.each do |tuple|
           key = TupleAlgebra.allbut(tuple, attrs)

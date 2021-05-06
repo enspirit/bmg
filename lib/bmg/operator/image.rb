@@ -46,6 +46,7 @@ module Bmg
     public
 
       def each(*args, &bl)
+        return to_enum unless block_given?
         (options[:jit_optimized] ? self : jit_optimize)._each(*args, &bl)
       end
 

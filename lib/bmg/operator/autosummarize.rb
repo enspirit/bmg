@@ -41,6 +41,7 @@ module Bmg
       end
 
       def each(&bl)
+        return to_enum unless block_given?
         h = {}
         @operand.each do |tuple|
           key = key(tuple)

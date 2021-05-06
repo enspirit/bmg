@@ -14,6 +14,7 @@ module Bmg
       end
 
       def each
+        return to_enum unless block_given?
         require 'roo'
         xlsx = Roo::Spreadsheet.open(@path, @options)
         headers = nil

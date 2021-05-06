@@ -3,15 +3,7 @@ module Bmg
   describe Relation do
 
     shared_examples_for "an operator method" do
-
-      it 'returns a relation' do
-        expect(subject).to be_a(Relation)
-      end
-
-      it 'supports calling count' do
-        expect(subject.count).not_to be(nil)
-      end
-
+      it_behaves_like "a Relation-compatible"
     end
 
     describe 'new' do

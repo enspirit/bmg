@@ -26,6 +26,7 @@ module Bmg
     public
 
       def each
+        return to_enum unless block_given?
         @operand.each do |tuple|
           yield extend_it(tuple)
         end

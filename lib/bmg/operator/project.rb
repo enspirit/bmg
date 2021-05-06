@@ -29,6 +29,7 @@ module Bmg
     public
 
       def each
+        return to_enum unless block_given?
         seen = {}
         @operand.each do |tuple|
           projected = tuple_project(tuple)

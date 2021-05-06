@@ -3,32 +3,46 @@ module Bmg
   module Reader
     describe Csv do
 
-      it 'works' do
-        file = Path.dir/("example.csv")
-        csv = Csv.new(Type::ANY, file)
-        expect(csv.to_a).to eql([
-          {id: "1", name: "Bernard Lambeau"},
-          {id: "2", name: "Yoann;Guyot"}
-        ])
-      end
+      subject {
+        Csv.new(Type::ANY, input)
+      }
 
-      it 'supports an io object' do
-        (Path.dir/("example.csv")).open('r') do |io|
-          csv = Csv.new(Type::ANY, io, col_sep: ";", quote_char: '"')
-          expect(csv.to_a).to eql([
+      context 'when a .csv file' do
+        let(:input){ Path.dir/("example.csv") }
+
+        it_behaves_like "a Relation-compatible"
+
+        it 'works' do
+          expect(subject.to_a).to eql([
             {id: "1", name: "Bernard Lambeau"},
             {id: "2", name: "Yoann;Guyot"}
           ])
         end
       end
 
-      it 'supports a StringIO io object' do
-        io = StringIO.new((Path.dir/"example.csv").read)
-        csv = Csv.new(Type::ANY, io)
-        expect(csv.to_a).to eql([
-          {id: "1", name: "Bernard Lambeau"},
-          {id: "2", name: "Yoann;Guyot"}
-        ])
+      context 'when a IO object' do
+        let(:input){ Path.dir/("example.csv") }
+
+        it 'works' do
+          input.open('r') do |io|
+            csv = Csv.new(Type::ANY, io, col_sep: ";", quote_char: '"')
+            expect(csv.to_a).to eql([
+              {id: "1", name: "Bernard Lambeau"},
+              {id: "2", name: "Yoann;Guyot"}
+            ])
+          end
+        end
+      end
+
+      context 'when a StringIO object' do
+        let(:input){ StringIO.new((Path.dir/"example.csv").read) }
+
+        it 'works' do
+          expect(subject.to_a).to eql([
+            {id: "1", name: "Bernard Lambeau"},
+            {id: "2", name: "Yoann;Guyot"}
+          ])
+        end
       end
 
     end

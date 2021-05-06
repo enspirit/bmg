@@ -6,6 +6,23 @@ require 'path'
 module SpecHelper
   SEQUEL_DB = Sequel.connect("sqlite://#{Path.dir.parent}/suppliers-and-parts.db")
 
+
+  shared_examples_for "a Relation-compatible" do
+
+    it 'is a relation' do
+      expect(subject).to be_a(Bmg::Relation)
+    end
+
+    it 'each without block returns an Enumerator' do
+      expect(subject.each).to be_a(Enumerator)
+    end
+
+    it 'supports calling count' do
+      expect(subject.count).not_to be(nil)
+    end
+
+  end
+
   def sequel_db
     SEQUEL_DB
   end

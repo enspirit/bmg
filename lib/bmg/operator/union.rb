@@ -37,6 +37,7 @@ module Bmg
       end
 
       def each(&bl)
+        return to_enum unless block_given?
         if all?
           operands.each do |op|
             op.each(&bl)

@@ -7,11 +7,17 @@ module Bmg
         Type::ANY.with_attrlist([:sid, :name, :city, :status])
       }
 
+      subject {
+        relation
+      }
+
       context 'starting with a table name' do
 
         let(:relation) {
           Bmg.sequel(:suppliers, sequel_db, suppliers_type)
         }
+
+        it_behaves_like "a Relation-compatible"
 
         it 'works' do
           expect(relation.to_a.size).to eql(5)

@@ -30,6 +30,7 @@ module Bmg
     public
 
       def each(&bl)
+        return to_enum unless block_given?
         page_size = options[:page_size]
         @operand.to_a
           .sort(&comparator)

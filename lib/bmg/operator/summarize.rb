@@ -23,6 +23,7 @@ module Bmg
     public
 
       def each
+        return to_enum unless block_given?
         # summary key => summarization memo, starting with least
         result = Hash.new{|h,k|
           h[k] = Hash[@summarization.map{|k,v|
