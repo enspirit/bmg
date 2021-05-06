@@ -24,7 +24,7 @@ module Bmg
 
         it 'works' do
           expect(subject).to eql(args.first)
-          reloaded = Bmg.excel(path).to_set
+          reloaded = Bmg.excel(path, :row_num => false).to_set
           expect(reloaded).to eql(relation.map{|t|
             t.merge(:when => t[:when].to_s)
           }.to_set)

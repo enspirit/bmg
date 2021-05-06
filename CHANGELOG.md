@@ -4,6 +4,10 @@
   feature requires 'bmg/writer/xlsx' and the 'write_xlsx' ruby gem,
   the latter being not a dependency of Bmg at this point.
 
+* `Bmg.excel` generates tuples with a `:row_num` attribute ; it's a
+  unique index starting at 1. A `:row_num` option may be set to `false`
+  to not generate them, or to a Symbol to choose it's name.
+
 * `Bmg.csv`'s options now support a `:smart` flag that can be set to
   true (resp. false) if you want (resp. don't want) Bmg to to identify
   quotes and separators by itself. The flag is currently true by default

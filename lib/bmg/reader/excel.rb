@@ -4,7 +4,8 @@ module Bmg
       include Reader
 
       DEFAULT_OPTIONS = {
-        skip: 0
+        skip: 0,
+        row_num: true
       }
 
       def initialize(type, path, options = {})
@@ -26,7 +27,11 @@ module Bmg
             if i==0
               headers = row.map(&:to_sym)
             else
-              tuple = (0...headers.size).each_with_object({}){|i,t| t[headers[i]] = row[i] }
+              init = init_tuple(i)
+              tuple = (0...headers.size)
+                .each_with_object(init){|i,t|
+                  t[headers[i]] = row[i]
+                }
               yield(tuple)
             end
           end
@@ -37,9 +42,22 @@ module Bmg
       end
 
       def to_s
-        "(excel #{path})"
+        "(excel #{@path})"
       end
       alias :inspect :to_s
+
+    private
+
+      def init_tuple(i)
+        case as = @options[:row_num]
+        when TrueClass
+          { :row_num => i }
+        when FalseClass
+          {}
+        when Symbol
+          { :"#{as}" => i }
+        end
+      end
 
     end # class Excel
   end # module Reader
