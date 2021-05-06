@@ -27,6 +27,12 @@ module Bmg
       }
     end
 
+    def with_type_attrlist
+      return self if type.knows_attrlist?
+      attrs = self.first.keys
+      with_type(type.with_attrlist(attrs))
+    end
+
     def with_typecheck
       dup.tap{|r|
         r.type = r.type.with_typecheck

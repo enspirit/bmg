@@ -8,7 +8,6 @@ module Bmg
         @type = type
       end
       attr_accessor :type
-      protected :type=
       attr_reader :operand
 
     public

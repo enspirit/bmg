@@ -29,7 +29,10 @@
   summarizer that works like `each_with_object`. `least` is the initial
   value, and defaults to nil.
 
-* Relation#each now returns an Enumerator when called without block.
+* `Relation#each` now returns an Enumerator when called without block.
+
+* `Relation#with_attr_list` ensures that an attribute list is known on
+  the type, consuming the first tuple to discover them if needed.
 
 # 0.18.2 - 2021/04/16
 
