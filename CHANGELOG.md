@@ -1,4 +1,4 @@
-# 0.18.3
+# 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The
   feature requires 'bmg/writer/xlsx' and the 'write_xlsx' ruby gem,
