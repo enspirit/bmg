@@ -2,6 +2,10 @@
 
 * `Bmg.excel` now strips attribute names.
 
+* `Relation#transform` now accepts a Hash whose keys are ruby classes,
+  The corresponding transformation is applied to all values belonging
+  to the class.
+
 # 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The

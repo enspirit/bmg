@@ -32,7 +32,16 @@ module Bmg
           }
         when Hash
           with.each_with_object(tuple.dup){|(k,v),dup|
-            dup[k] = transform_attr(dup[k], v)
+            case k
+            when Symbol
+              dup[k] = transform_attr(dup[k], v)
+            when Class
+              dup.keys.each do |attrname|
+                dup[attrname] = transform_attr(dup[attrname], v) if dup[attrname].is_a?(k)
+              end
+            else
+              raise ArgumentError, "Unexpected transformation `#{with.inspect}`"
+            end
           }
         when Array
           with.inject(tuple){|dup,on|

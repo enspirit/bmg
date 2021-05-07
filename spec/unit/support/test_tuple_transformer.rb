@@ -95,6 +95,21 @@ module Bmg
           })
         end
       end
+
+      context 'when used with a Hash with types to transformers' do
+        let(:arg){{
+          Integer => :to_s,
+          String => :capitalize
+        }}
+
+        it 'works' do
+          expect(subject).to eql({
+            foo: "2",
+            bar: "A",
+            baz: "1"
+          })
+        end
+      end
     end
 
   end

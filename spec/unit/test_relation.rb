@@ -706,6 +706,21 @@ module Bmg
         end
       end
 
+      context 'when used with an Hash mapping types' do
+        subject {
+          relation.transform(String => :upcase, Integer => ->(a){ a*2 })
+        }
+
+        it_behaves_like "an operator method"
+
+        it 'applies the transformation to specified attributes' do
+          expect(subject.to_a).to eql([
+            { a: "FOO", b: 4 },
+            { a: "BAR", b: 8 }
+          ])
+        end
+      end
+
       context 'when used with a Proc' do
         subject {
           relation.transform(&:to_s)
