@@ -73,6 +73,39 @@ module Bmg
         end
       end
 
+      context "On a noisy file" do
+        let(:input) {
+          Path.dir/("noisy.xlsx")
+        }
+        let(:options) {
+          { row_num: false }
+        }
+
+        it "strips spaces in attribute names" do
+          expect(subject.to_a).to eql([
+            {:Assignee => "Bernard",
+              :"Due date" => Date.parse("2021-04-30"),
+              :Priority => "High",
+              :Progress => "Started",
+              :What => "Do whatever is necessary to import excel easily"},
+            {:Assignee => "Victor",
+              :"Due date" => nil,
+              :Priority => "High  ",
+              :Progress => "Done",
+              :What => "Make Klaro much more friendly"},
+            {:Assignee => "David",
+              :"Due date" => Date.parse("2021-10-12"),
+              :Priority => "Medium",
+              :Progress => "Ongoing",
+              :What => "Fix all the bugs"},
+            {:Assignee => "Alice",
+              :"Due date" => "xx",
+              :Priority => "Low",
+              :Progress => "Started  ",
+              :What => "Write a fresh new CSS stylesheet"}])
+        end
+      end
+
     end
   end
 end

@@ -25,7 +25,7 @@ module Bmg
           .each_with_index
           .each do |row, i|
             if i==0
-              headers = row.map(&:to_sym)
+              headers = row.map{|c| c.to_s.strip.to_sym }
             else
               init = init_tuple(i)
               tuple = (0...headers.size)
