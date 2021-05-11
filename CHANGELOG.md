@@ -10,6 +10,13 @@
 
 * Add `Summarizer.median(x)` as a shortcut for `Summarizer.percentile(x, 50)`
 
+* `Summarizer.percentile` now returns a decimal number and not an integer.
+
+* Add `Summarizer.percentile_cont` and `Summarizer.percentile_disc` like
+  PostgreSQL (for continuous and discrete) ; the default `percentile` is
+  the continuous version.
+
+
 # 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The
