@@ -38,9 +38,14 @@ module Bmg
 
     end # class Avg
 
-    # Factors an average summarizer
+    # Factors percentile summarizer
     def self.percentile(*args, &bl)
       Percentile.new(*args, &bl)
+    end
+
+    # Factors median summarizer
+    def self.median(*args, &bl)
+      Percentile.new(*(args + [50]), &bl)
     end
 
   end # class Summarizer

@@ -18,6 +18,8 @@ module Bmg
       it 'should install factory methods' do
         expect(Summarizer.percentile(:qty)).to be_a(Percentile)
         expect(Summarizer.percentile(:qty).summarize(rel)).to eql(7)
+        expect(Summarizer.percentile(:qty, 50).summarize(rel)).to eql(7)
+        expect(Summarizer.median(:qty).summarize(rel)).to eql(7)
       end
 
       it 'lets specify nth' do

@@ -8,6 +8,8 @@
 
 * Fix `r.rename(...).rename(...)` yielding a private method call error.
 
+* Add `Summarizer.median(x)` as a shortcut for `Summarizer.percentile(x, 50)`
+
 # 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The
