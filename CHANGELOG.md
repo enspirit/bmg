@@ -6,6 +6,8 @@
   The corresponding transformation is applied to all values belonging
   to the class.
 
+* Fix `r.rename(...).rename(...)` yielding a private method call error.
+
 # 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The

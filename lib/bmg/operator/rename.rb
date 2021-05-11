@@ -31,15 +31,15 @@ module Bmg
       def each
         return to_enum unless block_given?
         @operand.each do |tuple|
-          yield rename(tuple, renaming)
+          yield rename_tuple(tuple, renaming)
         end
       end
 
       def insert(arg)
         case arg
-        when Hash       then operand.insert(rename(arg, reverse_renaming))
+        when Hash       then operand.insert(rename_tuple(arg, reverse_renaming))
         when Relation   then operand.insert(arg.rename(reverse_renaming))
-        when Enumerable then operand.insert(arg.map{|t| rename(t, reverse_renaming) })
+        when Enumerable then operand.insert(arg.map{|t| rename_tuple(t, reverse_renaming) })
         else
           super
         end
@@ -47,7 +47,7 @@ module Bmg
 
       def update(arg)
         case arg
-        when Hash then operand.update(rename(arg, reverse_renaming))
+        when Hash then operand.update(rename_tuple(arg, reverse_renaming))
         else
           super
         end
@@ -89,7 +89,7 @@ module Bmg
 
     private
 
-      def rename(tuple, renaming)
+      def rename_tuple(tuple, renaming)
         tuple.each_with_object({}){|(k,v),h|
           h[renaming[k] || k] = v
           h
