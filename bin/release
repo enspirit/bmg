@@ -1,0 +1,47 @@
+#!/bin/bash
+
+### Usage: bin/release VERSION
+###
+### Bump the version number from the current one in .env to the VERSION
+### received as argument.
+###
+### PRE: the current git branch must be 'master'
+### PRE: the VERSION file must specify the current version
+###
+### Source files referencing the current version number are modified
+### to match the new version.
+###
+### A commit is done with all those changes. A tag is created and both
+### the master branch and the tag are pushed to the origin.
+
+if [ ! -f VERSION ]; then
+  echo "File VERSION not found, aborting!"
+  exit 1
+fi
+VERSION=`cat VERSION | tr -d '[:space:]'`
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+if [ "$BRANCH" != "master" ]; then
+  echo "This script MUST be used on the master branch"
+  exit 2
+fi
+
+BUMP=$1
+if [ -z "$BUMP" ]
+then
+  echo "Usage: bin/release VERSION"
+  exit 3
+fi
+
+echo "Bumping source code from $VERSION to $BUMP"
+
+FILES=`grep -l -Rn $VERSION VERSION lib/bmg/version.rb`
+for file in $FILES
+do
+  sed "s/$VERSION/$BUMP/g" $file > /tmp/tempfile
+  mv /tmp/tempfile $file
+done
+
+git commit -a -m "Bump source code to $BUMP and release" && \
+git tag $BUMP && \
+git push origin master --tags
