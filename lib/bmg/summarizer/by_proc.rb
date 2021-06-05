@@ -16,7 +16,7 @@ module Bmg
       end
 
       # Returns [] as least value.
-      def least()
+      def least
         @least
       end
 

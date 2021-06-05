@@ -95,16 +95,7 @@ module Bmg
     # @param the current iterated tuple
     # @return updated memo value
     def happens(memo, tuple)
-      value = case @functor
-      when Proc
-        @functor.call(tuple)
-      when NilClass
-        tuple
-      when Symbol
-        tuple[@functor]
-      else
-        tuple[@functor]
-      end
+      value = extract_value(tuple)
       _happens(memo, value)
     end
 
@@ -143,6 +134,21 @@ module Bmg
       self.class.name.downcase[/::([a-z]+)$/, 1].to_sym
     end
 
+  protected
+
+    def extract_value(tuple)
+      value = case @functor
+      when Proc
+        @functor.call(tuple)
+      when NilClass
+        tuple
+      when Symbol
+        tuple[@functor]
+      else
+        tuple[@functor]
+      end
+    end
+
   end # class Summarizer
 end # module Bmg
 require_relative 'summarizer/count'
@@ -158,3 +164,4 @@ require_relative 'summarizer/distinct'
 require_relative 'summarizer/concat'
 require_relative 'summarizer/by_proc'
 require_relative 'summarizer/multiple'
+require_relative 'summarizer/value_by'

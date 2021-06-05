@@ -1,3 +1,8 @@
+# 0.18.5
+
+* Add a Summarize.value_by that allows flipping vertical series to a
+  tuple-valued attribute.
+
 # 0.18.4
 
 * `Bmg.excel` now strips attribute names.
@@ -15,7 +20,6 @@
 * Add `Summarizer.percentile_cont` and `Summarizer.percentile_disc` like
   PostgreSQL (for continuous and discrete) ; the default `percentile` is
   the continuous version.
-
 
 # 0.18.3 - 2021/05/06
 

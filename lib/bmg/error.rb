@@ -16,4 +16,7 @@ module Bmg
   # while unknown
   class UnknownAttributesError < Error; end
 
+  # Raised when an operator is badly used
+  class MisuseError < Error; end
+
 end
