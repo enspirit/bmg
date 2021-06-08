@@ -1,4 +1,4 @@
-# 0.18.5
+# 0.18.5 - 2021-06-08
 
 * Add a Summarize.value_by that allows flipping vertical series to a
   tuple-valued attribute.
