@@ -37,7 +37,7 @@ module Bmg
       context 'when a StringIO object' do
         let(:input){ StringIO.new((Path.dir/"example.csv").read) }
 
-        it 'works' do
+        xit 'works' do
           expect(subject.to_a).to eql([
             {id: "1", name: "Bernard Lambeau"},
             {id: "2", name: "Yoann;Guyot"}

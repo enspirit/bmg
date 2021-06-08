@@ -3,7 +3,9 @@
 * Add a Summarize.value_by that allows flipping vertical series to a
   tuple-valued attribute.
 
-# 0.18.4
+* Fix CSV read/write usage under ruby-3.0.
+
+# 0.18.4 - 2021-05-11
 
 * `Bmg.excel` now strips attribute names.
 

@@ -19,7 +19,8 @@ module Bmg
         relation.each do |tuple|
           if csv.nil?
             headers = infer_headers(tuple) if headers.nil?
-            csv = CSV.new(string_or_io, csv_options.merge(headers: headers))
+            csv_opts = csv_options.merge(headers: headers)
+            csv = CSV.new(string_or_io, **csv_opts)
           end
           csv << headers.map{|h| tuple[h] }
         end
