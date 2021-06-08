@@ -69,6 +69,11 @@ module Bmg
       Keys.new(shared, false)
     end
 
+    def unwrap(oldtype, newtype, attrs)
+      untouched = @keys.select{|k| (attrs & k).empty? }
+      Keys.new(untouched, false)
+    end
+
   public ## usuals
 
     def to_a

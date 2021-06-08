@@ -193,6 +193,15 @@ module Bmg
     end
     protected :_union
 
+    def unwrap(attrs)
+      _unwrap self.type.unwrap(attrs), attrs
+    end
+
+    def _unwrap(type, attrs)
+      Operator::Unwrap.new(type, self, attrs)
+    end
+    protected :_unwrap
+
     def spied(spy)
       return self if spy.nil?
       Relation::Spied.new(self, spy)

@@ -779,6 +779,35 @@ module Bmg
       end
     end
 
+    describe 'unwrap' do
+      let(:data) {
+        [
+          { a: 1, b: {x: 1, y: 2} },
+          { a: 2, b: {x: 1, y: 3} },
+        ]
+      }
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      subject {
+        relation.unwrap([:b])
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, x: 1, y: 2 },
+          { a: 2, x: 1, y: 3 },
+        ])
+      end
+
+      it 'has the expected ast' do
+        expect(subject.to_ast).to eql([:unwrap, [:in_memory, data], [:b]])
+      end
+    end
+
     describe 'materialize' do
       let(:source) { Relation.new [] }
 

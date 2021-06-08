@@ -235,6 +235,8 @@ t.transform(&:to_s)                          # similar, but Proc-driven
 t.transform(:foo => :upcase, ...)            # specific-attrs tranformation
 t.transform([:to_s, :upcase])                # chain-transformation
 r.union(right)                               # relational union
+r.unwrap([:a, :b, ...])                      # merge tuple-valued attributes within parent tuple
+r.unwrap(:a)                                 # shortcut over unwrap([:a])
 r.where(predicate)                           # alias for restrict(predicate)
 ```
 

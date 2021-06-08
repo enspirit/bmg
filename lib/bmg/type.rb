@@ -280,6 +280,15 @@ module Bmg
       }
     end
 
+    def unwrap(attrlist)
+      known_attributes!(attrlist) if typechecked? && knows_attrlist?
+      dup.tap{|x|
+        x.attrlist  = nil
+        x.predicate = predicate.and_split(attrlist).last
+        x.keys      = self._keys.unwrap(self, x, attrlist) if knows_keys?
+      }
+    end
+
   private
 
     def known_attributes!(attrs)

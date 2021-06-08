@@ -287,6 +287,48 @@ module Bmg
 
     end
 
+    describe 'unwrap' do
+      let(:type){
+        Type::ANY
+          .with_attrlist([:sid, :name, :supplies])
+          .with_keys([[:sid], [:sid, :supplies]])
+      }
+
+      it 'drops attrlist' do
+        got = type.unwrap([:supplies])
+        expect(got.to_attrlist).to be_nil
+      end
+
+      it 'keeps keys that don\'t use the wrapped attribute' do
+        got = type.unwrap([:supplies])
+        expect(got.keys).to eql([[:sid]])
+      end
+
+      it 'keeps predicate if it did not use the unwrapped attribute' do
+        from = type
+          .with_predicate(Predicate.eq(:sid, "S1"))
+        got = from
+          .unwrap([:supplies])
+        expect(got.predicate).to eql(from.predicate)
+      end
+
+      it 'split AND-predicate using the unwrapped attribute' do
+        from = type
+          .with_predicate(Predicate.eq(:sid, "S1") & Predicate.neq(:supplies, nil))
+        got = from
+          .unwrap([:supplies])
+        expect(got.predicate).to eql(Predicate.eq(:sid, "S1"))
+      end
+
+      it 'drops OR-predicate using the unwrapped attribute' do
+        from = type
+          .with_predicate(Predicate.eq(:sid, "S1") | Predicate.neq(:supplies, nil))
+        got = from
+          .unwrap([:supplies])
+        expect(got.predicate).to eql(Predicate.tautology)
+      end
+    end
+
     describe 'transform' do
 
       it 'keeps attrlist' do

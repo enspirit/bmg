@@ -69,6 +69,10 @@ module Bmg
         self.not_matching(right.rename(renaming), on.keys)
       end
 
+      def unwrap(attr)
+        super(attr.is_a?(Symbol) ? [attr] : attr)
+      end
+
     end # module Shortcuts
   end # module Algebra
 end # module Bmg

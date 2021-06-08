@@ -17,7 +17,7 @@ module Bmg
 
       it 'works' do
         expected = [
-          { 
+          {
             id: 1,
             label: "Main 1",
             hobbies: [
@@ -25,7 +25,7 @@ module Bmg
               { hobby: "bar" }
             ]
           },
-          { 
+          {
             id: 2,
             label: "Main 2",
             hobbies: [
