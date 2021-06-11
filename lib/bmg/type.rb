@@ -82,7 +82,7 @@ module Bmg
 
     def with_keys(keys)
       dup.tap{|x|
-        x.keys = Keys.new(keys)
+        x.keys = keys ? Keys.new(keys) : nil
       }
     end
 
@@ -263,6 +263,15 @@ module Bmg
       dup.tap{|x|
         x.keys = keys
         x.predicate = pred
+      }
+    end
+
+    def ungroup(attrlist)
+      known_attributes!(attrlist) if typechecked? && knows_attrlist?
+      dup.tap{|x|
+        x.attrlist  = nil
+        x.predicate = Predicate.tautology
+        x.keys      = nil
       }
     end
 

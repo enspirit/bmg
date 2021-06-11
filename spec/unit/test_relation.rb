@@ -779,6 +779,31 @@ module Bmg
       end
     end
 
+    describe 'ungroup' do
+      let(:data) {
+        [
+          { a: 1, b: [{x: 1}, {x: 2}] },
+          { a: 2, b: [] },
+        ]
+      }
+      let(:relation) {
+        Relation.new(data)
+      }
+
+      subject {
+        relation.ungroup([:b])
+      }
+
+      it_behaves_like "an operator method"
+
+      it 'returns the exected result' do
+        expect(subject.to_a).to eql([
+          { a: 1, x: 1 },
+          { a: 1, x: 2 },
+        ])
+      end
+    end
+
     describe 'unwrap' do
       let(:data) {
         [

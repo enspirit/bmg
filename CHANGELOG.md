@@ -1,5 +1,7 @@
 # 0.18.6
 
+* Add `ungroup` operator.
+
 * Add `unwrap` operator.
 
 # 0.18.5 - 2021-06-08

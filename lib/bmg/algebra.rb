@@ -183,6 +183,15 @@ module Bmg
     end
     protected :_transform
 
+    def ungroup(attrs)
+      _ungroup self.type.ungroup(attrs), attrs
+    end
+
+    def _ungroup(type, attrs)
+      Operator::Ungroup.new(type, self, attrs)
+    end
+    protected :_ungroup
+
     def union(other, options = {})
       return self if other.is_a?(Relation::Empty)
       _union self.type.union(other.type), other, options

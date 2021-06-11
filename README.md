@@ -234,6 +234,8 @@ t.transform(:to_s)                           # all-attrs transformation
 t.transform(&:to_s)                          # similar, but Proc-driven
 t.transform(:foo => :upcase, ...)            # specific-attrs tranformation
 t.transform([:to_s, :upcase])                # chain-transformation
+r.ungroup([:a, :b, ...])                     # ungroup relation-valued attributes within parent tuple
+r.ungroup(:a)                                # shortcut over ungroup([:a])
 r.union(right)                               # relational union
 r.unwrap([:a, :b, ...])                      # merge tuple-valued attributes within parent tuple
 r.unwrap(:a)                                 # shortcut over unwrap([:a])
