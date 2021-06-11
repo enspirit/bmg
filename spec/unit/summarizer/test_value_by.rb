@@ -78,6 +78,19 @@ module Bmg
         end
       end
 
+      context 'with an empty relation and a default and series with symbolize=true' do
+        let(:value_by){
+          ValueBy.new(:qty, :by => :serie, :default => 0, :series => ["foo", "bar"], :symbolize => true)
+        }
+
+        let(:rel){[
+        ]}
+
+        it 'raises an error' do
+          expect(value_by.summarize(rel)).to eql({:foo => 0, :bar => 0})
+        end
+      end
+
       context 'when not a candidate key' do
         let(:value_by){
           ValueBy.new(:qty, :by => :serie)

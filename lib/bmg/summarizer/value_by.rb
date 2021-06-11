@@ -39,7 +39,7 @@ module Bmg
       def default_tuple
         (options[:series] || []).each_with_object({}){|s,ss|
           s_def = options[:default]
-          s_def = s_def.to_sym if s_def && options[:symbolize]
+          s = s.to_sym if s && options[:symbolize]
           ss[s] = s_def
         }
       end
