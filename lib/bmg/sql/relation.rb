@@ -144,6 +144,14 @@ module Bmg
         end
       end
 
+      def _transform(type, transformation, options)
+        expr = before_use(self.expr)
+        expr = Processor::Transform.new(transformation, options, builder).call(self.expr)
+        _instance(type, builder, expr)
+      rescue Sql::NotSupportedError
+        super
+      end
+
       def can_compile_summarization?(summarization)
         summarization.values.all?{|s|
           [:avg, :count, :max, :min, :sum].include?(s.to_summarizer_name)

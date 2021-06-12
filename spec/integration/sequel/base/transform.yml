@@ -1,0 +1,11 @@
+
+---
+- bmg: |-
+    supplies.transform(:qty => String)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      CAST(`t1`.`qty` AS varchar(255)) AS 'qty'
+    FROM
+      `supplies` AS 't1'
