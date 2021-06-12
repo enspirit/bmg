@@ -110,6 +110,41 @@ module Bmg
           })
         end
       end
+
+      context 'when used with a class' do
+        let(:tuple){{
+          :int => "1",
+          :float => "2.3",
+          :date => "2021-01-04",
+          :datetime => "2021-01-04T13:06:21"
+        }}
+        let(:arg){
+          {
+            :int => Integer,
+            :float => Float,
+            :date => Date,
+            :datetime => DateTime
+          }
+        }
+
+        it 'works' do
+          expect(subject).to eql({
+            int: 1,
+            float: 2.3,
+            date: Date.parse(tuple[:date]),
+            datetime: DateTime.parse("2021-01-04T13:06:21")
+          })
+        end
+      end
+
+      context 'when used with an unsupported class' do
+        let(:arg){ TupleTransformer }
+
+        it 'raises' do
+          expect{ subject }.to raise_error(ArgumentError)
+        end
+      end
+
     end
 
   end

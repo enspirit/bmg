@@ -59,6 +59,16 @@ module Bmg
         when Regexp
           m = with.match(value.to_s)
           m.nil? ? m : m.to_s
+        when Class
+          if with.respond_to?(:parse)
+            with.parse(value)
+          elsif with == Integer
+            Integer(value)
+          elsif with == Float
+            Float(value)
+          else
+            raise ArgumentError, "#{with} should respond to `parse`"
+          end
         when Proc
           with.call(value)
         when Hash

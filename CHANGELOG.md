@@ -1,4 +1,10 @@
-# 0.18.6
+# 0.18.7
+
+* `transform` now support a ruby Class transformer. `Integer` and `Float`
+  are natively supported. The class must respond to `parse` otherwise, which
+  works with `Date`, `DateTime`, `URI`, etc.
+
+# 0.18.6 - 2021-06-10
 
 * Add `ungroup` operator.
 
