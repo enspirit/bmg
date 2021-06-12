@@ -60,12 +60,15 @@ module Bmg
           m = with.match(value.to_s)
           m.nil? ? m : m.to_s
         when Class
+          return value if value.nil?
           if with.respond_to?(:parse)
             with.parse(value)
           elsif with == Integer
             Integer(value)
           elsif with == Float
             Float(value)
+          elsif with == String
+            value.to_s
           else
             raise ArgumentError, "#{with} should respond to `parse`"
           end

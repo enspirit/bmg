@@ -116,14 +116,20 @@ module Bmg
           :int => "1",
           :float => "2.3",
           :date => "2021-01-04",
-          :datetime => "2021-01-04T13:06:21"
+          :datetime => "2021-01-04T13:06:21",
+          :string => 12,
+          #
+          :warn => nil
         }}
         let(:arg){
           {
             :int => Integer,
             :float => Float,
             :date => Date,
-            :datetime => DateTime
+            :datetime => DateTime,
+            :string => String,
+            #
+            :warn => Date
           }
         }
 
@@ -132,7 +138,10 @@ module Bmg
             int: 1,
             float: 2.3,
             date: Date.parse(tuple[:date]),
-            datetime: DateTime.parse("2021-01-04T13:06:21")
+            datetime: DateTime.parse("2021-01-04T13:06:21"),
+            string: "12",
+            #
+            warn: nil
           })
         end
       end

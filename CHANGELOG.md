@@ -1,8 +1,10 @@
 # 0.18.7
 
-* `transform` now support a ruby Class transformer. `Integer` and `Float`
-  are natively supported. The class must respond to `parse` otherwise, which
-  works with `Date`, `DateTime`, `URI`, etc.
+* `transform` now supports a ruby Class transformer. `Integer`, `Float` and
+  `String` are natively supported (through `Integer()` and `Float()` for the
+  formers, `to_s` for the latter). The class must respond to `parse`
+  otherwise, which works with `Date`, `DateTime`, `URI`, etc. `nil` are
+  always returned unchanged.
 
 * Add a `:preserve` option to `image` that prevents the application of
   `allbut(on)` on the tuples of the `right` relation when creating the
