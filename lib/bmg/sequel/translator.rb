@@ -78,8 +78,15 @@ module Bmg
       end
 
       def on_func_call(sexpr)
-        args = sexpr.func_args.map{|fa| apply(fa) }
-        ::Sequel.function(sexpr.func_name, *args)
+        case sexpr.func_name
+        when :cast
+          to_cast = apply(sexpr.func_args.first)
+          type = sexpr.func_args.last.last
+          to_cast.cast(type)
+        else
+          args = sexpr.func_args.map{|fa| apply(fa) }
+          ::Sequel.function(sexpr.func_name, *args)
+        end
       end
 
       def on_summarizer(sexpr)

@@ -1,0 +1,38 @@
+
+---
+- bmg: |-
+    supplies.transform(:qty => String)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      CAST(`t1`.`qty` AS varchar(255)) AS 'qty'
+    FROM
+      `supplies` AS 't1'
+- bmg: |-
+    supplies.transform(String)
+  sqlite: |-
+    SELECT
+      CAST(`t1`.`sid` AS varchar(255)) AS 'sid',
+      CAST(`t1`.`pid` AS varchar(255)) AS 'pid',
+      CAST(`t1`.`qty` AS varchar(255)) AS 'qty'
+    FROM
+      `supplies` AS 't1'
+- bmg: |-
+    supplies.transform(:qty => [String, Integer])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      CAST(CAST(`t1`.`qty` AS varchar(255)) AS integer) AS 'qty'
+    FROM
+      `supplies` AS 't1'
+- bmg: |-
+    supplies.transform(:qty => [String, Date])
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      date(CAST(`t1`.`qty` AS varchar(255))) AS 'qty'
+    FROM
+      `supplies` AS 't1'

@@ -123,13 +123,13 @@ module Bmg
 
       def _rename(type, renaming)
         expr = before_use(self.expr)
-        expr = Processor::Rename.new(renaming, builder).call(self.expr)
+        expr = Processor::Rename.new(renaming, builder).call(expr)
         _instance(type, builder, expr)
       end
 
       def _restrict(type, predicate)
         expr = before_use(self.expr)
-        expr = Processor::Where.new(predicate, builder).call(self.expr)
+        expr = Processor::Where.new(predicate, builder).call(expr)
         _instance(type, builder, expr)
       end
 
@@ -137,11 +137,25 @@ module Bmg
         summarization = ::Bmg::Summarizer.summarization(defs)
         if can_compile_summarization?(summarization)
           expr = before_use(self.expr)
-          expr = Processor::Summarize.new(by, summarization, builder).call(self.expr)
+          expr = Processor::Summarize.new(by, summarization, builder).call(expr)
           _instance(type, builder, expr)
         else
           super
         end
+      end
+
+      def _transform(type, transformation, options)
+        expr = before_use(self.expr)
+        sup, unsup = Processor::Transform.split_supported(transformation){|x|
+          [String, Integer, Float, Date, DateTime].include?(x)
+        }
+        return super if sup.nil?
+        expr = Processor::Transform.new(sup, options, builder).call(expr)
+        result = _instance(type, builder, expr)
+        result = result.transform(unsup, options) if unsup
+        result
+      rescue Sql::NotSupportedError
+        super
       end
 
       def can_compile_summarization?(summarization)
@@ -153,7 +167,7 @@ module Bmg
       def _union(type, right, options)
         if right_expr = extract_compatible_sexpr(right)
           expr = before_use(self.expr)
-          expr = Processor::Merge.new(:union, !!options[:all], right_expr, builder).call(self.expr)
+          expr = Processor::Merge.new(:union, !!options[:all], right_expr, builder).call(expr)
           _instance(type, builder, expr)
         else
           super

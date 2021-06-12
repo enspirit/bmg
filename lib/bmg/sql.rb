@@ -2,7 +2,10 @@ require 'sexpr'
 module Bmg
 
   module Sql
-  end
+
+    class NotSupportedError < Bmg::Error; end
+
+  end # module Sql
 
   def sql(table, type = Type::ANY)
     builder = Sql::Builder.new

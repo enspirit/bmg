@@ -6,6 +6,11 @@
   otherwise, which works with `Date`, `DateTime`, `URI`, etc. `nil` are
   always returned unchanged.
 
+* `transform` is compiled to SQL CAST expressions when used with scalar classes
+  (String, Integer, Float, Date, DateTime). The compiler is able to split
+  complex transformations into SQL-supported and SQL-unsupported transformations
+  so that everything that can be pushed down the tree is pushed.
+
 * Add a `:preserve` option to `image` that prevents the application of
   `allbut(on)` on the tuples of the `right` relation when creating the
   resulting attribute. Default behavior unchanged.
