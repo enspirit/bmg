@@ -14,4 +14,3 @@ module Bmg
 
   end
 end
-

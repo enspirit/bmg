@@ -18,7 +18,7 @@ module Bmg
 
         def on_select_item(sexpr)
           as = sexpr.as_name.to_sym
-          case t = transformation[as]
+          case t = transformation_for(as)
           when NilClass
             sexpr
           when Class
@@ -32,6 +32,17 @@ module Bmg
             ])
           else
             raise NotSupportedError
+          end
+        end
+
+      private
+
+        def transformation_for(as)
+          case t = transformation
+          when Class then t
+          when Hash then t[as]
+          else
+            raise Sql::NotSupportedError, "Unable to use `#{as}` for `transform`"
           end
         end
 

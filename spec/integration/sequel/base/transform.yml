@@ -9,3 +9,12 @@
       CAST(`t1`.`qty` AS varchar(255)) AS 'qty'
     FROM
       `supplies` AS 't1'
+- bmg: |-
+    supplies.transform(String)
+  sqlite: |-
+    SELECT
+      CAST(`t1`.`sid` AS varchar(255)) AS 'sid',
+      CAST(`t1`.`pid` AS varchar(255)) AS 'pid',
+      CAST(`t1`.`qty` AS varchar(255)) AS 'qty'
+    FROM
+      `supplies` AS 't1'
