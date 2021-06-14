@@ -1,4 +1,4 @@
-# 0.18.7
+# 0.18.7 - 2021-06-14
 
 * `transform` now supports a ruby Class transformer. `Integer`, `Float` and
   `String` are natively supported (through `Integer()` and `Float()` for the
