@@ -24,9 +24,10 @@ module Bmg
         @workbook = WriteXLSX.new(path)
         @worksheet = workbook.add_worksheet
 
-        headers = infer_headers(relation.type)
+        headers, formats = infer_headers(relation.type), nil
         relation.each_with_index do |tuple,i|
           headers = infer_headers(tuple) if headers.nil?
+          formats = infer_formats(relation, headers) if formats.nil?
           headers.each_with_index do |h,i|
             worksheet.write_string(0, i, h)
           end if i == 0

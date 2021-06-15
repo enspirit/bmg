@@ -14,7 +14,8 @@ module Bmg
       let(:relation) {
         Relation.new [
           { id: 1, name: "Bernard", nonnum: "1", when: date },
-          { id: 2, name: "Yoann",   nonnum: "2", when: date }
+          { id: 2, name: "Yoann",   nonnum: "2", when: date },
+          { id: 3, name: "Louis",   nonnum: "1", when: date+10 }
         ]
       }
 
