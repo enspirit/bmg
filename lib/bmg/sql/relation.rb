@@ -160,7 +160,7 @@ module Bmg
 
       def can_compile_summarization?(summarization)
         summarization.values.all?{|s|
-          [:avg, :count, :max, :min, :sum].include?(s.to_summarizer_name)
+          [:avg, :count, :max, :min, :sum, :distinct_count].include?(s.to_summarizer_name)
         }
       end
 

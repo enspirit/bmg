@@ -123,3 +123,11 @@
       min(`t1`.`qty`) AS 'min_qty'
     FROM
       `supplies` AS 't1'
+- bmg: |-
+    supplies
+      .summarize([], :qty => :distinct_count)
+  sqlite: |-
+    SELECT
+      count(DISTINCT `t1`.`qty`) AS 'qty'
+    FROM
+      `supplies` AS 't1'

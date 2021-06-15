@@ -90,11 +90,17 @@ module Bmg
       end
 
       def on_summarizer(sexpr)
-        if sexpr.summary_expr
-          ::Sequel.function(sexpr.summary_func, apply(sexpr.summary_expr))
+        func, distinct = if sexpr.summary_func == :distinct_count
+          [:count, true]
         else
-          ::Sequel.function(sexpr.summary_func).*
+          [sexpr.summary_func, false]
         end
+        f = if sexpr.summary_expr
+          ::Sequel.function(func, apply(sexpr.summary_expr))
+        else
+          ::Sequel.function(func).*
+        end
+        distinct ? f.distinct : f
       end
 
       def on_qualified_name(sexpr)

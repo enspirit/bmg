@@ -3,6 +3,8 @@
 * Fix SQL compilation of summarize expressions having a resulting attribute
   name different from the attribute summarized.
 
+* Add `distinct_count` summarizer, with SQL compilation.
+
 # 0.18.7 - 2021-06-14
 
 * `transform` now supports a ruby Class transformer. `Integer`, `Float` and

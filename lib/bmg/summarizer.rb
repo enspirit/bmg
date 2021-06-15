@@ -131,7 +131,10 @@ module Bmg
 
     # Returns the canonical summarizer name
     def to_summarizer_name
-      self.class.name.downcase[/::([a-z]+)$/, 1].to_sym
+      self.class.name
+        .gsub(/[a-z][A-Z]/){|x| x.split('').join('_') }
+        .downcase[/::([a-z_]+)$/, 1]
+        .to_sym
     end
 
   protected
@@ -161,6 +164,7 @@ require_relative 'summarizer/stddev'
 require_relative 'summarizer/percentile'
 require_relative 'summarizer/collect'
 require_relative 'summarizer/distinct'
+require_relative 'summarizer/distinct_count'
 require_relative 'summarizer/concat'
 require_relative 'summarizer/by_proc'
 require_relative 'summarizer/multiple'
