@@ -1,4 +1,4 @@
-# 0.18.8
+# 0.18.8 - 2021-06-15
 
 * Fix SQL compilation of summarize expressions having a resulting attribute
   name different from the attribute summarized.
