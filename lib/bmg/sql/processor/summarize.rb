@@ -36,10 +36,10 @@ module Bmg
             [:select_item,
               [ :summarizer,
                 summarizer.to_summarizer_name,
-                sexpr.desaliaser[attr] ],
+                sexpr.desaliaser[summarizer.functor] ],
               [:column_name, attr.to_s] ]
           }
-          [:select_list] + by_list + group_list
+          ([:select_list] + by_list + group_list)
         end
 
       end # class Summarize

@@ -1,3 +1,8 @@
+# 0.18.8
+
+* Fix SQL compilation of summarize expressions having a resulting attribute
+  name different from the attribute summarized.
+
 # 0.18.7 - 2021-06-14
 
 * `transform` now supports a ruby Class transformer. `Integer`, `Float` and

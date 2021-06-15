@@ -115,3 +115,11 @@
       `t3` ON (`t1`.`sid` = `t3`.`sid`)
     WHERE
       (`t3`.`qty` = 2)
+- bmg: |-
+    supplies
+      .summarize([], :min_qty => Bmg::Summarizer.min(:qty))
+  sqlite: |-
+    SELECT
+      min(`t1`.`qty`) AS 'min_qty'
+    FROM
+      `supplies` AS 't1'
