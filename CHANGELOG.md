@@ -1,3 +1,8 @@
+# 0.18.9
+
+* Add support for a `:sheet => Int` option to excel reader, to specify which
+  sheet to use for having tabular data.
+
 # 0.18.8 - 2021-06-15
 
 * Fix SQL compilation of summarize expressions having a resulting attribute

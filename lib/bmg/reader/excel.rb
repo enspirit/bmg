@@ -4,6 +4,7 @@ module Bmg
       include Reader
 
       DEFAULT_OPTIONS = {
+        sheet: 0,
         skip: 0,
         row_num: true
       }
@@ -19,7 +20,7 @@ module Bmg
         require 'roo'
         xlsx = Roo::Spreadsheet.open(@path, @options)
         headers = nil
-        xlsx.sheet(0)
+        xlsx.sheet(@options[:sheet])
           .each
           .drop(@options[:skip])
           .each_with_index

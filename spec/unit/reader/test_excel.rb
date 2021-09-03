@@ -41,6 +41,24 @@ module Bmg
         end
       end
 
+      context "with specifying the sheet to use" do
+        let(:input) {
+          Path.dir/("example.xlsx")
+        }
+        let(:options) {
+          { skip: 1, sheet: 1 }
+        }
+
+        it_behaves_like "a Relation-compatible"
+
+        it "works" do
+          expect(subject.to_a).to eql([
+            { row_num: 1, id: 1, name: "Louis Lambeau" },
+            { row_num: 2, id: 2, name: "Marie Deserable" },
+          ])
+        end
+      end
+
       context "when skipping row num" do
         let(:input) {
           Path.dir/("example.xlsx")
