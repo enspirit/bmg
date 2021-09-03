@@ -6,8 +6,12 @@ module Bmg
     end
     attr_reader :attrs
 
+    def call(t1, t2)
+      comparator.call(t1, t2)
+    end
+
     def comparator
-      ->(t1, t2) {
+      @comparator ||= ->(t1, t2) {
         attrs.each do |(attr,direction)|
           c = t1[attr] <=> t2[attr]
           return (direction == :desc ? -c : c) unless c==0

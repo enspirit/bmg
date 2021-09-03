@@ -3,6 +3,9 @@
 * Add support for a `:sheet => Int` option to excel reader, to specify which
   sheet to use for having tabular data.
 
+* Add `first` and `last` summarizer, that take the first and last values
+  seen, according to an ordering.
+
 # 0.18.8 - 2021-06-15
 
 * Fix SQL compilation of summarize expressions having a resulting attribute
