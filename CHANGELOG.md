@@ -1,4 +1,4 @@
-# 0.18.9
+# 0.18.9 - 2021-10-29
 
 * Add support for a `:sheet => Int` option to excel reader, to specify which
   sheet to use for having tabular data.
