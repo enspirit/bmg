@@ -6,6 +6,10 @@
 * Add `first` and `last` summarizer, that take the first and last values
   seen, according to an ordering.
 
+* Add support for `:postprocessor_condition` in Autowrap, with values `:all`
+  (all tuple attributes must be nil for the postprocessor to apply) and `:id`
+  (only an `:id` attribute must be nil for it to apply). `:all` is the default,
+  to preserve backward compatibility.
 # 0.18.8 - 2021-06-15
 
 * Fix SQL compilation of summarize expressions having a resulting attribute

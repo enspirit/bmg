@@ -113,6 +113,17 @@ module Bmg
 
       end
 
+      context 'when called with a :nil post processor with an :id condition' do
+
+        it 'sets the results of nil LEFT JOINs to nil' do
+          relation = [{ a: 1, b_id: nil, b_type: 'hello' }]
+          options = { postprocessor: :nil, postprocessor_condition: :id }
+          autowrap = Autowrap.new Type::ANY, relation, options
+          expect(autowrap.to_a).to eql([{ a: 1, b: nil }])
+        end
+
+      end
+
     end
   end
 end

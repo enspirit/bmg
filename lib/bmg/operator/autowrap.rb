@@ -22,6 +22,7 @@ module Bmg
 
       DEFAULT_OPTIONS = {
         :postprocessor => :none,
+        :postprocessor_condition => :all,
         :split => "_"
       }
 
@@ -167,7 +168,7 @@ module Bmg
 
       def normalize_options(options)
         opts = DEFAULT_OPTIONS.merge(options)
-        opts[:postprocessor] = NoLeftJoinNoise.new(opts[:postprocessor])
+        opts[:postprocessor] = NoLeftJoinNoise.new(opts[:postprocessor], opts[:postprocessor_condition])
         opts
       end
 
@@ -209,17 +210,17 @@ module Bmg
       class NoLeftJoinNoise
 
         REMOVERS = {
-          nil:    ->(t,k){ t[k] = nil  },
-          delete: ->(t,k){ t.delete(k) },
-          none:   ->(t,k){ t           }
+          nil:       ->(t,k){ t[k] = nil  },
+          delete:    ->(t,k){ t.delete(k) },
+          none:      ->(t,k){ t           }
         }
 
-        def self.new(remover)
+        def self.new(remover, remover_condition = :all)
           return remover if remover.is_a?(NoLeftJoinNoise)
           super
         end
 
-        def initialize(remover)
+        def initialize(remover, remover_condition = :all)
           @remover_to_s = remover
           @remover = case remover
           when NilClass then REMOVERS[:none]
@@ -229,20 +230,33 @@ module Bmg
           else
             raise "Invalid remover `#{remover}`"
           end
+          @remover_condition = case remover_condition
+          when :all then ->(tuple){ all_nil?(tuple) }
+          when :id  then ->(tuple){ id_nil?(tuple) }
+          else
+            raise "Invalid remover condition `#{remover_condition}`"
+          end
         end
         attr_reader :remover
 
         def call(tuple)
           tuple.each_key do |k|
             call(tuple[k]) if tuple[k].is_a?(Hash)
-            @remover.call(tuple, k) if tuple[k].is_a?(Hash) && all_nil?(tuple[k])
+            @remover.call(tuple, k) if tuple[k].is_a?(Hash) && @remover_condition.call(tuple[k])
           end
           tuple
         end
 
         def all_nil?(tuple)
           return false unless tuple.is_a?(Hash)
+
           tuple.all?{|(k,v)| v.nil? || all_nil?(tuple[k]) }
+        end
+
+        def id_nil?(tuple)
+          return false unless tuple.is_a?(Hash)
+
+          tuple[:id].nil?
         end
 
         def inspect
