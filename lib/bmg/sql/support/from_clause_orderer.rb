@@ -213,8 +213,7 @@ module Bmg
         def _collect_joins(sexpr, joins)
           case sexpr.first
           when :and
-            _collect_joins(sexpr[1], joins)
-            _collect_joins(sexpr[2], joins)
+            sexpr[1..-1].each{ |term| _collect_joins(term, joins) }
           when :eq
             joins << sexpr
           else

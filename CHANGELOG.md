@@ -1,3 +1,8 @@
+# 0.18.10 - 2021-11-26
+
+* Fix SQL generation of nary join (equality conditions beyond the two first ones
+  were thrown away).
+
 # 0.18.9 - 2021-10-29
 
 * Add support for a `:sheet => Int` option to excel reader, to specify which
