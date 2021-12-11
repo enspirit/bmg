@@ -1,3 +1,7 @@
+# 0.18.11
+
+* Upgraded `predicate` to `2.6.0` (which itself uses `sexpr` 1.0)
+
 # 0.18.10 - 2021-11-26
 
 * Fix SQL generation of nary join (equality conditions beyond the two first ones
