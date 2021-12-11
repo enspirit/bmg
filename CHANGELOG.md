@@ -1,6 +1,7 @@
-# 0.18.11
+# 0.18.11 - 2021-12-11
 
 * Upgraded `predicate` to `2.6.0` (which itself uses `sexpr` 1.0)
+  This makes `bmg` compatible with ruby `3.0` and `3.1`.
 
 # 0.18.10 - 2021-11-26
 
