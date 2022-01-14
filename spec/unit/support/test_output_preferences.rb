@@ -60,4 +60,3 @@ module Bmg
     end
   end
 end
-

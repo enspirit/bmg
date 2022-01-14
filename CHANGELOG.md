@@ -1,3 +1,8 @@
+# 0.18.12
+
+* Make `page` robust to comparisons with nil/null (nil is greater)
+  and non comparable attributes (simply ignored).
+
 # 0.18.11 - 2021-12-11
 
 * Upgraded `predicate` to `2.6.0` (which itself uses `sexpr` 1.0)

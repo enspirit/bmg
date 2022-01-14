@@ -32,7 +32,8 @@ module Bmg
       def each(&bl)
         return to_enum unless block_given?
         page_size = options[:page_size]
-        @operand.to_a
+        @operand
+          .to_a
           .sort(&comparator)
           .drop(page_size * (page_index-1))
           .take(page_size)
@@ -46,7 +47,7 @@ module Bmg
     protected ### inspect
 
       def comparator
-        Ordering.new(@ordering).comparator
+        @comparator ||= Ordering.new(@ordering).comparator
       end
 
       def args
