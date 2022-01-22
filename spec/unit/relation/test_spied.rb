@@ -15,6 +15,15 @@ module Bmg
         ->(r){ puts r }
       }
 
+      class SpyWithMeasure
+        attr_accessor :seen
+
+        def measure(relation, &bl)
+          self.seen = relation
+          bl.call
+        end
+      end
+
       describe "algebra" do
 
         it 'forwards all algebra methods' do
@@ -35,7 +44,6 @@ module Bmg
       end # algebra
 
       describe "each" do
-
         it 'calls the spy but keep eaching normally' do
           seen = nil
           spied = base.spied(->(r){
@@ -45,9 +53,32 @@ module Bmg
           expect(seen).to be(spied)
         end
 
+        it 'calls spy''s measure if it exists' do
+          spy = SpyWithMeasure.new
+          spied = base.spied(spy)
+          expect(spied.to_a).to eql(base.to_a)
+          expect(spy.seen).to be(spied)
+        end
+      end
+
+      describe "count" do
+        it 'calls the spy but keep counting normally' do
+          seen = nil
+          spied = base.spied(->(r){
+            seen = r
+          })
+          expect(spied.count).to eql(1)
+          expect(seen).to be(spied)
+        end
+
+        it 'calls spy''s measure if it exists' do
+          spy = SpyWithMeasure.new
+          spied = base.spied(spy)
+          expect(spied.count).to eql(1)
+          expect(spy.seen).to be(spied)
+        end
       end
 
     end
   end
 end
-

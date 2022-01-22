@@ -3,6 +3,13 @@
 * Make `page` robust to comparisons with nil/null (nil is greater)
   and non comparable attributes (simply ignored).
 
+* Calling `count` on a spied relation properly calls the spy's
+  call method.
+
+* If a relation spy responds to `measure`, the latest is called
+  at spy time (instead of `call`) with a block that the measure
+  method must yield.
+
 # 0.18.11 - 2021-12-11
 
 * Upgraded `predicate` to `2.6.0` (which itself uses `sexpr` 1.0)

@@ -24,13 +24,27 @@ module Bmg
       protected :type=
 
       def each(&bl)
-        spy.call(self) if bl
-        operand.each(&bl)
+        return enum_for(:each) unless bl
+
+        if spy.respond_to?(:measure)
+          spy.measure(self) do
+            operand.each(&bl)
+          end
+        else
+          spy.call(self)
+          operand.each(&bl)
+        end
       end
 
       def count
-        spy.call(self) if bl
-        operand.count
+        if spy.respond_to?(:measure)
+          spy.measure(self) do
+            operand.count
+          end
+        else
+          spy.call(self)
+          operand.count
+        end
       end
 
       def to_ast
