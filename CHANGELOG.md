@@ -1,4 +1,4 @@
-# 0.18.12
+# 0.18.12 - 2022-01-24
 
 * Make `page` robust to comparisons with nil/null (nil is greater)
   and non comparable attributes (simply ignored).
