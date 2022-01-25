@@ -101,7 +101,7 @@ module Bmg
 
       # Returns the summarizer to use for a given key.
       def summarizer(k)
-        @sums[k] || Same.new
+        @sums[k] ||= Same::INSTANCE
       end
 
       # Sums `tuple` on `memo`, returning the new tuple to use as memo.
@@ -120,8 +120,8 @@ module Bmg
 
       def to_summarizer(x)
         case x
-        when :same  then Same.new
-        when :group then DistinctList.new
+        when :same  then Same::INSTANCE
+        when :group then DistinctList::INSTANCE
         else
           x
         end
@@ -151,6 +151,7 @@ module Bmg
         end
         alias :to_s :inspect
 
+        INSTANCE = new
       end # class Same
 
       #
@@ -183,6 +184,7 @@ module Bmg
         end
         alias :to_s :inspect
 
+        INSTANCE = new
       end # class DistinctList
 
       #

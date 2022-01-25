@@ -19,14 +19,14 @@ module Bmg
     public
 
       def _count
-        operand._count
+        _materialize._count
       end
 
     public
 
       def each(&bl)
-        @operand = Relation::InMemory.new(operand.type, operand.to_a) unless @operand.is_a?(Relation::InMemory)
-        @operand.each(&bl)
+        return to_enum unless block_given?
+        _materialize.each(&bl)
       end
 
       def to_ast
@@ -35,6 +35,14 @@ module Bmg
 
       def args
         []
+      end
+
+    private
+
+      def _materialize
+        return @operand if @operand.is_a?(Relation::InMemory)
+
+        @operand = Relation::InMemory.new(operand.type, operand.to_a)
       end
 
     end # class Materialized
