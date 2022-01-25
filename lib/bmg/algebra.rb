@@ -12,6 +12,7 @@ module Bmg
     protected :_allbut
 
     def autowrap(options = {})
+      return self if self.type.identity_autowrap?(options)
       _autowrap self.type.autowrap(options), options
     end
 

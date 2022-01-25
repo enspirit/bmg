@@ -1,3 +1,7 @@
+# 0.18.13
+
+* `autowrapped` is now striped away if no attribute would be touched.
+
 # 0.18.12 - 2022-01-24
 
 * Make `page` robust to comparisons with nil/null (nil is greater)

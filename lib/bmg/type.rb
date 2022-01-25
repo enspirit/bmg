@@ -103,8 +103,15 @@ module Bmg
       }
     end
 
+    def identity_autowrap?(options)
+      return false unless knows_attrlist?
+
+      sep = Operator::Autowrap.separator(options)
+      self.attrlist.all?{|a| a.to_s.index(sep).nil? }
+    end
+
     def autowrap(options)
-      sep = options[:split] || Operator::Autowrap::DEFAULT_OPTIONS[:split]
+      sep = Operator::Autowrap.separator(options)
       splitter = ->(a){ a.to_s.split(sep).first }
       is_split = ->(a){ a.to_s.split(sep).size > 1 }
       dup.tap{|x|

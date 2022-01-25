@@ -26,6 +26,12 @@ module Bmg
         :split => "_"
       }
 
+      class << self
+        def separator(options)
+          options[:split] || DEFAULT_OPTIONS[:split]
+        end
+      end
+
       def initialize(type, operand, options = {})
         @type = type
         @operand = operand

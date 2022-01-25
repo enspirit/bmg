@@ -8,14 +8,63 @@ module Bmg
 
     let(:relation) {
       Relation.new([
-        { :a => 1,  :"b-id" => 2 },
-        { :a => 11, :"b-id" => 2 }
+        { :a => 1,  :"b-id" => 2, :"c$id" => 3 },
+        { :a => 11, :"b-id" => 2, :"c$id" => 3 }
+      ], type)
+    }
+
+    let(:untyped_relation) {
+      Relation.new([
+        { :a => 1,  :"b-id" => 2, :"c$id" => 3 },
+        { :a => 11, :"b-id" => 2, :"c$id" => 3 }
       ], type)
     }
 
     let(:type) {
-      Type.new.with_attrlist([:a, :"b-id"])
+      Type.new.with_attrlist([:a, :"b-id", :"c$id"])
     }
+
+    context "autowrap" do
+      subject {
+        rel.autowrap(options)
+      }
+      let(:rel) {
+        relation
+      }
+
+      context 'when at least one attribute will be touched' do
+        let(:options) {
+          { :split => '-' }
+        }
+
+        it 'works' do
+          expect(subject).to be_a(Operator::Autowrap)
+        end
+      end
+
+      context 'when at least one attribute will be touched but the type is unknown' do
+        let(:options) {
+          { :split => '-' }
+        }
+        let(:rel) {
+          untyped_relation
+        }
+
+        it 'works' do
+          expect(subject).to be_a(Operator::Autowrap)
+        end
+      end
+
+      context 'when no attribute will be touched' do
+        let(:options) {
+          { :split => '_' }
+        }
+
+        it 'skips the Autowrap' do
+          expect(subject).to be(relation)
+        end
+      end
+    end
 
     context "autowrap.autowrap" do
       subject {
@@ -24,12 +73,12 @@ module Bmg
 
       context 'when different options' do
         let(:options2){
-          { :split => '_' }
+          { :split => '$' }
         }
 
         it 'keeps both' do
           expect(subject).to be_a(Operator::Autowrap)
-          expect(subject.send(:options)[:split]).to eql("_")
+          expect(subject.send(:options)[:split]).to eql("$")
           expect(operand(subject)).to be_a(Operator::Autowrap)
           expect(operand(subject).send(:options)[:split]).to eql("-")
         end
@@ -251,11 +300,10 @@ module Bmg
           [:a]
         }
 
-        it 'pushes the projection down the tree' do
-          expect(subject).to be_a(Operator::Autowrap)
-          expect(operand).to be_a(Operator::Project)
-          expect(operand.send(:attrlist)).to eql([:a])
-          expect(operand(operand)).to be(relation)
+        it 'strips the autowrapping' do
+          expect(subject).to be_a(Operator::Project)
+          expect(subject.send(:attrlist)).to eql([:a])
+          expect(operand(subject)).to be(relation)
         end
       end
 
