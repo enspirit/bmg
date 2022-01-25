@@ -2,6 +2,21 @@
 
 * `autowrapped` is now striped away if no attribute would be touched.
 
+* `autosummarize` now supports a default summarization to be specified
+  as an option. Only two values are supported for now: `:same` and
+  `:first`, with `:same` being the default:
+
+      relation.autosummarize([:id], {c: :group}, default: :same)
+      relation.autosummarize([:id], {c: :group}, default: :first)
+
+  When `:same` is used a TypeError is raised if an unsummed attribute
+  is not functionnaly dependent of the summarization key.
+
+  When `:first` is used, no such error is raised and the first value
+  encountered is used. The strategy is much faster, but non-deterministic
+  unless all unsummed attributes are functionnaly dependent of the
+  summarization key.
+
 # 0.18.12 - 2022-01-24
 
 * Make `page` robust to comparisons with nil/null (nil is greater)

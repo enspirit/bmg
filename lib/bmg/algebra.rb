@@ -21,12 +21,12 @@ module Bmg
     end
     protected :_autowrap
 
-    def autosummarize(by = [], summarization = {})
-      _autosummarize type = self.type.autosummarize(by, summarization), by, summarization
+    def autosummarize(by = [], summarization = {}, options = {})
+      _autosummarize self.type.autosummarize(by, summarization, options), by, summarization, options
     end
 
-    def _autosummarize(type, by, summarization)
-      Operator::Autosummarize.new(type, self, by, summarization)
+    def _autosummarize(type, by, summarization, options)
+      Operator::Autosummarize.new(type, self, by, summarization, options)
     end
     protected :_autosummarize
 

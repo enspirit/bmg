@@ -101,24 +101,58 @@ module Bmg
         Relation.new(data)
       }
 
-      let(:options) {
-        { x: Operator::Autosummarize::DistinctList.new }
-      }
+      context 'with a distinct list' do
+        let(:sums) {
+          { x: Operator::Autosummarize::DistinctList.new }
+        }
 
-      subject {
-        relation.autosummarize([:a], options)
-      }
+        subject {
+          relation.autosummarize([:a], sums)
+        }
 
-      it_behaves_like "an operator method"
+        it_behaves_like "an operator method"
 
-      it 'returns the exected result' do
-        expect(subject.to_a).to eql([
-          { a: 1, x: [2, 4] }
-        ])
+        it 'returns the exected result' do
+          expect(subject.to_a).to eql([
+            { a: 1, x: [2, 4] }
+          ])
+        end
+
+        it 'has the expected ast' do
+          expect(subject.to_ast).to eql([:autosummarize, [:in_memory, data], [:a], sums, {default: :same} ])
+        end
       end
 
-      it 'has the expected ast' do
-        expect(subject.to_ast).to eql([:autosummarize, [:in_memory, data], [:a], options ])
+      context 'with an empty summarization and :same as default' do
+        let(:sums) {
+          { }
+        }
+
+        subject {
+          relation.autosummarize([:a], sums, default: :same)
+        }
+
+        it 'raises a TypeError' do
+          expect {
+            subject.to_a
+          }.to raise_error(TypeError)
+        end
+      end
+
+      context 'with an empty summarization and :first as default' do
+        let(:sums) {
+          { }
+        }
+
+        subject {
+          relation.autosummarize([:a], sums, default: :first)
+        }
+
+        it 'raises a TypeError' do
+          expect(subject.to_a).to eql([
+            { a: 1, x: 2 }
+          ])
+        end
       end
     end
 

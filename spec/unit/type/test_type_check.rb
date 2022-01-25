@@ -45,10 +45,10 @@ module Bmg
     describe "autosummarize typecheck" do
       it 'detects unexisting attributes' do
         expect{
-          type.autosummarize([:foo], :name => :group)
+          type.autosummarize([:foo], {:name => :group}, {})
         }.to raise_error(Bmg::TypeError, /foo/)
         expect{
-          type.autosummarize([:id], :name => :group, :foo => :nil)
+          type.autosummarize([:id], {:name => :group, :foo => :nil}, {})
         }.to raise_error(Bmg::TypeError, /foo/)
       end
     end

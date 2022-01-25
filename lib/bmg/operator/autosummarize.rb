@@ -11,16 +11,22 @@ module Bmg
     class Autosummarize
       include Operator::Unary
 
-      def initialize(type, operand, by, sums)
+      DEFAULT_OPTIONS = {
+        default: :same
+      }
+
+      def initialize(type, operand, by, sums, options = {})
         @type = type
         @operand = operand
         @by = by
         @sums = sums.each_with_object({}){|(k,v),h| h[k] = to_summarizer(v) }
+        @options = DEFAULT_OPTIONS.merge(options)
+        @algo = build_algo
       end
 
     protected
 
-      attr_reader :by, :sums
+      attr_reader :by, :sums, :options
 
     public
 
@@ -45,17 +51,17 @@ module Bmg
         h = {}
         @operand.each do |tuple|
           key = key(tuple)
-          h[key] ||= init(key, tuple)
-          h[key] = sum(h[key], tuple)
+          h[key] ||= @algo.init(tuple)
+          h[key] = @algo.sum(h[key], tuple)
         end
         h.each_pair do |k,v|
-          h[k] = term(v)
+          h[k] = @algo.term(v)
         end
         h.values.each(&bl)
       end
 
       def to_ast
-        [:autosummarize, operand.to_ast, by.dup, sums.dup]
+        [:autosummarize, operand.to_ast, by.dup, sums.dup, options.dup]
       end
 
     public ### for internal reasons
@@ -73,7 +79,7 @@ module Bmg
         else
           op = operand
           op = op.restrict(bottom)
-          op = op.autosummarize(by, sums)
+          op = op.autosummarize(by, sums, options)
           op = op.restrict(top)
           op
         end
@@ -87,35 +93,18 @@ module Bmg
 
     private
 
+      def build_algo
+        case default = @options[:default]
+        when :same  then Check.new(sums)
+        when :first then Trust.new(sums)
+        else
+          raise ArgumentError, "Unknown default summarizer: `#{default}`"
+        end
+      end
+
       # Returns the tuple determinant.
       def key(tuple)
         @by.map{|by| tuple[by] }
-      end
-
-      # Returns the initial tuple to use for a given determinant.
-      def init(key, tuple)
-        tuple.each_with_object({}){|(k,v),h|
-          h.merge!(k => summarizer(k).init(v))
-        }
-      end
-
-      # Returns the summarizer to use for a given key.
-      def summarizer(k)
-        @sums[k] ||= Same::INSTANCE
-      end
-
-      # Sums `tuple` on `memo`, returning the new tuple to use as memo.
-      def sum(memo, tuple)
-        tuple.each_with_object(memo.dup){|(k,v),h|
-          h.merge!(k => summarizer(k).sum(h[k], v))
-        }
-      end
-
-      # Terminates the summarization of a given tuple.
-      def term(tuple)
-        tuple.each_with_object({}){|(k,v),h|
-          h.merge!(k => summarizer(k).term(v))
-        }
       end
 
       def to_summarizer(x)
@@ -126,6 +115,63 @@ module Bmg
           x
         end
       end
+
+      class Check
+        def initialize(sums)
+          @sums = sums
+        end
+        attr_reader :sums
+
+        def summarizer(k)
+          @sums[k] ||= Same::INSTANCE
+        end
+
+        def init(tuple)
+          tuple.each_with_object({}){|(k,v),h|
+            h.merge!(k => summarizer(k).init(v))
+          }
+        end
+
+        def sum(memo, tuple)
+          tuple.each_with_object(memo.dup){|(k,v),h|
+            h.merge!(k => summarizer(k).sum(h[k], v))
+          }
+        end
+
+        def term(tuple)
+          tuple.each_with_object({}){|(k,v),h|
+            h.merge!(k => summarizer(k).term(v))
+          }
+        end
+      end # class Check
+
+      class Trust
+        def initialize(sums)
+          @sums = sums
+        end
+        attr_reader :sums
+
+        # Returns the initial tuple to use for a given determinant.
+        def init(tuple)
+          sums.each_with_object(tuple.dup){|(attribute,summarizer),new_tuple|
+            new_tuple[attribute] = summarizer.init(tuple[attribute])
+          }
+        end
+
+        # Sums `tuple` on `memo`, returning the new tuple to use as memo.
+        def sum(memo, tuple)
+          sums.each_with_object(memo.dup){|(attribute,summarizer),new_tuple|
+            new_tuple[attribute] = summarizer.sum(memo[attribute], tuple[attribute])
+          }
+        end
+
+        # Terminates the summarization of a given tuple.
+        def term(tuple)
+          sums.each_with_object(tuple.dup){|(attribute,summarizer),new_tuple|
+            new_tuple[attribute] = summarizer.term(tuple[attribute])
+          }
+        end
+      end # class Trust
 
       #
       # Summarizes by enforcing that the same dependent is observed for a given
@@ -138,7 +184,7 @@ module Bmg
         end
 
         def sum(v1, v2)
-          raise "Same values expected, got `#{v1}` vs. `#{v2}`" unless v1 == v2
+          raise TypeError, "Same values expected, got `#{v1}` vs. `#{v2}`" unless v1 == v2
           v1
         end
 

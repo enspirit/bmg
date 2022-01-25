@@ -202,6 +202,31 @@ module Bmg
         end
       end
 
+      context 'when unsummed attributes are not functionnaly dependent of the key' do
+        let(:by)  { [:a] }
+        let(:sums){ {b: Autosummarize::DistinctList.new} }
+
+        it 'raises an error' do
+          autosummarize = Autosummarize.new Type::ANY, [
+            { a: 1, b: 1, c: 1 },
+            { a: 1, b: 1, c: 2 }
+          ], [:a], sums
+          expect{
+            autosummarize.to_a
+          }.to raise_error(TypeError)
+        end
+
+        it 'allows using a faster algorithm that takes the first value encountered' do
+          autosummarize = Autosummarize.new Type::ANY, [
+            { a: 1, b: 1, c: 1 },
+            { a: 1, b: 1, c: 2 }
+          ], [:a], sums, :default => :first
+          expect(autosummarize.to_a).to eql([
+            { a: 1, b: [1], c: 1 }
+          ])
+        end
+      end
+
     end
   end
 end

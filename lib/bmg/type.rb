@@ -122,7 +122,7 @@ module Bmg
       }
     end
 
-    def autosummarize(by, summarization)
+    def autosummarize(by, summarization, options)
       known_attributes!(by + summarization.keys) if typechecked? && knows_attrlist?
       dup.tap{|x|
         x.attrlist = nil
