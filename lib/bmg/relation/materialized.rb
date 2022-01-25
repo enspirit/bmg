@@ -5,6 +5,7 @@ module Bmg
 
       def initialize(operand)
         @operand = operand
+        @materialized = nil
       end
 
       def type
@@ -40,9 +41,9 @@ module Bmg
     private
 
       def _materialize
-        return @operand if @operand.is_a?(Relation::InMemory)
+        return @materialized if @materialized
 
-        @operand = Relation::InMemory.new(operand.type, operand.to_a)
+        @materialized = Relation::InMemory.new(operand.type, operand.to_a)
       end
 
     end # class Materialized
