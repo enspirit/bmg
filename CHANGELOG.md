@@ -1,5 +1,8 @@
 # 0.18.15
 
+* CSV reader no longer consider normal text quotes as candidates
+  for quote chars
+
 * CSV relations now infer their type's attribute list.
 
 # 0.18.14 - 2022-02-18

@@ -57,6 +57,41 @@ module Bmg
         end
       end
 
+      context 'when a .csv file with normal quotes' do
+        let(:input){ Path.dir/("infer-quotes.csv") }
+
+        it_behaves_like "a Relation-compatible"
+
+        it 'works' do
+          expect(subject.to_a).to eql([
+            {id: "1", name: "Bernard's Lambeau"},
+            {id: "2", name: "Yoann's Guyot"}
+          ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
+        end
+      end
+
+      context 'when a .csv file with all quotes' do
+        let(:input){ Path.dir/("infer-quotes-2.csv") }
+
+        it_behaves_like "a Relation-compatible"
+
+        it 'works' do
+          expect(subject.to_a).to eql([
+            {id: "1", name: "Bernard's Lambeau"},
+            {id: "2", name: "Yoann's Guyot"},
+            {id: "3", name: "Louis's Lambeau"}
+          ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
+        end
+      end
+
     end
   end
 end

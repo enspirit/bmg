@@ -60,7 +60,7 @@ module Bmg
         options = DEFAULT_OPTIONS.merge(options)
         if options[:smart] && !@path_or_io.is_a?(IO)
           options[:col_sep] ||= infer_col_sep
-          options[:quote_char] ||= infer_quote_char
+          options[:quote_char] ||= infer_quote_char(options[:col_sep])
         end
         options
       end
@@ -69,12 +69,14 @@ module Bmg
         sniff(text_portion, [",","\t",";"], ",")
       end
 
-      def infer_quote_char
-        sniff(text_portion, ["'","\""], "\"")
+      def infer_quote_char(col_sep)
+        sniff(text_portion, ['"',"'"], '"'){|quote|
+          /#{quote}#{col_sep}#{quote}|^#{quote}|#{quote}$/
+        }
       end
 
       def text_portion
-        @text_portion ||= with_io{|io| io.readlines(10).join("\n") }
+        @text_portion ||= with_io{|io| io.readlines(50).join("\n") }
       end
 
       def with_io(&bl)
@@ -95,10 +97,15 @@ module Bmg
 
       # Finds the best candidate among `candidates` for a separator
       # found in `str`. If none is found, returns `default`.
-      def sniff(str, candidates, default)
+      def sniff(str, candidates, default, &bl)
         snif = {}
         candidates.each {|delim|
-          snif[delim] = str.count(delim)
+          counter = bl ? bl.call(delim) : delim
+          snif[delim] = if counter.is_a?(Regexp)
+            str.scan(counter).length
+          else
+            str.count(counter)
+          end
         }
         snif = snif.sort {|a,b| b[1] <=> a[1] }
         snif.size > 0 ? snif[0][0] : default
