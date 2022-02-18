@@ -10,20 +10,18 @@ module Bmg
       }
 
       def initialize(type, path_or_io, options = {})
-        @type = type
+        require 'csv'
+
         @path_or_io = path_or_io
-        @options = DEFAULT_OPTIONS.merge(options)
-        if @options[:smart] && !@path_or_io.is_a?(IO)
-          @options[:col_sep] ||= infer_col_sep
-          @options[:quote_char] ||= infer_quote_char
-        end
+        @options = handle_options(options)
+        @type = handle_type(type)
       end
 
       def each
         return to_enum unless block_given?
-        require 'csv'
-        with_io do |io|
-          ::CSV.new(io, **csv_options).each do |row|
+
+        with_csv do |csv|
+          csv.each do |row|
             yield tuple(row)
           end
         end
@@ -44,6 +42,29 @@ module Bmg
         row.to_hash.each_with_object({}){|(k,v),h| h[k.to_sym] = v }
       end
 
+      def handle_type(type)
+        return type if type.knows_attrlist?
+
+        type.with_attrlist(infer_attrlist)
+      end
+
+      def infer_attrlist
+        with_csv do |csv|
+          csv.each do |row|
+            return tuple(row).keys
+          end
+        end
+      end
+
+      def handle_options(options)
+        options = DEFAULT_OPTIONS.merge(options)
+        if options[:smart] && !@path_or_io.is_a?(IO)
+          options[:col_sep] ||= infer_col_sep
+          options[:quote_char] ||= infer_quote_char
+        end
+        options
+      end
+
       def infer_col_sep
         sniff(text_portion, [",","\t",";"], ",")
       end
@@ -59,9 +80,16 @@ module Bmg
       def with_io(&bl)
         case @path_or_io
         when IO, StringIO
+          @path_or_io.rewind if @path_or_io.respond_to?(:rewind)
           bl.call(@path_or_io)
         else
           File.open(@path_or_io, "r", &bl)
+        end
+      end
+
+      def with_csv(&bl)
+        with_io do |io|
+          yield ::CSV.new(io, **csv_options)
         end
       end
 

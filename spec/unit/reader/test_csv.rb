@@ -18,6 +18,10 @@ module Bmg
             {id: "2", name: "Yoann;Guyot"}
           ])
         end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
+        end
       end
 
       context 'when a IO object' do
@@ -32,16 +36,24 @@ module Bmg
             ])
           end
         end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
+        end
       end
 
       context 'when a StringIO object' do
         let(:input){ StringIO.new((Path.dir/"example.csv").read) }
 
-        xit 'works' do
+        it 'works' do
           expect(subject.to_a).to eql([
             {id: "1", name: "Bernard Lambeau"},
             {id: "2", name: "Yoann;Guyot"}
           ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
         end
       end
 

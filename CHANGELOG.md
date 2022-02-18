@@ -1,6 +1,10 @@
+# 0.18.15
+
+* CSV relations now infer their type's attribute list.
+
 # 0.18.14 - 2022-02-18
 
-* Excel relation now infer their type's attribute list.
+* Excel relations now infer their type's attribute list.
 
 # 0.18.13 - 2022-01-25
 
