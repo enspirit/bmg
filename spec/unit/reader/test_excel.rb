@@ -23,6 +23,10 @@ module Bmg
             {row_num: 2, id: 2, name: "Yoann Guyot"}
           ])
         end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:row_num, :id, :name])
+        end
       end
 
       context "when specifying the extension" do
@@ -38,6 +42,10 @@ module Bmg
             {row_num: 1, id: 1, name: "Bernard Lambeau"},
             {row_num: 2, id: 2, name: "Yoann Guyot"}
           ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:row_num, :id, :name])
         end
       end
 
@@ -57,6 +65,10 @@ module Bmg
             { row_num: 2, id: 2, name: "Marie Deserable" },
           ])
         end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:row_num, :id, :name])
+        end
       end
 
       context "when skipping row num" do
@@ -73,9 +85,13 @@ module Bmg
             {id: 2, name: "Yoann Guyot"}
           ])
         end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:id, :name])
+        end
       end
 
-      context "when skipping row num" do
+      context "when specifying row num name" do
         let(:input) {
           Path.dir/("example.xlsx")
         }
@@ -88,6 +104,10 @@ module Bmg
             {anid: 1, id: 1, name: "Bernard Lambeau"},
             {anid: 2, id: 2, name: "Yoann Guyot"}
           ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:anid, :id, :name])
         end
       end
 
@@ -121,6 +141,16 @@ module Bmg
               :Priority => "Low",
               :Progress => "Started  ",
               :What => "Write a fresh new CSS stylesheet"}])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([
+            :Assignee,
+            :What,
+            :Progress,
+            :Priority,
+            :"Due date",
+          ])
         end
       end
 

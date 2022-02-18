@@ -1,3 +1,7 @@
+# 0.18.14
+
+* Excel relation now infer their type's attribute list.
+
 # 0.18.13 - 2022-01-25
 
 * `autowrapped` is now striped away if no attribute would be touched.
