@@ -1,4 +1,4 @@
-# 0.18.15
+# 0.18.15 - 2022-02-18
 
 * CSV reader no longer consider normal text quotes as candidates
   for quote chars
