@@ -10,14 +10,14 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (
-      `t1`.`sid` IN (
-        SELECT
-          `t2`.`sid`
-        FROM
-          `supplies` AS 't2'
-      )
-    )
+    WHERE (EXISTS (
+      SELECT
+        *
+      FROM
+        `supplies` AS 't2'
+      WHERE
+        (`t1`.`sid` = `t2`.`sid`)
+    ))
 - bmg: |-
     suppliers
       .matching(supplies, [])
@@ -68,13 +68,16 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (`t1`.`sid` IN (
+    WHERE (EXISTS (
       SELECT
-        `t2`.`sid`
+        *
       FROM
         `supplies` AS 't2'
-      WHERE
+      WHERE (
         (`t2`.`sid` = 'S1')
+      AND
+        (`t1`.`sid` = `t2`.`sid`)
+      )
     ))
 - bmg: |-
     suppliers
@@ -87,11 +90,13 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (`t1`.`name` IN (
+    WHERE (EXISTS (
       SELECT
-        `t2`.`name`
+        *
       FROM
         `parts` AS 't2'
+      WHERE
+        (`t1`.`name` = `t2`.`name`)
     ))
 - bmg: |-
     suppliers
@@ -104,13 +109,15 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (`t1`.`sid` IN (
+    WHERE (EXISTS (
       SELECT
-        `t2`.`sid`
+        *
       FROM
         `supplies` AS 't2'
       INNER JOIN
         `parts` AS 't3' ON (`t2`.`pid` = `t3`.`pid`)
+      WHERE
+        (`t1`.`sid` = `t2`.`sid`)
     ))
 - bmg: |-
     suppliers
@@ -123,17 +130,17 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (
-      `t1`.`sid` IN (
+    WHERE (EXISTS (
+      SELECT
+        *
+      FROM (
         SELECT
-          `t2`.`sid` AS 'sid'
-        FROM (
-          SELECT
-            sid
-          FROM
-            suppliers
-          WHERE
-            city = 'London'
-        ) AS 't2'
-      )
-    )
+          sid
+        FROM
+          suppliers
+        WHERE
+          city = 'London'
+      ) AS 't2'
+      WHERE
+        (`t1`.`sid` = `t2`.`sid`)
+    ))

@@ -10,14 +10,14 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (
-      `t1`.`sid` NOT IN (
-        SELECT 
-          `t2`.`sid`
-        FROM
-          `supplies` AS 't2'
-      )
-    )
+    WHERE NOT (EXISTS (
+      SELECT
+        *
+      FROM
+        `supplies` AS 't2'
+      WHERE
+        (`t1`.`sid` = `t2`.`sid`)
+    ))
 - bmg: |-
     suppliers
       .not_matching(supplies, [])
@@ -30,7 +30,7 @@
     FROM
       `suppliers` AS 't1'
     WHERE NOT (EXISTS (
-      SELECT 
+      SELECT
         *
       FROM
         `supplies` AS 't4'
@@ -47,7 +47,7 @@
     FROM
       `suppliers` AS 't1'
     WHERE NOT (EXISTS (
-      SELECT 
+      SELECT
         *
       FROM
         `suppliers` AS 't2'
@@ -68,17 +68,11 @@
       `t1`.`status`
     FROM
       `suppliers` AS 't1'
-    WHERE (
-      `t1`.`sid` NOT IN (
-        SELECT
-          `t2`.`sid` AS 'sid'
-        FROM (
-          SELECT
-            sid
-          FROM
-            suppliers
-          WHERE
-            city = 'London'
-        ) AS 't2'
-      )
-    )
+    WHERE NOT (EXISTS (
+      SELECT
+        *
+      FROM
+        (SELECT sid FROM suppliers WHERE city = 'London') AS 't2'
+      WHERE
+        (`t1`.`sid` = `t2`.`sid`)
+    ))

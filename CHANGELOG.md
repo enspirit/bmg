@@ -1,3 +1,12 @@
+# 0.19.0
+
+* Bmg no longer generates `WHERE IN` and `WHERE NOT IN` SQL
+  expressions when translating `matching` and `not_matching`
+  query trees.
+
+  The main reason is that `WHERE NOT IN` is not safe facing
+  NULL on the target column which make it error prone to use.
+
 # 0.18.15 - 2022-02-18
 
 * CSV reader no longer consider normal text quotes as candidates
