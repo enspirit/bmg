@@ -1,3 +1,8 @@
+# 0.19.1 - 2022-04-21
+
+* Require predicate >= 2.7.1 that has a required bug fix for
+  matching and not_matching
+
 # 0.19.0 - 2022-04-21
 
 * Bmg no longer generates `WHERE IN` and `WHERE NOT IN` SQL

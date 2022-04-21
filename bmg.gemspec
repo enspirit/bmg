@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/enspirit/bmg'
   s.license     = 'MIT'
 
-  s.add_dependency "predicate", "~> 2.6", ">= 2.6.0"
+  s.add_dependency "predicate", ">= 2.7.1", "< 3.0"
   s.add_dependency "path", ">= 2.0"
 
   s.add_development_dependency "rake", "~> 13"
