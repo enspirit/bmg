@@ -1,4 +1,4 @@
-# 0.19.0
+# 0.19.0 - 2022-04-21
 
 * Bmg no longer generates `WHERE IN` and `WHERE NOT IN` SQL
   expressions when translating `matching` and `not_matching`
@@ -6,6 +6,10 @@
 
   The main reason is that `WHERE NOT IN` is not safe facing
   NULL on the target column which make it error prone to use.
+
+  The change should mostly be backward compatible but may
+  introduce a few bugs (or actually fix them) and break
+  automated test suites. Hence the bump to 0.19.0.
 
 # 0.18.15 - 2022-02-18
 
