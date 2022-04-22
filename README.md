@@ -1,7 +1,5 @@
 # Bmg, a relational algebra (Alf's successor)!
 
-[![Build Status](https://travis-ci.com/enspirit/bmg.svg?branch=master)](https://travis-ci.com/enspirit/bmg)
-
 Bmg is a relational algebra implemented as a ruby library. It implements the
 [Relation as First-Class Citizen](http://www.try-alf.org/blog/2013-10-21-relations-as-first-class-citizen)
 paradigm contributed with [Alf](http://www.try-alf.org/) a few years ago.
