@@ -57,6 +57,23 @@ module Bmg
         _instance(type, builder, expr)
       end
 
+      def _extend(type, extension)
+        supported, unsupported = {}, {}
+        extension.each_pair do |k,v|
+          (v.is_a?(Symbol) ? supported : unsupported)[k] = v
+        end
+        if supported.empty?
+          Operator::Extend.new(type, self, extension)
+        elsif unsupported.empty?
+          expr = Processor::Extend.new(supported, builder).call(self.expr)
+          _instance(type, builder, expr)
+        else
+          expr = Processor::Extend.new(supported, builder).call(self.expr)
+          operand = _instance(type.allbut(unsupported.keys), builder, expr)
+          Operator::Extend.new(type, operand, unsupported)
+        end
+      end
+
       def _join(type, right, on)
         if right_expr = extract_compatible_sexpr(right)
           right_expr = Processor::Requalify.new(builder).call(right_expr)

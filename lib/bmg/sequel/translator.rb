@@ -81,6 +81,7 @@ module Bmg
         case sexpr.func_name
         when :cast
           to_cast = apply(sexpr.func_args.first)
+          to_cast = ::Sequel.expr(nil) if to_cast.nil?
           type = sexpr.func_args.last.last
           to_cast.cast(type)
         else

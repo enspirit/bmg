@@ -39,9 +39,10 @@ module Bmg
         def falsy?(sexpr)
           return false unless sexpr.respond_to?(:predicate)
           return false if sexpr.predicate.nil?
+
           left  = Predicate.new(Predicate::Grammar.sexpr(sexpr.predicate)).unqualify
           right = Predicate.new(Predicate::Grammar.sexpr(@predicate.sexpr)).unqualify
-          return (left & right).contradiction?
+          (left & right).contradiction?
         end
 
       end # class Where

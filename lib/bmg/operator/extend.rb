@@ -160,7 +160,12 @@ module Bmg
 
       def extend_it(tuple)
         @extension.each_with_object(tuple.dup) { |(k,v), memo|
-          memo[k] = v.call(tuple)
+          memo[k] = case v
+          when Symbol
+            tuple[v]
+          else
+            v.call(tuple)
+          end
           memo
         }
       end

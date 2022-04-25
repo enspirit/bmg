@@ -1,0 +1,11 @@
+---
+- bmg: |-
+    supplies.extend(:supplier_id => :sid)
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`pid`,
+      `t1`.`qty`,
+      `t1`.`sid` AS 'supplier_id'
+    FROM
+      `supplies` AS 't1'

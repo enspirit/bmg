@@ -10,7 +10,7 @@ module Bmg
 
         def on_select_list(sexpr)
           reordered = sexpr.sexpr_body.sort{|i1,i2|
-            @indexes[i1.as_name] <=> @indexes[i2.as_name]
+            @indexes[i1.as_name.to_s] <=> @indexes[i2.as_name.to_s]
           }
           reordered.unshift(:select_list)
         end

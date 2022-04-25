@@ -208,6 +208,7 @@ r.autowrap(split: '_')                       # structure a flat relation, split:
 r.autosummarize([:a, :b, ...], x: :sum)      # (experimental) usual summarizers supported
 r.constants(x: 12, ...)                      # add constant attributes (sometimes useful in unions)
 r.extend(x: ->(t){ ... }, ...)               # add computed attributes
+r.extend(x: :y)                              # shortcut for r.extend(x: ->(t){ t[:y] })
 r.exclude(predicate)                         # shortcut for restrict(!predicate)
 r.group([:a, :b, ...], :x)                   # relation-valued attribute from attributes
 r.image(right, :x, [:a, :b, ...])            # relation-valued attribute from another relation

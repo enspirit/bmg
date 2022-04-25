@@ -13,6 +13,28 @@ module Bmg
         end
       end
 
+      context '.extend' do
+        it 'compiles to expected SQL when supported' do
+          r = suppliers.project([:id]).extend(:sid => :id)
+          expect(r.to_sql).to eql(%Q{SELECT DISTINCT "t1"."id", "t1"."id" AS "sid" FROM "suppliers" AS "t1"})
+        end
+
+        it 'builds an Extend when not supported' do
+          r = suppliers.extend(:sid => ->{ 2 })
+          expect(r).to be_a(Operator::Extend)
+          expect(operand(r)).to be(suppliers)
+        end
+
+        it 'makes a mix when not supported and supported' do
+          l = ->{ 2 }
+          base = suppliers.project([:id])
+          r = base.extend(:sid => :id, :pid => l)
+          expect(r).to be_a(Operator::Extend)
+          expect(r.send(:extension)).to eql(:pid => l)
+          expect(operand(r).to_sql).to eql(%Q{SELECT DISTINCT "t1"."id", "t1"."id" AS "sid" FROM "suppliers" AS "t1"})
+        end
+      end
+
       context '.rename' do
         it 'compiles to expected SQL' do
           r = suppliers.project([:id, :name]).rename(:id => :identifier)

@@ -1,3 +1,9 @@
+# 0.19.2
+
+* Add support for `.extend(:x => :y)` shortcuts. They are
+  equivalent to `.extend(:x => ->(t){ t[:y] })` but they
+  compile to SQL.
+
 # 0.19.1 - 2022-04-21
 
 * Require predicate >= 2.7.1 that has a required bug fix for
