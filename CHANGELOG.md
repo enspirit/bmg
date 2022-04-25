@@ -1,4 +1,4 @@
-# 0.19.2
+# 0.19.2 - 2022-04-25
 
 * Add support for `.extend(:x => :y)` shortcuts. They are
   equivalent to `.extend(:x => ->(t){ t[:y] })` but they
