@@ -1,3 +1,10 @@
+# 0.19.3
+
+* Fix `r.constants(...).constants(...)` raising an error.
+
+  Warn: This may break your code, if you used `r.constants`
+  (private method) to inspect the Hash on the Operator class.
+
 # 0.19.2 - 2022-04-25
 
 * Add support for `.extend(:x => :y)` shortcuts. They are

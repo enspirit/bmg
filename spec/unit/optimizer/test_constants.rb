@@ -24,7 +24,7 @@ module Bmg
 
         it 'pushes page down the tree' do
           expect(subject).to be_a(Operator::Constants)
-          expect(subject.send(:constants)).to eql(constants)
+          expect(subject.send(:the_constants)).to eql(constants)
           expect(operand).to be_a(Operator::Page)
           expect(operand.send(:ordering)).to eql([:a])
           expect(operand.send(:page_index)).to eql(7)
@@ -54,7 +54,7 @@ module Bmg
 
         it 'optimizes by pushing the restriction down' do
           expect(subject).to be_a(Operator::Constants)
-          expect(subject.send(:constants)).to be(constants)
+          expect(subject.send(:the_constants)).to be(constants)
           expect(operand).to be_a(Operator::Restrict)
           expect(predicate_of(operand)).to eql(predicate)
         end
@@ -69,7 +69,7 @@ module Bmg
 
           it 'strips the restriction completely' do
             expect(subject).to be_a(Operator::Constants)
-            expect(subject.send(:constants)).to be(constants)
+            expect(subject.send(:the_constants)).to be(constants)
           end
 
         end
@@ -94,7 +94,7 @@ module Bmg
 
           it 'strips the constant restriction and pushes back the rest' do
             expect(subject).to be_a(Operator::Constants)
-            expect(subject.send(:constants)).to be(constants)
+            expect(subject.send(:the_constants)).to be(constants)
             expect(subject.send(:operand)).to be_a(Operator::Restrict)
             expect(subject.send(:operand).send(:predicate)).to eql(Predicate.eq(a: 1))
           end
@@ -122,7 +122,7 @@ module Bmg
             expect(subject).to be_a(Operator::Restrict)
             expect(predicate_of(subject)).to be(predicate)
             expect(operand).to be_a(Operator::Constants)
-            expect(operand.send(:constants)).to be(constants)
+            expect(operand.send(:the_constants)).to be(constants)
           end
         end
 
@@ -133,7 +133,7 @@ module Bmg
             expect(subject).to be_a(Operator::Restrict)
             expect(predicate_of(subject)).to eql(Predicate.eq(c: 3) | Predicate.eq(d: 4))
             expect(operand).to be_a(Operator::Constants)
-            expect(operand.send(:constants)).to be(constants)
+            expect(operand.send(:the_constants)).to be(constants)
             expect(operand(operand)).to be_a(Operator::Restrict)
             expect(predicate_of(operand(operand))).to eql(Predicate.eq(a: 1))
           end
@@ -149,7 +149,7 @@ module Bmg
           expect(subject).to be_a(Operator::Restrict)
           expect(predicate_of(subject)).to be(predicate)
           expect(operand).to be_a(Operator::Constants)
-          expect(operand.send(:constants)).to be(constants)
+          expect(operand.send(:the_constants)).to be(constants)
         end
 
       end
