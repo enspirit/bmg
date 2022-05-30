@@ -1,4 +1,4 @@
-# 0.20.0
+## 0.20.0 - 2022-05-30
 
 * POSSIBLY BREAKING: update/delete protocol slightly changed
   to take a Predicate as second argument.
@@ -11,25 +11,23 @@
   a relvar instead of a relation (that is, one that supports
   insert/delete/update). Mostly useful for unit tests.
 
-# 0.19.3
-
 * Fix `r.constants(...).constants(...)` raising an error.
 
   Warn: This may break your code, if you used `r.constants`
   (private method) to inspect the Hash on the Operator class.
 
-# 0.19.2 - 2022-04-25
+## 0.19.2 - 2022-04-25
 
 * Add support for `.extend(:x => :y)` shortcuts. They are
   equivalent to `.extend(:x => ->(t){ t[:y] })` but they
   compile to SQL.
 
-# 0.19.1 - 2022-04-21
+## 0.19.1 - 2022-04-21
 
 * Require predicate >= 2.7.1 that has a required bug fix for
   matching and not_matching
 
-# 0.19.0 - 2022-04-21
+## 0.19.0 - 2022-04-21
 
 * Bmg no longer generates `WHERE IN` and `WHERE NOT IN` SQL
   expressions when translating `matching` and `not_matching`
@@ -42,18 +40,18 @@
   introduce a few bugs (or actually fix them) and break
   automated test suites. Hence the bump to 0.19.0.
 
-# 0.18.15 - 2022-02-18
+## 0.18.15 - 2022-02-18
 
 * CSV reader no longer consider normal text quotes as candidates
   for quote chars
 
 * CSV relations now infer their type's attribute list.
 
-# 0.18.14 - 2022-02-18
+## 0.18.14 - 2022-02-18
 
 * Excel relations now infer their type's attribute list.
 
-# 0.18.13 - 2022-01-25
+## 0.18.13 - 2022-01-25
 
 * `autowrapped` is now striped away if no attribute would be touched.
 
@@ -72,7 +70,7 @@
   unless all unsummed attributes are functionnaly dependent of the
   summarization key.
 
-# 0.18.12 - 2022-01-24
+## 0.18.12 - 2022-01-24
 
 * Make `page` robust to comparisons with nil/null (nil is greater)
   and non comparable attributes (simply ignored).
@@ -84,17 +82,17 @@
   at spy time (instead of `call`) with a block that the measure
   method must yield.
 
-# 0.18.11 - 2021-12-11
+## 0.18.11 - 2021-12-11
 
 * Upgraded `predicate` to `2.6.0` (which itself uses `sexpr` 1.0)
   This makes `bmg` compatible with ruby `3.0` and `3.1`.
 
-# 0.18.10 - 2021-11-26
+## 0.18.10 - 2021-11-26
 
 * Fix SQL generation of nary join (equality conditions beyond the two first ones
   were thrown away).
 
-# 0.18.9 - 2021-10-29
+## 0.18.9 - 2021-10-29
 
 * Add support for a `:sheet => Int` option to excel reader, to specify which
   sheet to use for having tabular data.
@@ -106,14 +104,14 @@
   (all tuple attributes must be nil for the postprocessor to apply) and `:id`
   (only an `:id` attribute must be nil for it to apply). `:all` is the default,
   to preserve backward compatibility.
-# 0.18.8 - 2021-06-15
+## 0.18.8 - 2021-06-15
 
 * Fix SQL compilation of summarize expressions having a resulting attribute
   name different from the attribute summarized.
 
 * Add `distinct_count` summarizer, with SQL compilation.
 
-# 0.18.7 - 2021-06-14
+## 0.18.7 - 2021-06-14
 
 * `transform` now supports a ruby Class transformer. `Integer`, `Float` and
   `String` are natively supported (through `Integer()` and `Float()` for the
@@ -130,7 +128,7 @@
   `allbut(on)` on the tuples of the `right` relation when creating the
   resulting attribute. Default behavior unchanged.
 
-# 0.18.6 - 2021-06-10
+## 0.18.6 - 2021-06-10
 
 * Add `ungroup` operator.
 
@@ -138,14 +136,14 @@
 
 * Fix `Summarize.value_by` when using `symbolize: true` and a default value.
 
-# 0.18.5 - 2021-06-08
+## 0.18.5 - 2021-06-08
 
 * Add a Summarize.value_by that allows flipping vertical series to a
   tuple-valued attribute.
 
 * Fix CSV read/write usage under ruby-3.0.
 
-# 0.18.4 - 2021-05-11
+## 0.18.4 - 2021-05-11
 
 * `Bmg.excel` now strips attribute names.
 
@@ -163,7 +161,7 @@
   PostgreSQL (for continuous and discrete) ; the default `percentile` is
   the continuous version.
 
-# 0.18.3 - 2021/05/06
+## 0.18.3 - 2021/05/06
 
 * Add `Relation#to_xlsx` to create Excel files from Relations. The
   feature requires 'bmg/writer/xlsx' and the 'write_xlsx' ruby gem,
@@ -199,7 +197,7 @@
 * `Relation#with_attr_list` ensures that an attribute list is known on
   the type, consuming the first tuple to discover them if needed.
 
-# 0.18.2 - 2021/04/16
+## 0.18.2 - 2021/04/16
 
 * Add Relation#count that returns the exact number of tuples in
   the relation.
@@ -220,7 +218,7 @@
 * Optimize `autowrap.project`, push the projection down the tree if
   possible.
 
-# 0.18.1 - 2021/04/15
+## 0.18.1 - 2021/04/15
 
 * Image's :array option now support an ordering relation. The
   tuples will then be sorted in the resulting array.
@@ -261,7 +259,7 @@
 * Optimize `autowrap.matching`. Push the matching down the tree, as
   long as the join clause only uses untouched attributes.
 
-# 0.18.0 - 2021/03/12
+## 0.18.0 - 2021/03/12
 
 * Default Relation#type is provided, that returns Bmg::Type::ANY
 
@@ -280,21 +278,21 @@
 
 * Add Relation#exclude(p), a shortcut for restrict(!p)
 
-# 0.17.8 - 2020/09/10
+## 0.17.8 - 2020/09/10
 
 * Relation#to_csv now accepts an OutputPreference object (or hash)
   allowing to specify an attributes ordering.
 
-# 0.17.7 - 2020/09/10
+## 0.17.7 - 2020/09/10
 
 * TupleTransformer now allows using a Hash as attribute transformation.
   E.g.,
 
       r = Bmg::Relation.new [{:foo => "x"}, {:foo => "y"}]
       r2 = r.transform(foo: { "x" => 1, "y" => 2 })
-      r2.to_a  # [{:foo => 1}, {:foo => 2}]
+      r2.to_a  ## [{:foo => 1}, {:foo => 2}]
 
-# 0.17.6 - 2020/08/28
+## 0.17.6 - 2020/08/28
 
 * Add a Relation::Proxy module that helps constructing object collections
   on top of Bmg Relations.
@@ -306,14 +304,14 @@
   provides no optimization so far. It makes various transformations
   much easier than before:
 
-      # Will apply attr.to_s on every attribute
+      ## Will apply attr.to_s on every attribute
       relation.transform(:to_s)
       relation.transform(&:to_s)
 
-      # Will apply attr.to_s.upcase on every tuple attribute
+      ## Will apply attr.to_s.upcase on every tuple attribute
       relation.transform([:to_s, :upcase])
 
-      # Will selectively apply on attributes
+      ## Will selectively apply on attributes
       relation.transform(:foo => :upcase, :bar => ->(bar){ bar*2 })
 
   EXTEND is supposed to be used for adding attributes only, not
@@ -322,19 +320,19 @@
   formal logic (e.g. optimizer) slightly more powerful, through PRE
   strengtening (in 1.0) along those rules.
 
-# 0.17.5 - 2020/08/17
+## 0.17.5 - 2020/08/17
 
 * Add Relation#to_csv, for easier .csv file generation from relational
   data.
 
 * Fix path dependency.
 
-# 0.17.4 - 2020/07/23
+## 0.17.4 - 2020/07/23
 
 * Fix SQL compilation when using INTERSECT predicates. INTERSECT
   was seen as SQL's INTERSECT, which exists too.
 
-# 0.17.3 - 2020/07/09
+## 0.17.3 - 2020/07/09
 
 * Fix SQL compilation of JOIN when operands restrict on attributes
   having the same name (without being part of the JOIN clause
@@ -351,17 +349,17 @@
   code. It is currently good practice to avoid normal joins as soon
   as a `left_join` has been used.
 
-# 0.17.2 - 2020/05/15
+## 0.17.2 - 2020/05/15
 
 * Fix SQL compilation of `summarize` when the summarization by has more
   than one attribute.
 
-# 0.17.1 - 2020/04/29
+## 0.17.1 - 2020/04/29
 
 * Bump predicate dependency to min 2.3.1, to get a bug fix on image
   optimization.
 
-# 0.17.0 - 2020/04/21
+## 0.17.0 - 2020/04/21
 
 * Optimize Image operator. By default, and when possible, the right
   operand is restricted to only those matching the left tuples before
@@ -378,37 +376,37 @@
   operands are filtered in such way that `on` is empty, which is the second
   most frequent usage.
 
-# 0.16.6 - 2020/01/31
+## 0.16.6 - 2020/01/31
 
 * Force Predicate >= 2.2.1 to avoid an wrong optimizations when
   chaining restrictions with in and eq on same variable.
 
-# 0.16.5 - 2019/12/13
+## 0.16.5 - 2019/12/13
 
 * Add Relation#y_by_x to get a Hash with y (last) value mapped to
   each x.
 
-# 0.16.4 - 2019/10/16
+## 0.16.4 - 2019/10/16
 
 * Allow Sequel's qualified name to be used like Symbols to denote
   base tables.
 
-# 0.16.3 - 2019/10/09
+## 0.16.3 - 2019/10/09
 
 * Fix SQL generation when joining with a summarize.
 
-# 0.16.2 - 2019/07/09
+## 0.16.2 - 2019/07/09
 
 * Fix `autowrap` post-processing on multiple level cases. Guarantees that when
   the result of `autowrap` contains hashes with only `nil` values, the post-
   processing will apply.
 
-# 0.16.1 - 2019/06/09
+## 0.16.1 - 2019/06/09
 
 * Fix SQL compilation of restrict expressions using Predicate.in
   with nil.
 
-# 0.16.0 - 2019/05/31
+## 0.16.0 - 2019/05/31
 
 * Improve SQL compilation of expressions involving multiple JOINs.
   While the former version used a lot of subqueries and/or common
@@ -456,7 +454,7 @@
   inference now removes the type predicate and replaces it by a
   tautology.
 
-# 0.15.0 - 2019/01/30
+## 0.15.0 - 2019/01/30
 
 * Optimize `extend.allbut` and `extend.project` to strip unnecessary
   extensions, or simplify them to avoid unnecessary computed attributes.
@@ -481,7 +479,7 @@
   `x.join(y.join(z))` will still generate a WITH expression for
   `y.join(z)` though.
 
-# 0.14.6 - 2019/01/29
+## 0.14.6 - 2019/01/29
 
 * Add `left.join(right, {x1 => y1, ..., xn => yn})` as a shorthand for
   `left.join(right.rename({y1 => x1, ..., yn => xn}, [x1,...,xn])`.
@@ -489,17 +487,17 @@
   operand. A difference with SQL, though, is that the `ys` attributes
   are no longer present in the join result.
 
-# 0.14.5 - 2019/01/23
+## 0.14.5 - 2019/01/23
 
 * Optimize `extend.page` by pushing the page down the tree when
   extension attributes and page ordering attributes are disjoint.
 
-# 0.14.4
+## 0.14.4
 
 * Fix error when tracing expressions involving autosummarizations with
   YByX and YsByX
 
-# 0.14.3
+## 0.14.3
 
 * Add support for optional type checking through Type#with_typecheck
   and Type#without_typecheck.
@@ -512,17 +510,17 @@
   the operand is consumed only once and the result kept in memory if
   reused later one.
 
-# 0.14.2
+## 0.14.2
 
 * Added a schema in Sequel type inference mechanism. Otherwise, indices
   are loaded multiple times because Sequel itself does not cache them.
   (not part of the cache_schema: true) behavior.
 
-# 0.14.1
+## 0.14.1
 
 * Fix Operator::Project mutating origin tuples.
 
-# 0.14.0
+## 0.14.0
 
 * BREAKING CHANGE (since 0.10.0 actually): most update fail when trying
   to make them on a Relation::Sequel instance. SQL compilation mechanism
@@ -531,7 +529,7 @@
 * Fix the Sequel translation in presence of a WHERE clause involving
   IN with subqueries.
 
-# 0.13.0 - May 31st, 2018
+## 0.13.0 - May 31st, 2018
 
 * SQL compilation now support the `constants` operator.
 
@@ -546,7 +544,7 @@
 * Optimization: calling `constants` on empty returns an empty
   relation.
 
-# 0.12.0 - May 29st, 2018
+## 0.12.0 - May 29st, 2018
 
 * Add NotMatching operator, with restrict optimization and SQL
   compilation.
@@ -563,7 +561,7 @@
   Requalification of table names was forgotten in inner join
   clauses.
 
-# 0.11.0 - May 29st, 2018
+## 0.11.0 - May 29st, 2018
 
 * Add Prefix and Suffix shortcut operators for longer Rename
   expressions. Attrlist must be known on operand's type.
@@ -573,12 +571,12 @@
 * Attrlist, Key and Predicate inference is now correctly implemented
   on autowrap.
 
-# 0.10.1
+## 0.10.1
 
 * Fix Page implementation to support full ordering, e.g
   `[[:name, :desc], [:id, :asc]]`
 
-# 0.10.0 - May 28st, 2018
+## 0.10.0 - May 28st, 2018
 
 * BREAKING CHANGE: `rxmatch` is now case sensitive by default.
 
@@ -601,13 +599,13 @@
 * The Sequel contribution now generates valid SQL in all cases and
   performs necessary optimizations.
 
-# 0.9.1 - May 16st, 2018
+## 0.9.1 - May 16st, 2018
 
 * Fix Rxmatch that now applies matching in a case insensitive way by
   default when used with a String. A `case_sensitive: true` option
   can be specified to change that behavior.
 
-# 0.9.0 - May 16st, 2018
+## 0.9.0 - May 16st, 2018
 
 * Add the Page operator: filters on n tuples according to an ordering
   and a given page size and page index. No optimization implemented yet.
@@ -619,28 +617,28 @@
 * The expression `r.matching(...)` now correctly preserves the same type
   as `r`.
 
-# 0.8.0 - May 16st, 2018
+## 0.8.0 - May 16st, 2018
 
 * Add the Group operator: groups some attributes of the operand as a
   new relation-valued attribute. Restrict optimization is implemented.
 
-# 0.7.1 - May 14st, 2018
+## 0.7.1 - May 14st, 2018
 
 * Fixes the restrict optimization on Matching, that led forgetting about
   the join key
 
-# 0.7.0 - May 14st, 2018
+## 0.7.0 - May 14st, 2018
 
 * Add the Matching operator: filters the left operand to tuples that have
   at least a matching tuple on right operand on a given shared join key.
   Restrict optimization is implemented.
 
-# 0.6.1 - March 30st, 2018
+## 0.6.1 - March 30st, 2018
 
 * The default implementation of `Relation::Type` now exposes the relation
   predicate, when known.
 
-# 0.6.0 - March 16st, 2018
+## 0.6.0 - March 16st, 2018
 
 * Add `Relation#ys_by_x` consumption method, that converts a relation to a
   Hash mapping `tuple[x]` keys to `[tuple[y]]` values. This is similar to
@@ -678,7 +676,7 @@
   The spy has the opportunity to inspect the expression tree, and act
   accordingly (e.g. raising an error if something strange is detected).
 
-# 0.5.0 - March 13st, 2018
+## 0.5.0 - March 13st, 2018
 
 * Update mechanism (insert, delete & update) is provided for operators yielding
   no update ambiguity: allbut, constants, extend, project, rename.
@@ -690,7 +688,7 @@
 * Predicate required version is bumped to 1.3.0, that contains an important
   security fix.
 
-# 0.4.1 - March 9st, 2018
+## 0.4.1 - March 9st, 2018
 
 * Fix Image#restrict optimization that pushed down restrictions on right attributes
   that do not exist for it.
@@ -704,7 +702,7 @@
 
 * Predicate dependency bumped to 1.2.0 to get a few bug fixes.
 
-# 0.4.0 - March 7st, 2018
+## 0.4.0 - March 7st, 2018
 
 * Optimization: push restrictions over image & constants.
 
@@ -712,7 +710,7 @@
 
 * Introduce `Relation.empty` for empty relations taken into account by the optimization.
 
-# 0.3.0 - March 7st, 2018
+## 0.3.0 - March 7st, 2018
 
 * Add the Constants operator: extends the operand's tuple with attributes whose values are
   known statically. This is a special case of extension where values are not Proc but constants.
@@ -734,7 +732,7 @@
 
 * Optimization: convert double restrict to a predicate conjunction.
 
-# 0.2.0 - January 13st, 2018
+## 0.2.0 - January 13st, 2018
 
 * Add the Extend operator: extends operand tuples with attributes resulting from specified
   computations.
@@ -742,11 +740,11 @@
 * Add Relation#one (and Relation#one_or_nil), that returns the tuple of a singleton or raises
   an error (or returns nil).
 
-# 0.1.1 - January 9st, 2018
+## 0.1.1 - January 9st, 2018
 
 * Options passed to Reader::Excel and Bmg.excel are passed, unchanged to Roo::Spreadsheet.
   Now, all options from Roo are thus compatible with Bmg.
 
-# 0.1.0 - November 23st, 2017
+## 0.1.0 - November 23st, 2017
 
 * Birth.
