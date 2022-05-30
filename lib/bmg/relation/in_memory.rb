@@ -41,3 +41,4 @@ module Bmg
     end # class InMemory
   end # module Relation
 end # module Bmg
+require_relative 'in_memory/mutable'

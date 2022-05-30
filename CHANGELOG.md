@@ -7,6 +7,10 @@
   Restrict being able to push its own predicate further down
   the update calls.
 
+* Adds `Bmg.mutable` that works like `in_memory` but provides
+  a relvar instead of a relation (that is, one that supports
+  insert/delete/update). Mostly useful for unit tests.
+
 # 0.19.3
 
 * Fix `r.constants(...).constants(...)` raising an error.

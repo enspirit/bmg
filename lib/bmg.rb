@@ -4,6 +4,11 @@ require 'forwardable'
 require 'set'
 module Bmg
 
+  def mutable(enumerable, type = Type::ANY)
+    Relation::InMemory::Mutable.new(type, enumerable).spied(main_spy)
+  end
+  module_function :mutable
+
   def in_memory(enumerable, type = Type::ANY)
     Relation::InMemory.new(type, enumerable).spied(main_spy)
   end
