@@ -16,6 +16,7 @@ further down this README.
   * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
   * [Reading files (csv, excel, text)](#reading-files-csv-excel-text)
+  * [Connecting to Redis databases](#connecting-to-redis-databases)
   * [Your own relations](#your-own-relations)
 * [List of supported operators](#supported-operators)
 * [How is this different?](#how-is-this-different)
@@ -171,6 +172,43 @@ r.type.attrlist
 
 In this scenario, non matching lines are skipped. The `:line` attribute keeps
 being used to have at least one candidate key (so to speak).
+
+### Connecting to Redis databases
+
+Bmg currently requires `bmg-redis` and `redis >= 4.6` to connect
+to Redis databases. You also need to require `bmg/redis`.
+
+```Gemfile
+gem 'bmg'
+gem 'bmg-redis'
+```
+
+```ruby
+require 'redis'      #  also done by 'bmg/redis' below
+require 'bmg'
+require 'bmg/redis'
+```
+
+Then, you can create Redis relation variables (aka relvars) like
+this:
+
+```ruby
+type = Bmg::Type::ANY.with_keys([[:id]])
+r = Bmg.redis(type, {
+  key_prefix: "suppliers",
+  redis: Redis.new,
+  serializer: :marshal
+})
+```
+
+The key prefix will be used to distinguish the tuples from other
+elements in the same database (e.g. tuples from other relvars).
+The serializer is either `:marshal` or `:json`. Please note that
+types are not preserved when using the second one (all attribute
+values will come back as strings, but keys will be symbolized).
+
+The redis relvars support basic algorithms for insert/update/delete.
+No optimization is currently supported.
 
 ### Your own relations
 

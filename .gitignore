@@ -1,6 +1,7 @@
-pkg/*
+pkg
 .bundle
 /vendor
 Gemfile.lock
 /spec/regression/**/*.db
 /spec/unit/writer/result.xlsx
+.world
