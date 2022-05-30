@@ -39,16 +39,16 @@ module Bmg
         end
       end
 
-      def update(tuple)
+      def update(tuple, predicate = Predicate.tautology)
         shared = tuple.keys & the_constants.keys
         on_tuple = TupleAlgebra.project(tuple, shared)
         on_const = TupleAlgebra.project(the_constants, shared)
         raise InvalidUpdateError, "Cannot violate relvar predicate" unless on_tuple == on_const
-        operand.update(allbut_constants(tuple))
+        operand.update(allbut_constants(tuple), predicate)
       end
 
-      def delete
-        operand.delete
+      def delete(predicate = Predicate.tautology)
+        operand.delete(predicate)
       end
 
       def to_ast

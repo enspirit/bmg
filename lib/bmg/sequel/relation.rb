@@ -13,8 +13,13 @@ module Bmg
         dataset.each(&bl)
       end
 
-      def delete
-        base_table.delete
+      def delete(predicate = Predicate.tautology)
+        target = base_table
+        unless predicate.tautology?
+          compiled = compile_predicate(predicate)
+          target = base_table.where(compiled)
+        end
+        target.delete
       end
 
       def insert(arg)
@@ -30,8 +35,13 @@ module Bmg
         end
       end
 
-      def update(arg)
-        base_table.update(arg)
+      def update(arg, predicate = Predicate.tautology)
+        target = base_table
+        unless predicate.tautology?
+          compiled = compile_predicate(predicate)
+          target = base_table.where(compiled)
+        end
+        target.update(arg)
       end
 
       def _count
@@ -71,6 +81,10 @@ module Bmg
         return nil unless operand.is_a?(Bmg::Sequel::Relation)
         return nil unless self.sequel_db == operand.sequel_db
         operand.expr
+      end
+
+      def compile_predicate(predicate)
+        Translator.new(sequel_db).compile_predicate(predicate)
       end
 
     end # class Relation

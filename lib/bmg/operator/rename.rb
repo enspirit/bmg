@@ -45,16 +45,17 @@ module Bmg
         end
       end
 
-      def update(arg)
+      def update(arg, predicate = Predicate.tautology)
         case arg
-        when Hash then operand.update(rename_tuple(arg, reverse_renaming))
+        when Hash
+          operand.update(rename_tuple(arg, reverse_renaming), predicate)
         else
           super
         end
       end
 
-      def delete
-        operand.delete
+      def delete(predicate = Predicate.tautology)
+        operand.delete(predicate)
       end
 
       def to_ast

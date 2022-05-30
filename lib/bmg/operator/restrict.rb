@@ -32,6 +32,18 @@ module Bmg
         end
       end
 
+      def insert(tuple)
+        operand.insert(tuple)
+      end
+
+      def update(updating, predicate = Predicate.tautology)
+        operand.update(updating, predicate & self.predicate)
+      end
+
+      def delete(predicate = Predicate.tautology)
+        operand.delete(predicate & self.predicate)
+      end
+
       def to_ast
         [ :restrict, operand.to_ast, predicate.sexpr ]
       end

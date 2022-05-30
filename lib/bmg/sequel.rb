@@ -62,5 +62,6 @@ module Bmg
 end
 require_relative 'sequel/ext'
 require_relative 'sequel/translator'
+require_relative 'sequel/predicate_translator'
 require_relative 'sequel/type_inference'
 require_relative 'sequel/relation'

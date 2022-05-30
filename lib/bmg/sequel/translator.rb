@@ -179,35 +179,18 @@ module Bmg
         sexpr.last
       end
 
+    public
+
+      def compile_predicate(predicate)
+        PredicateTranslator.new(self).call(predicate)
+      end
+
     private
 
       def dataset(expr)
         return expr if ::Sequel::Dataset===expr
         sequel_db[expr]
       end
-
-      def compile_predicate(predicate)
-        PredicateTranslator.new(self).call(predicate)
-      end
-
-    class PredicateTranslator < Sexpr::Processor
-      include ::Predicate::ToSequel::Methods
-
-      def initialize(parent)
-        @parent = parent
-      end
-
-    public ### Predicate hack
-
-      def on_opaque(sexpr)
-        @parent.apply(sexpr.last)
-      end
-
-      def on_exists(sexpr)
-        @parent.apply(sexpr.last).exists
-      end
-
-    end
 
     end # class Translator
   end # module Sequel

@@ -1,3 +1,12 @@
+# 0.20.0
+
+* POSSIBLY BREAKING: update/delete protocol slightly changed
+  to take a Predicate as second argument.
+
+  The experimental feature has been slightly extended with
+  Restrict being able to push its own predicate further down
+  the update calls.
+
 # 0.19.3
 
 * Fix `r.constants(...).constants(...)` raising an error.

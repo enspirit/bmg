@@ -27,15 +27,15 @@ module Bmg
         raise NotImplementedError
       end
 
-      def delete
+      def delete(*args, &bl)
         raise NotImplementedError
       end
 
-      def insert(arg)
+      def insert(*args, &bl)
         raise NotImplementedError
       end
 
-      def update(arg)
+      def update(*args, &bl)
         raise NotImplementedError
       end
 

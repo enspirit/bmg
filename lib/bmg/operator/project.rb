@@ -49,12 +49,12 @@ module Bmg
         end
       end
 
-      def update(tuple)
-        operand.update(valid_tuple!(tuple))
+      def update(tuple, predicate = Predicate.tautology)
+        operand.update(valid_tuple!(tuple), predicate)
       end
 
-      def delete
-        operand.delete
+      def delete(predicate = Predicate.tautology)
+        operand.delete(predicate)
       end
 
       def to_ast

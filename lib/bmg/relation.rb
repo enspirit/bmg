@@ -74,16 +74,16 @@ module Bmg
       one_or_yield{ nil }
     end
 
-    def insert(arg)
-      raise InvalidUpdateError, "Cannot insert into this Relvar"
+    def insert(*args, &bl)
+      raise InvalidUpdateError, "Cannot insert into #{self.class.name}"
     end
 
-    def update(arg)
-      raise InvalidUpdateError, "Cannot update this Relvar"
+    def update(*args, &bl)
+      raise InvalidUpdateError, "Cannot update #{self.class.name}"
     end
 
-    def delete
-      raise InvalidUpdateError, "Cannot delete from this Relvar"
+    def delete(*args, &bl)
+      raise InvalidUpdateError, "Cannot delete from #{self.class.name}"
     end
 
     def visit(&visitor)

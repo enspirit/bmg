@@ -42,12 +42,12 @@ module Bmg
         end
       end
 
-      def update(tuple)
-        operand.update(allbut_extkeys(tuple))
+      def update(tuple, predicate = Predicate.tautology)
+        operand.update(allbut_extkeys(tuple), predicate)
       end
 
-      def delete
-        operand.delete
+      def delete(predicate = Predicate.tautology)
+        operand.delete(predicate)
       end
 
       def to_ast
