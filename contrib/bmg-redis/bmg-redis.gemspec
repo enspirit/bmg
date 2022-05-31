@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_dependency "bmg"
-  s.add_dependency "redis", ">= 4.6"
+  s.add_dependency "redis", ">= 4.0", "< 5.0"
 
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec", "~> 3.6"

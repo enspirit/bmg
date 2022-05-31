@@ -1,3 +1,7 @@
+## 0.20.1
+
+* bmg-redis requires redis >= 4.0 & < 5.0, no longer >= 4.6.
+
 ## 0.20.0 - 2022-05-30
 
 * POSSIBLY BREAKING: update/delete protocol slightly changed
