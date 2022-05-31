@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/enspirit/bmg-redis'
   s.license     = 'MIT'
 
-  s.add_dependency "bmg"
+  s.add_dependency "bmg", "= #{Bmg::VERSION}"
   s.add_dependency "redis", ">= 4.0", "< 5.0"
 
   s.add_development_dependency "rake", "~> 13"
