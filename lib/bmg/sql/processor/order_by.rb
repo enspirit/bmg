@@ -17,7 +17,7 @@ module Bmg
         alias :on_intersect :on_set_operator
 
         def on_select_exp(sexpr)
-          if obc = sexpr.order_by_clause
+          if sexpr.order_by? || sexpr.group_by?
             sexpr = builder.from_self(sexpr)
             call(sexpr)
           else

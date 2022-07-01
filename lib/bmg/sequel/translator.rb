@@ -11,7 +11,7 @@ module Bmg
       def on_with_exp(sexpr)
         if sequel_db.select(1).supports_cte?
           dataset = apply(sexpr.select_exp)
-          apply(sexpr.with_spec).each_pair do |name,subquery|
+          apply(sexpr.with_spec).each_pair do |name, subquery|
             dataset = dataset.with(name, subquery)
           end
           dataset

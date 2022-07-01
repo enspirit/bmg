@@ -11,6 +11,8 @@ module Bmg
     end
 
     Path.dir.glob("**/*.yml").each do |file|
+      #next unless file.to_s =~ /page/
+
       describe "On #{file.basename}" do
         file.load.each do |test_case|
           test_case = OpenStruct.new(test_case)

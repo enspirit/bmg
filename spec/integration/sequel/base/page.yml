@@ -70,3 +70,24 @@
       `t1`.`name` ASC
     LIMIT
       2
+- bmg: |-
+    supplies
+      .summarize([:sid], qty: :max)
+      .page([:qty], 1, page_size: 1)
+  sqlite: |-
+    WITH `t2` AS (
+      SELECT
+        `t1`.`sid`,
+        max(`t1`.`qty`) AS 'qty'
+      FROM
+        `supplies` AS 't1'
+      GROUP BY `t1`.`sid`
+    )
+    SELECT
+      `t2`.`sid`,
+      `t2`.`qty`
+    FROM
+      `t2` AS 't2'
+    ORDER BY
+      `t2`.`qty` ASC
+    LIMIT 1
