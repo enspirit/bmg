@@ -1,4 +1,4 @@
-## 0.20.2
+## 0.20.2 - 2022-07-01
 
 * Fixed SQL compilation of `summarize.page` to use a subselect.
   Most DBMS (notably PostgreSQL) do not support
