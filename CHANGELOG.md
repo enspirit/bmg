@@ -1,3 +1,8 @@
+## 0.20.3
+
+* Optimize `project.allbut`, remove the butlist from the
+  projection.
+
 ## 0.20.2 - 2022-07-01
 
 * Fixed SQL compilation of `summarize.page` to use a subselect.

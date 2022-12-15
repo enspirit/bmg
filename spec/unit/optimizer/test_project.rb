@@ -1,8 +1,7 @@
 require 'spec_helper'
 module Bmg
-  describe "project optimization" do
-
-    context "project.restrict" do
+  describe 'project optimization' do
+    context 'project.restrict' do
       let(:relation) {
         Relation.new([
           { a: 1,  b: 2 },
@@ -14,9 +13,11 @@ module Bmg
         Predicate.gt(:a, 10)
       }
 
-      let(:projected){ [:a] }
+      let(:projected) {
+        [:a]
+      }
 
-      subject{
+      subject {
         relation.project(projected).restrict(predicate)
       }
 
@@ -26,8 +27,24 @@ module Bmg
         expect(operand).to be_a(Operator::Restrict)
         expect(operand.send(:predicate)).to be(predicate)
       end
-
     end
 
+    context 'project.allbut' do
+      let(:relation) {
+        Relation.new([
+          { a: 1,  b: 2 },
+          { a: 11, b: 2 }
+        ])
+      }
+
+      subject {
+        relation.project([:a, :b]).allbut([:b])
+      }
+
+      it 'optimizes by removing allbut attributes from the projection' do
+        expect(subject).to be_a(Operator::Project)
+        expect(subject.send(:attrlist)).to eql([:a])
+      end
+    end
   end
 end

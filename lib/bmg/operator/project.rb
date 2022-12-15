@@ -67,6 +67,10 @@ module Bmg
         operand.restrict(predicate).project(attrlist)
       end
 
+      def _allbut(type, butlist)
+        Project.new(type, @operand, self.attrlist - butlist)
+      end
+
     protected ### inspect
 
       def args
