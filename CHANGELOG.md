@@ -1,4 +1,4 @@
-## 0.20.3
+## 0.20.3 - 2022-12-15
 
 * Optimize `project.allbut`, remove the butlist from the
   projection.
