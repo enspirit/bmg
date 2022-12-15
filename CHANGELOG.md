@@ -1,3 +1,7 @@
+## 0.20.4
+
+* Fix `project.allbut` optimization under ruby <= 2.6
+
 ## 0.20.3 - 2022-12-15
 
 * Optimize `project.allbut`, remove the butlist from the

@@ -68,7 +68,7 @@ module Bmg
       end
 
       def _allbut(type, butlist)
-        Project.new(type, @operand, self.attrlist - butlist)
+        Project.new(type, @operand, attrlist - butlist)
       end
 
     protected ### inspect
