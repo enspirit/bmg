@@ -46,6 +46,11 @@ module Bmg
     attr_accessor :attrlist
     protected :attrlist=
 
+    def attrlist!
+      knows_attrlist!
+      attrlist
+    end
+
     def with_attrlist(attrlist)
       dup.tap{|x|
         x.attrlist = attrlist

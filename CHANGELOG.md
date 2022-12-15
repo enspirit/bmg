@@ -3,6 +3,9 @@
 * Optimize `project.allbut`, remove the butlist from the
   projection.
 
+* Optimize `autowrap.project` and `autowrap.allbut` to push them
+  down when possible.
+
 ## 0.20.2 - 2022-07-01
 
 * Fixed SQL compilation of `summarize.page` to use a subselect.

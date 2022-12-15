@@ -68,6 +68,20 @@ module Bmg
 
     protected ### optimization
 
+      def _allbut(type, butlist)
+        new_roots = wrapped_roots!
+        separator = @options[:split]
+        down = operand.type.attrlist!.select { |attr|
+          root = attr.to_s.split(separator).map(&:to_sym).first
+          butlist.include?(root)
+        }
+        r = operand.allbut(down)
+        r = r.autowrap(options) unless (butlist & new_roots == new_roots)
+        r
+      rescue UnknownAttributesError
+        super
+      end
+
       def _autowrap(type, opts)
         if same_options?(opts)
           self
@@ -122,11 +136,12 @@ module Bmg
       end
 
       def _project(type, attrlist)
-        if (wrapped_roots! & attrlist).empty?
-          operand.project(attrlist).autowrap(options)
-        else
-          super
-        end
+        separator = @options[:split]
+        to_keep = operand.type.attrlist!.select { |attr|
+          root = attr.to_s.split(separator).map(&:to_sym).first
+          attrlist.include?(root)
+        }
+        operand.project(to_keep).autowrap(options)
       rescue UnknownAttributesError
         super
       end
@@ -169,6 +184,7 @@ module Bmg
 
       def wrapped_roots_of!(r, opts)
         raise UnknownAttributesError unless r.type.knows_attrlist?
+
         Support.wrapped_roots(r.type.to_attrlist, opts[:split])
       end
 

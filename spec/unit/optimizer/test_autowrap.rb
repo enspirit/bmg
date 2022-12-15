@@ -17,7 +17,7 @@ module Bmg
       Relation.new([
         { :a => 1,  :"b-id" => 2, :"c$id" => 3 },
         { :a => 11, :"b-id" => 2, :"c$id" => 3 }
-      ], type)
+      ], Type::ANY)
     }
 
     let(:type) {
@@ -62,6 +62,107 @@ module Bmg
 
         it 'skips the Autowrap' do
           expect(subject).to be(relation)
+        end
+      end
+    end
+
+    context "autowrap.allbut" do
+      context 'when the butlist has only unwrapped attributes' do
+        subject {
+          relation.autowrap(options).allbut(ps)
+        }
+
+        let(:ps) {
+          [:a]
+        }
+
+        it 'pushes the allbut down' do
+          # relation.allbut([:a]).autowrap(options)
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql('-')
+          expect(operand(subject)).to be_a(Operator::Allbut)
+          expect(operand(subject).send(:butlist)).to eql([:a])
+          expect(operand(operand)).to be(relation)
+        end
+      end
+
+      context 'when the butlist touches wrapped attributes and the type is unknown' do
+        subject {
+          untyped_relation.autowrap(options).allbut(ps)
+        }
+
+        let(:ps) {
+          [:b]
+        }
+
+        it 'does not optimize' do
+          expect(subject).to be_a(Operator::Allbut)
+          expect(operand(subject)).to be_a(Operator::Autowrap)
+          expect(operand(operand)).to be(untyped_relation)
+        end
+      end
+
+      context 'when the butlist strips all wrapped attributes and the type is known' do
+        subject {
+          relation.autowrap(options).allbut(ps)
+        }
+
+        let(:ps) {
+          [:b]
+        }
+
+        it 'strips the Autowrap' do
+          # relation.allbut([:"b-id"])
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.send(:butlist)).to eql([:"b-id"])
+          expect(operand(subject)).to be(relation)
+        end
+      end
+
+      context 'when the butlist has both & all the type is known' do
+        subject {
+          relation.autowrap(options).allbut(ps)
+        }
+
+        let(:ps) {
+          [:a, :b]
+        }
+
+        it 'strips the Autowrap' do
+          # relation.allbut([:a, :"b-id"])
+          expect(subject).to be_a(Operator::Allbut)
+          expect(subject.send(:butlist)).to eql([:a, :"b-id"])
+          expect(operand(subject)).to be(relation)
+        end
+      end
+
+      context 'when the butlist has both & not all the type is known' do
+        let(:relation) {
+          Relation.new([
+            { :a => 1,  :"b-id" => 2, :"c-id" => 3 },
+            { :a => 11, :"b-id" => 2, :"c-id" => 3 }
+          ], type)
+        }
+
+        let(:type) {
+          Type.new.with_attrlist([:a, :"b-id", :"c-id"])
+        }
+
+        subject {
+          relation.autowrap(options).allbut(ps)
+        }
+
+        let(:ps) {
+          [:a, :b]
+        }
+
+        it 'optimizes' do
+          # relation.allbut([:a, :"b-id"]).autowrap(options)
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(subject.send(:options)[:split]).to eql('-')
+          expect(operand(subject)).to be_a(Operator::Allbut)
+          expect(operand(subject).send(:butlist)).to eql([:a, :"b-id"])
+          expect(operand(operand)).to be(relation)
         end
       end
     end
@@ -291,12 +392,12 @@ module Bmg
     end
 
     context "autowrap.project" do
-      subject {
-        relation.autowrap(options).project(ps)
-      }
-
       context 'when the attrlist has only unwrapped attributes' do
-        let(:ps){
+        subject {
+          relation.autowrap(options).project(ps)
+        }
+
+        let(:ps) {
           [:a]
         }
 
@@ -307,8 +408,29 @@ module Bmg
         end
       end
 
-      context 'when the attrlist has wrapped attributes' do
-        let(:ps){
+      context 'when the attrlist has wrapped attributes and the attrlist is known' do
+        subject {
+          relation.autowrap(options).project(ps)
+        }
+
+        let(:ps) {
+          [:a, :b]
+        }
+
+        it 'does optimize' do
+          expect(subject).to be_a(Operator::Autowrap)
+          expect(operand(subject)).to be_a(Operator::Project)
+          expect(operand(subject).send(:attrlist)).to eql([:a, :"b-id"])
+          expect(operand(operand)).to be(relation)
+        end
+      end
+
+      context 'when the attrlist has wrapped attributes and the attrlist is unknown' do
+        subject {
+          untyped_relation.autowrap(options).project(ps)
+        }
+
+        let(:ps) {
           [:a, :b]
         }
 
@@ -316,7 +438,7 @@ module Bmg
           expect(subject).to be_a(Operator::Project)
           expect(subject.send(:attrlist)).to eql([:a, :b])
           expect(operand).to be_a(Operator::Autowrap)
-          expect(operand(operand)).to be(relation)
+          expect(operand(operand)).to be(untyped_relation)
         end
       end
     end
@@ -414,6 +536,5 @@ module Bmg
       end
 
     end
-
   end
 end
