@@ -1,6 +1,6 @@
 # Bmg, a relational algebra (Alf's successor)!
 
-Bmg is a relational algebra implemented as a ruby library. It implements the
+Bmg is a relational algebra implemented as a Ruby library. It implements the
 [Relation as First-Class Citizen](http://www.try-alf.org/blog/2013-10-21-relations-as-first-class-citizen)
 paradigm contributed with [Alf](http://www.try-alf.org/) a few years ago.
 
@@ -15,7 +15,7 @@ further down this README.
 * [Where are base relations coming from?](#where-are-base-relations-coming-from)
   * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
-  * [Reading files (csv, excel, text)](#reading-files-csv-excel-text)
+  * [Reading files (csv, Excel, text)](#reading-files-csv-excel-text)
   * [Connecting to Redis databases](#connecting-to-redis-databases)
   * [Your own relations](#your-own-relations)
 * [List of supported operators](#supported-operators)
@@ -117,7 +117,7 @@ Bmg.sequel(:suppliers, sequel_db)
 #   {:array=>false})
 ```
 
-### Reading files (csv, excel, text)
+### Reading files (csv, Excel, text)
 
 Bmg provides simple adapters to read files and reach Relationland as soon as
 possible.
@@ -129,7 +129,7 @@ csv_options = { col_sep: ",", quote_char: '"' }
 r = Bmg.csv("path/to/a/file.csv", csv_options)
 ```
 
-Options are directly transmitted to `::CSV.new`, check ruby's standard
+Options are directly transmitted to `::CSV.new`, check Ruby's standard
 library.
 
 #### Excel files
@@ -302,7 +302,7 @@ r.where(predicate)                           # alias for restrict(predicate)
         .where(...)
       ```
 
-2. Bmg supports in memory relations, json relations, csv relations, SQL
+2. Bmg supports in-memory relations, JSON relations, csv relations, SQL
    relations and so on. It's not tight to SQL generation, and supports
    queries accross multiple data sources.
 
@@ -312,8 +312,8 @@ r.where(predicate)                           # alias for restrict(predicate)
 4. Bmg supports various *structuring* operators (group, image, autowrap,
    autosummarize, etc.) and allows building 'non flat' relations.
 
-5. Bmg can use full ruby power when that helps (e.g. regular expressions in
-   WHERE clauses or ruby code in EXTEND clauses). This may prevent Bmg from
+5. Bmg can use full Ruby power when that helps (e.g. regular expressions in
+   WHERE clauses or Ruby code in EXTEND clauses). This may prevent Bmg from
    delegating work to underlying data sources (e.g. SQL server) and should
    therefore be used with care though.
 
@@ -323,14 +323,14 @@ If you use Alf (or used it in the past), below are the main differences between
 Bmg and Alf. Bmg has NOT been written to be API-compatible with Alf and will
 probably never be.
 
-1. Bmg's implementation is much simpler than Alf and uses no ruby core
+1. Bmg's implementation is much simpler than Alf and uses no Ruby core
    extention.
 
 2. We are confident using Bmg in production. Systematic inspection of query
    plans is advised though. Alf was a bit too experimental to be used on
    (critical) production systems.
 
-3. Alf exposes a functional syntax, command line tool, restful tools and
+3. Alf exposes a functional syntax, command-line tool, restful tools and
    many more. Bmg is limited to the core algebra, main Relation abstraction
    and SQL generation.
 
