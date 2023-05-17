@@ -8,6 +8,10 @@ module Bmg::Redis
     end
 
     context 'without predicate' do
+      before do
+        allow(redis).to receive(:scan_each).and_call_original
+      end
+
       subject do
         relvar.update(city: 'Brussels')
       end
@@ -22,7 +26,11 @@ module Bmg::Redis
       end
     end
 
-    context 'with a predicate' do
+    context 'with a predicate on a non key' do
+      before do
+        allow(redis).to receive(:scan_each).and_call_original
+      end
+
       subject do
         relvar.update({city: 'Brussels'}, Predicate.neq(sid: 'S1'))
       end
@@ -36,6 +44,26 @@ module Bmg::Redis
           s[:sid] == 'S1' ? s : s.merge(city: 'Brussels')
         }.to_set
         expect(subject.to_set).to eql(expected)
+      end
+    end
+
+    context 'with a predicate on a key' do
+      before do
+        expect(redis).not_to receive(:scan_each)
+      end
+
+      subject do
+        relvar.update({city: 'Brussels'}, sid: 'S1')
+      end
+
+      it 'returns the relvar itself' do
+        expect(subject).to be(relvar)
+      end
+
+      it 'updates all tuples' do
+        subject
+        expected = relvar.restrict(sid: 'S1').one
+        expect(expected[:city]).to eql('Brussels')
       end
     end
   end

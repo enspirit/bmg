@@ -1,3 +1,8 @@
+## 0.20.5
+
+* [bmg-redis] optimization of Relation#restrict to avoid a redis
+  scan_each when each-ing or updating on the candidate key.
+
 ## 0.20.4 - 2022-12-15
 
 * Fix `project.allbut` optimization under ruby <= 2.6

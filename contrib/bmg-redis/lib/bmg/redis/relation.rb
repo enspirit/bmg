@@ -29,6 +29,19 @@ module Bmg
         end
       end
 
+    ### optimization
+
+      def _restrict(type, predicate)
+        return super unless key = full_and_only_key?(predicate)
+
+        if tuple_str = redis.get(extract_key(key))
+          tuple = serializer.deserialize(tuple_str)
+          Bmg::Relation.new([tuple], type)
+        else
+          Bmg::Relation.empty
+        end
+      end
+
     ###
 
       def insert(tuple_or_tuples)
@@ -46,9 +59,7 @@ module Bmg
       end
 
       def update(updating, predicate = Predicate.tautology)
-        each do |tuple|
-          next unless predicate.call(tuple)
-
+        restrict(predicate).each do |tuple|
           insert(tuple.merge(updating))
         end
         self
@@ -97,6 +108,21 @@ module Bmg
 
       def key_prefix
         options[:key_prefix] || "bmg"
+      end
+
+      def full_and_only_key?(predicate)
+        h = begin
+          predicate.to_hash
+        rescue ArgumentError
+          return false
+        end
+
+        return false unless h.keys == candidate_key
+        return false unless candidate_key.all?{|k|
+          h[k].is_a?(String) || h[k].is_a?(Integer)
+        }
+
+        h
       end
 
       def extract_key(tuple)
