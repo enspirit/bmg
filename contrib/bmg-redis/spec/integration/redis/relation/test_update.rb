@@ -66,5 +66,21 @@ module Bmg::Redis
         expect(expected[:city]).to eql('Brussels')
       end
     end
+
+    context 'on a restricted relation' do
+      before do
+        expect(redis).not_to receive(:scan_each)
+      end
+
+      subject do
+        relvar.restrict(sid: 'S1').update({city: 'Brussels'})
+      end
+
+      it 'updates all tuples' do
+        expect(subject).to be_a(Singleton)
+        expected = relvar.restrict(sid: 'S1').one
+        expect(expected[:city]).to eql('Brussels')
+      end
+    end
   end
 end

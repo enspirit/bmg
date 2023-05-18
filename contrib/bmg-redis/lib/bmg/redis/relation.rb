@@ -34,9 +34,10 @@ module Bmg
       def _restrict(type, predicate)
         return super unless key = full_and_only_key?(predicate)
 
-        if tuple_str = redis.get(extract_key(key))
+        redis_key = extract_key(key)
+        if tuple_str = redis.get(redis_key)
           tuple = serializer.deserialize(tuple_str)
-          Bmg::Relation.new([tuple], type)
+          Singleton.new(type, self, tuple)
         else
           Bmg::Relation.empty
         end
@@ -66,13 +67,8 @@ module Bmg
       end
 
       def delete(predicate = Predicate.tautology)
-        keys = self
-          .each
-          .select{|tuple| predicate.call(tuple) }
-          .map{|tuple| extract_key(tuple) }
-
+        keys = restrict(predicate).each.map{|t| extract_key(t) }
         redis.del(*keys)
-
         self
       end
 
@@ -128,7 +124,7 @@ module Bmg
       def extract_key(tuple)
         key = candidate_key
         key = TupleAlgebra.project(tuple, key)
-        key = serializer.serialize(key)
+        key = key.to_json
         "#{key_prefix}:#{key}"
       end
 

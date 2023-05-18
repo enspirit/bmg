@@ -12,11 +12,8 @@ module Bmg::Redis
         relvar.delete
       end
 
-      it 'returns the relvar itself' do
-        expect(subject).to be(relvar)
-      end
-
       it 'removes all tuples' do
+        expect(subject).to be(relvar)
         expected = [].to_set
         expect(subject.to_set).to eql(expected)
       end
@@ -27,11 +24,8 @@ module Bmg::Redis
         relvar.delete(Predicate.eq(sid: 'S1'))
       end
 
-      it 'returns the relvar itself' do
-        expect(subject).to be(relvar)
-      end
-
       it 'removes only that' do
+        expect(subject).to be(relvar)
         expected = suppliers.select{|s| s[:sid] != 'S1'}.to_set
         expect(subject.to_set).to eql(expected)
       end

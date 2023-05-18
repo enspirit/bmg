@@ -1,7 +1,14 @@
-## 0.20.5
+## 0.21.0
 
 * [bmg-redis] optimization of Relation#restrict to avoid a redis
   scan_each when each-ing or updating on the candidate key.
+
+  BREAKING: The keys kept in redis are now always encoded in json,
+  even if the serializer option is set to :marshal. This is necessary
+  to guarantee that the same keys are always used for the same object
+  (Marshal offers no such guarantee). Unfortunately, it may break
+  existing relations (restrict on the candidate key may return no
+  result while tuples exist, if they have been inserted by Bmg 0.20.x).
 
 ## 0.20.4 - 2022-12-15
 
