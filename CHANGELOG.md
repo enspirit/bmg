@@ -1,4 +1,4 @@
-## 0.21.0
+## 0.21.0 - 2023-05-18
 
 * BREAKING: minimal version for ruby is now 2.7. Ruby 2.4 and 2.6 have
   been removed from the test matrix
