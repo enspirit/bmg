@@ -1,4 +1,4 @@
-## 0.21.0
+## 0.21.0 - 2023-05-18
 
 * [bmg-redis] optimization of Relation#restrict to avoid a redis
   scan_each when each-ing or updating on the candidate key.
