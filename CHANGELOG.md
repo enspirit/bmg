@@ -1,5 +1,8 @@
 ## 0.21.0
 
+* BREAKING: minimal version for ruby is now 2.7. Ruby 2.4 and 2.6 have
+  been removed from the test matrix
+
 * [bmg-redis] optimization of Relation#restrict to avoid a redis
   scan_each when each-ing or updating on the candidate key.
 
