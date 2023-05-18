@@ -30,5 +30,21 @@ module Bmg::Redis
         expect(subject.to_set).to eql(expected)
       end
     end
+
+    context 'on a very large relation' do
+      let(:relvar) do
+        large_relvar
+      end
+
+      subject do
+        relvar.delete(Predicate.gt(id: 100))
+      end
+
+      it 'deletes by chunks' do
+        expect(relvar.to_a.size).to eql(1000)
+        expect(subject).to be(relvar)
+        expect(subject.to_a.size).to eql(100)
+      end
+    end
   end
 end

@@ -22,8 +22,26 @@ module SpecHelpers
   end
 
   def suppliers_relvar(type = suppliers_type)
-    rv = Bmg::Redis::Relation.new(type, { redis: redis })
+    rv = Bmg::Redis::Relation.new(type, {
+      redis: redis,
+      key_prefix: "suppliers",
+    })
     rv.insert(suppliers)
+    rv
+  end
+
+  def large_relvar_type
+    Bmg::Type::ANY
+      .with_attrlist([:id])
+      .with_keys([[:id]])
+  end
+
+  def large_relvar(type = large_relvar_type)
+    rv = Bmg::Redis::Relation.new(type, {
+      redis: redis,
+      key_prefix: "large",
+    })
+    rv.insert((1..1000).map{|i| { id: i } })
     rv
   end
 

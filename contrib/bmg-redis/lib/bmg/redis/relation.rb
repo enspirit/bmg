@@ -48,27 +48,39 @@ module Bmg
       def insert(tuple_or_tuples)
         case tuple_or_tuples
         when Hash
-          key = extract_key(tuple_or_tuples)
-          serialized = serializer.serialize(tuple_or_tuples)
-          redis.set(key, serialized)
+          insert_one(tuple_or_tuples, redis)
         else
-          tuple_or_tuples.each do |tuple|
-            insert(tuple)
+          redis.multi do |transaction|
+            tuple_or_tuples.each do |tuple|
+              insert_one(tuple, transaction)
+            end
           end
         end
         self
       end
 
-      def update(updating, predicate = Predicate.tautology)
-        restrict(predicate).each do |tuple|
-          insert(tuple.merge(updating))
-        end
+      def insert_one(tuple, redis)
+        key = extract_key(tuple)
+        serialized = serializer.serialize(tuple)
+        redis.set(key, serialized)
         self
+      end
+      private :insert_one
+
+      def update(updating, predicate = Predicate.tautology)
+        updates = restrict(predicate).map do |tuple|
+          tuple.merge(updating)
+        end
+        insert(updates)
       end
 
       def delete(predicate = Predicate.tautology)
         keys = restrict(predicate).each.map{|t| extract_key(t) }
-        redis.del(*keys)
+        redis.multi do |transaction|
+          keys.each_slice(1000) do |slice|
+            transaction.del(*slice)
+          end
+        end
         self
       end
 

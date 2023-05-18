@@ -10,6 +10,9 @@
   existing relations (restrict on the candidate key may return no
   result while tuples exist, if they have been inserted by Bmg 0.20.x).
 
+* [bmg-redis] insert, update and delete are now properly enclosed in
+  a redis transaction (via `redis.multi`).
+
 ## 0.20.4 - 2022-12-15
 
 * Fix `project.allbut` optimization under ruby <= 2.6
