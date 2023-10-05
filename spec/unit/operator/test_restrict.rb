@@ -4,10 +4,10 @@ module Bmg
     describe Restrict do
 
       let(:data) {
-        [
+        Relation.new([
           { a: 1,  b: 2 },
           { a: 11, b: 2 }
-        ]
+        ])
       }
 
       subject {

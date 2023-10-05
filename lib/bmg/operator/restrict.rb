@@ -51,7 +51,7 @@ module Bmg
     protected
 
       def _restrict(type, predicate)
-        Restrict.new(type, @operand, @predicate & predicate)
+        @operand.restrict(@predicate & predicate)
       end
 
     protected ### inspect

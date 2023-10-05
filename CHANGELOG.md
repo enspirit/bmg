@@ -2,6 +2,9 @@
 
 * Optimize `join.restrict`, split predicate and push down the tree.
 
+* Make sure restrict.restrict keeps applying further optimizations down
+  the tree.
+
 ## 0.21.0 - 2023-05-18
 
 * BREAKING: minimal version for ruby is now 2.7. Ruby 2.4 and 2.6 have
