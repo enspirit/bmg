@@ -70,6 +70,27 @@ module Bmg
         end
       end
 
+      def _restrict(type, predicate)
+        # right_p makes no reference to attributes in left => full on right
+        # left_p makes no reference to attributes in right => full on left
+        up1, right_p = predicate.and_split(left.type.attrlist! - on)
+        up2, left_p = predicate.and_split(right.type.attrlist! - on)
+        if right_p.tautology? && left_p.tautology?
+          # no optimization can be done
+          super
+        else
+          # remains the full reduction, that up2 is not, since we got it
+          # from predicate, not from up1
+          remains, _ = up1.and_split(right.type.attrlist! - on)
+          left
+            .restrict(left_p)
+            .join(right.restrict(right_p), on)
+            .restrict(remains)
+        end
+      rescue UnknownAttributesError
+        super
+      end
+
       def _unautowrap(operand, options)
         return [operand, false] unless operand.is_a?(Operator::Autowrap)
         return [operand, false] unless operand.same_options?(options)
