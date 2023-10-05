@@ -1,4 +1,4 @@
-## 0.21.1
+## 0.21.1 - 2023-10-05
 
 * Optimize `join.restrict`, split predicate and push down the tree.
 
