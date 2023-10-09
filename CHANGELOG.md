@@ -1,4 +1,4 @@
-## 0.21.2
+## 0.21.2 - 2023-10-09
 
 * Don't optimize left_join for now, it breaks.
 
