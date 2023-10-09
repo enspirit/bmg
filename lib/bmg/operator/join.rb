@@ -71,6 +71,8 @@ module Bmg
       end
 
       def _restrict(type, predicate)
+        return super if left_join?
+
         # right_p makes no reference to attributes in left => full on right
         # left_p makes no reference to attributes in right => full on left
         up1, right_p = predicate.and_split(left.type.attrlist! - on)
