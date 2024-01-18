@@ -1,3 +1,12 @@
+## 0.21.3
+
+* Add more output references to CSV and XLSX writers. It is now possible
+  to ignore extra attributes, sort tuples before outputting, and reducing
+  redundancy via group attributes. See OutputPreference class.
+
+* Ordering.new now supports a simple attribute list without asc/desc info.
+  Ascending order is used for all attributes in such case.
+
 ## 0.21.2 - 2023-10-09
 
 * Don't optimize left_join for now, it breaks.
