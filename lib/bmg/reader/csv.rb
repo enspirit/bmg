@@ -39,7 +39,9 @@ module Bmg
     private
 
       def tuple(row)
-        row.to_hash.each_with_object({}){|(k,v),h| h[k.to_sym] = v }
+        row.to_hash.each_with_object({}){|(k,v),h|
+          h[k.to_sym] = v
+        }
       end
 
       def handle_type(type)

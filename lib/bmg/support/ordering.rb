@@ -2,7 +2,13 @@ module Bmg
   class Ordering
 
     def initialize(attrs)
-      @attrs = attrs
+      @attrs = if attrs.empty?
+        []
+      elsif attrs.first.is_a?(Symbol)
+        attrs.map{|a| [a, :asc] }
+      else
+        attrs
+      end
     end
     attr_reader :attrs
 
@@ -31,6 +37,10 @@ module Bmg
         end
       end
       0
+    end
+
+    def to_a
+      attrs.to_a
     end
 
   end # class Ordering
