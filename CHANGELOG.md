@@ -36,6 +36,15 @@
 * [bmg-redis] insert, update and delete are now properly enclosed in
   a redis transaction (via `redis.multi`).
 
+## 0.20.5 - 2024-01-18
+
+* Add more output references to CSV and XLSX writers. It is now possible
+  to ignore extra attributes, sort tuples before outputting, and reducing
+  redundancy via group attributes. See OutputPreference class.
+
+* Ordering.new now supports a simple attribute list without asc/desc info.
+  Ascending order is used for all attributes in such case.
+
 ## 0.20.4 - 2022-12-15
 
 * Fix `project.allbut` optimization under ruby <= 2.6
@@ -75,6 +84,15 @@
 
   Warn: This may break your code, if you used `r.constants`
   (private method) to inspect the Hash on the Operator class.
+
+## 0.19.3 - 2024-01-18
+
+* Add more output references to CSV and XLSX writers. It is now possible
+  to ignore extra attributes, sort tuples before outputting, and reducing
+  redundancy via group attributes. See OutputPreference class.
+
+* Ordering.new now supports a simple attribute list without asc/desc info.
+  Ascending order is used for all attributes in such case.
 
 ## 0.19.2 - 2022-04-25
 
