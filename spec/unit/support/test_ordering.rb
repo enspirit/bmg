@@ -5,6 +5,18 @@ module Bmg
       Ordering.new(attrs)
     }
 
+    describe 'new' do
+      it 'supports pairs' do
+        o = Ordering.new([[:name, :desc],[:id, :asc]])
+        expect(o.to_a).to eql([[:name, :desc],[:id, :asc]])
+      end
+
+      it 'supports attribute names' do
+        o = Ordering.new([:name, :id])
+        expect(o.to_a).to eql([[:name, :asc],[:id, :asc]])
+      end
+    end
+
     context 'when a single attr, asc' do
       let(:attrs) {
         [[:title, :asc]]

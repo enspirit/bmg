@@ -3,6 +3,7 @@ module Bmg
 
     DEFAULT_PREFS = {
       attributes_ordering: nil,
+      tuple_ordering: nil,
       extra_attributes: :after
     }
 
@@ -17,6 +18,12 @@ module Bmg
       new(arg)
     end
 
+    def tuple_ordering
+      return nil unless to = options[:tuple_ordering]
+
+      @tuple_ordering = Ordering.new(to)
+    end
+
     def attributes_ordering
       options[:attributes_ordering]
     end
@@ -25,10 +32,29 @@ module Bmg
       options[:extra_attributes]
     end
 
+    def grouping_attributes
+      options[:grouping_attributes]
+    end
+
+    def erase_redundance_in_group(before, current)
+      return [nil, current] unless ga = grouping_attributes
+      return [current, current] unless before
+
+      new_before, new_current = current.dup, current.dup
+      ga.each do |attr|
+        return [new_before, new_current] unless before[attr] == current[attr]
+        new_current[attr] = nil
+      end
+      [new_before, new_current]
+    end
+
     def order_attrlist(attrlist)
       return attrlist if attributes_ordering.nil?
+
       index = Hash[attributes_ordering.each_with_index.to_a]
-      attrlist.sort{|a,b|
+      base  = attrlist
+      base  = attrlist & attributes_ordering if extra_attributes == :ignored
+      base.sort{|a,b|
         ai, bi = index[a], index[b]
         if ai && bi
           ai <=> bi
