@@ -1,4 +1,4 @@
-## 0.21.3
+## 0.21.3 - 2024-01-18
 
 * Add more output references to CSV and XLSX writers. It is now possible
   to ignore extra attributes, sort tuples before outputting, and reducing
