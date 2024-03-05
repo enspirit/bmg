@@ -57,6 +57,15 @@ module Bmg
         self.left_join(right.rename(renaming), on.keys, *args)
       end
 
+      def cross_product(right)
+        duplicates = self.type.attrlist & right.type.attrlist
+        unless duplicates.empty?
+          raise TypeError, "Cross product incompatible — duplicate attribute(s): #{duplicates.join(', ')}"
+        end
+
+        return join(right)
+      end
+
       def matching(right, on = [])
         return super unless on.is_a?(Hash)
         renaming = Hash[on.map{|k,v| [v,k] }]

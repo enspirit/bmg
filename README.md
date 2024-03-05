@@ -245,6 +245,7 @@ r.allbut([:a, :b, ...])                      # remove specified attributes
 r.autowrap(split: '_')                       # structure a flat relation, split: '_' is the default
 r.autosummarize([:a, :b, ...], x: :sum)      # (experimental) usual summarizers supported
 r.constants(x: 12, ...)                      # add constant attributes (sometimes useful in unions)
+r.cross_product(right)                       # cross product, raises error if left and right have any common attributes (alias `cross_join`)
 r.extend(x: ->(t){ ... }, ...)               # add computed attributes
 r.extend(x: :y)                              # shortcut for r.extend(x: ->(t){ t[:y] })
 r.exclude(predicate)                         # shortcut for restrict(!predicate)

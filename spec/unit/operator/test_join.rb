@@ -47,7 +47,63 @@ module Bmg
           :variant => :left,
           :default_right_tuple => { c: 10 }
         }
-        expect(op.to_a). to eql(expected)
+        expect(op.to_a).to eql(expected)
+      end
+
+      context 'without join list an no overlapping attributes' do
+        let(:left) {
+          [
+            { a: 1, b: 2, x: "a" },
+            { a: 3, b: 4, x: "b" },
+          ]
+        }
+
+        let(:right) {
+          [
+            { q: 10, p: "80" },
+            { q: 20, p: "90" },
+          ]
+        }
+
+        it 'does a cross join' do
+          expected = [
+            { a: 1, b: 2, x: "a", q: 10, p: "80"},
+            { a: 1, b: 2, x: "a", q: 20, p: "90"},
+            { a: 3, b: 4, x: "b", q: 10, p: "80"},
+            { a: 3, b: 4, x: "b", q: 20, p: "90"},
+          ].to_set
+
+          op = Join.new Type::ANY, left, right, []
+          expect(op.to_set).to eql(expected)
+        end
+      end
+
+      context 'without join list and shared attributes' do
+        let(:left) {
+          [
+            { a: 1, b: 2, x: "a" },
+            { a: 3, b: 4, x: "b" },
+          ]
+        }
+
+        let(:right) {
+          [
+            { a: 1, q: 10, p: "80" },
+            { a: 5, q: 20, p: "90" },
+          ]
+        }
+
+        it 'does a cross join, discaring the shared attribute from right' do
+          expected = [
+            { a: 1, b: 2, x: "a", q: 10, p: "80"},
+            { a: 1, b: 2, x: "a", q: 20, p: "90"},
+            { a: 3, b: 4, x: "b", q: 10, p: "80"},
+            { a: 3, b: 4, x: "b", q: 20, p: "90"},
+          ].to_set
+
+          op = Join.new Type::ANY, left, right, []
+          expect(op.to_set).to eql(expected)
+        end
       end
 
     end
