@@ -57,6 +57,14 @@ module Bmg
         self.left_join(right.rename(renaming), on.keys, *args)
       end
 
+      def cross_product(right)
+        return join(right) unless self.type.typechecked? || right.type.typechecked?
+        return join(right) unless self.type.knows_attrlist? && right.type.knows_attrlist?
+
+        self.type.cross_join_compatible!(right)
+        return join(right)
+      end
+
       def matching(right, on = [])
         return super unless on.is_a?(Hash)
         renaming = Hash[on.map{|k,v| [v,k] }]

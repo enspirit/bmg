@@ -35,6 +35,33 @@ module Bmg
         ])
       end
 
+      context 'with empty join attributes' do
+        subject {
+          left.join(right, [])
+        }
+
+        it 'compiles to a join with no renames' do
+          expect(subject).to be_a(Operator::Join)
+          expect(left_operand(subject)).to be(left)
+          expect(right_operand(subject)).to be(right)
+          expect(subject.send(:on)).to eql([])
+        end
+
+      end
+
+      context 'with no join attributes' do
+        subject {
+          left.join(right)
+        }
+
+        it 'compiles to a join with no renames' do
+          expect(subject).to be_a(Operator::Join)
+          expect(left_operand(subject)).to be(left)
+          expect(right_operand(subject)).to be(right)
+          expect(subject.send(:on)).to eql([])
+        end
+
+      end
     end
   end
 end
