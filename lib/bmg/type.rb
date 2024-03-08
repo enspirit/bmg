@@ -310,7 +310,7 @@ module Bmg
       }
     end
 
-  private
+  public
 
     def known_attributes!(attrs)
       extra = attrs - self.attrlist
@@ -328,6 +328,13 @@ module Bmg
       if right.knows_attrlist?
         extra = on - right.attrlist
         raise TypeError, "Unknow attributes #{extra.join(', ')}" unless extra.empty?
+      end
+    end
+
+    def cross_join_compatible!(right)
+      shared = self.attrlist & right.type.attrlist
+      unless shared.empty?
+        raise TypeError, "Cross product incompatible — duplicate attribute(s): #{shared.join(', ')}"
       end
     end
 
