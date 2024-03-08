@@ -1,9 +1,9 @@
 ## 0.21.4 - 2024-03-08
 
 * Add `cross_product` (aliased to `cross_join`) as a shortcut for `join`
-  with no join attributes (`r.join(right)`). Checks that there are no
-  shared attributes between the two relations, and raises an error if
-  there are.
+  with no join attributes (`r.join(right)`). If typechecking mode is enabled
+  the shortcut checks that there are no shared attributes between the two
+  relations, and raises an error if there are.
 
 ## 0.21.3 - 2024-01-18
 
