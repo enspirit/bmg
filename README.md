@@ -252,8 +252,8 @@ r.exclude(predicate)                         # shortcut for restrict(!predicate)
 r.group([:a, :b, ...], :x)                   # relation-valued attribute from attributes
 r.image(right, :x, [:a, :b, ...])            # relation-valued attribute from another relation
 r.images({:x => r1, :y => r2}, [:a, ...])    # shortcut over image(r1, :x, ...).image(r2, :y, ...)
-r.join(right, [:a, :b, ...])                 # natural join on a join key
-r.join(right, :a => :x, :b => :y, ...)       # natural join after right reversed renaming
+r.join(right, [:a, :b, ...])                 # join on a join key
+r.join(right, :a => :x, :b => :y, ...)       # join after right reversed renaming
 r.left_join(right, [:a, :b, ...], {...})     # left join with optional default right tuple
 r.left_join(right, {:a => :x, ...}, {...})   # left join after right reversed renaming
 r.matching(right, [:a, :b, ...])             # semi join, aka where exists
@@ -268,10 +268,10 @@ r.restrict(a: "foo", b: "bar", ...)          # relational restriction, aka where
 r.rxmatch([:a, :b, ...], /xxx/)              # regex match kind of restriction
 r.summarize([:a, :b, ...], x: :sum)          # relational summarization
 r.suffix(:_foo, but: [:a, ...])              # suffix kind of renaming
-t.transform(:to_s)                           # all-attrs transformation
-t.transform(&:to_s)                          # similar, but Proc-driven
-t.transform(:foo => :upcase, ...)            # specific-attrs tranformation
-t.transform([:to_s, :upcase])                # chain-transformation
+r.transform(:to_s)                           # all-attrs transformation
+r.transform(&:to_s)                          # similar, but Proc-driven
+r.transform(:foo => :upcase, ...)            # specific-attrs tranformation
+r.transform([:to_s, :upcase])                # chain-transformation
 r.ungroup([:a, :b, ...])                     # ungroup relation-valued attributes within parent tuple
 r.ungroup(:a)                                # shortcut over ungroup([:a])
 r.union(right)                               # relational union
