@@ -1,3 +1,10 @@
+## 0.21.5
+
+* Add `ttl` (Time to leave) to the available options when using the bmg-redis
+  contrib. If provided, the `ttl` option sets the provided value as the validity
+  period of a given tuple in Redis. If not, the ttl is not set and the tuple
+  keeps existing indefinitely in Redis.
+
 ## 0.21.4 - 2024-03-08
 
 * Add `cross_product` (aliased to `cross_join`) as a shortcut for `join`

@@ -197,15 +197,17 @@ type = Bmg::Type::ANY.with_keys([[:id]])
 r = Bmg.redis(type, {
   key_prefix: "suppliers",
   redis: Redis.new,
-  serializer: :marshal
+  serializer: :marshal,
+  ttl: 365 * 24 * 60 * 60
 })
 ```
 
-The key prefix will be used to distinguish the tuples from other
-elements in the same database (e.g. tuples from other relvars).
-The serializer is either `:marshal` or `:json`. Please note that
-types are not preserved when using the second one (all attribute
-values will come back as strings, but keys will be symbolized).
+The key prefix will be used to distinguish the tuples from other elements in the
+same database (e.g. tuples from other relvars). The serializer is either
+`:marshal` or `:json`. Please note that types are not preserved when using the
+second one (all attribute values will come back as strings, but keys will be
+symbolized). The `ttl` is used to set the validity period of a tuple in redis
+and is optional.
 
 The redis relvars support basic algorithms for insert/update/delete.
 No optimization is currently supported.
