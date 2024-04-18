@@ -63,6 +63,7 @@ module Bmg
         key = extract_key(tuple)
         serialized = serializer.serialize(tuple)
         redis.set(key, serialized)
+        redis.expire(key, options[:ttl]) if options[:ttl]
         self
       end
       private :insert_one
