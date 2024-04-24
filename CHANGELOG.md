@@ -1,4 +1,4 @@
-## 0.21.5
+## 0.21.5 - 2024-04-24
 
 * Add `ttl` (Time to leave) to the available options when using the bmg-redis
   contrib. If provided, the `ttl` option sets the provided value as the validity
