@@ -288,16 +288,22 @@ module Bmg
     end
 
     def union(other)
-      if typechecked? && knows_attrlist? && other.knows_attrlist?
-        missing = self.attrlist - other.attrlist
-        raise TypeError, "Union incompatible: missing right attributes #{missing.join(', ')}" unless missing.empty?
-        extra = other.attrlist - self.attrlist
-        raise TypeError, "Union incompatible: missing left attributes #{extra.join(', ')}" unless extra.empty?
-      end
+      union_compatible!(other, "Union")
       dup.tap{|x|
         ### attrlist stays the same
         x.predicate = self.predicate | predicate
         x.keys      = self._keys.union(self, x, other) if knows_keys?
+      }
+    end
+
+    def minus(other)
+      union_compatible!(other, "Minus")
+      dup.tap{|x|
+        # 1. attributes do not change
+        # 2. predicate does not change, we can't strengthen it in any way but it
+        #    does not become weaker either
+        # 3. we can safely keep all existing keys, but it's not obvious we can
+        #    gain some new ones
       }
     end
 
@@ -335,6 +341,15 @@ module Bmg
       shared = self.attrlist & right.type.attrlist
       unless shared.empty?
         raise TypeError, "Cross product incompatible — duplicate attribute(s): #{shared.join(', ')}"
+      end
+    end
+
+    def union_compatible!(other, opname)
+      if typechecked? && knows_attrlist? && other.knows_attrlist?
+        missing = self.attrlist - other.attrlist
+        raise TypeError, "#{opname} requires compatible attribute lists, but the right operand is missing the following attributes: #{missing.join(', ')}" unless missing.empty?
+        extra = other.attrlist - self.attrlist
+        raise TypeError, "#{opname} requires compatible attribute lists, but the left operand is missing the following attributes: #{extra.join(', ')}" unless extra.empty?
       end
     end
 

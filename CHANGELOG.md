@@ -1,4 +1,6 @@
-## 0.21.6
+## 0.22.0
+
+* Add the `minus` operation (also known as set difference, or EXCEPT in SQL).
 
 * A native ordering, i.e. `->(t1,t2){ ... }` like usual with `Enumerable#sort`
   is now supported in various places where ordering may be used (e.g. `page`,

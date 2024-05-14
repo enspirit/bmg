@@ -260,6 +260,7 @@ r.left_join(right, [:a, :b, ...], {...})     # left join with optional default r
 r.left_join(right, {:a => :x, ...}, {...})   # left join after right reversed renaming
 r.matching(right, [:a, :b, ...])             # semi join, aka where exists
 r.matching(right, :a => :x, :b => :y, ...)   # semi join, after right reversed renaming
+r.minus(right)                               # set difference
 r.not_matching(right, [:a, :b, ...])         # inverse semi join, aka where not exists
 r.not_matching(right, :a => :x, ...)         # inverse semi join, after right reversed renaming
 r.page([[:a, :asc], ...], 12, page_size: 10) # paging, using an explicit ordering
@@ -276,7 +277,7 @@ r.transform(:foo => :upcase, ...)            # specific-attrs tranformation
 r.transform([:to_s, :upcase])                # chain-transformation
 r.ungroup([:a, :b, ...])                     # ungroup relation-valued attributes within parent tuple
 r.ungroup(:a)                                # shortcut over ungroup([:a])
-r.union(right)                               # relational union
+r.union(right)                               # set union
 r.unwrap([:a, :b, ...])                      # merge tuple-valued attributes within parent tuple
 r.unwrap(:a)                                 # shortcut over unwrap([:a])
 r.where(predicate)                           # alias for restrict(predicate)
