@@ -191,6 +191,16 @@ module Bmg
         end
       end
 
+      def _minus(type, right)
+        if right_expr = extract_compatible_sexpr(right)
+          expr = before_use(self.expr)
+          expr = Processor::Merge.new(:except, false, right_expr, builder).call(expr)
+          _instance(type, builder, expr)
+        else
+          super
+        end
+      end
+
       # Build a new relation instance for some new type & expression
       #
       # This method can be overriden by subclasses to provide their

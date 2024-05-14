@@ -203,6 +203,16 @@ module Bmg
     end
     protected :_union
 
+    def minus(other)
+      return self if other.is_a?(Relation::Empty)
+      _minus self.type.minus(other.type), other
+    end
+
+    def _minus(type, other)
+      Operator::Minus.new(type, [self, other])
+    end
+    protected :_minus
+
     def unwrap(attrs)
       _unwrap self.type.unwrap(attrs), attrs
     end

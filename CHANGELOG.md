@@ -1,3 +1,7 @@
+## 0.21.6 - 2024-05-14
+
+* Add the `minus` operation (also known as set difference, or EXCEPT in SQL).
+
 ## 0.21.5 - 2024-04-24
 
 * Add `ttl` (Time to leave) to the available options when using the bmg-redis

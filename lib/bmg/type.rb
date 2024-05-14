@@ -287,16 +287,29 @@ module Bmg
       }
     end
 
-    def union(other)
+    def check_union_compatible(other, opname)
       if typechecked? && knows_attrlist? && other.knows_attrlist?
         missing = self.attrlist - other.attrlist
-        raise TypeError, "Union incompatible: missing right attributes #{missing.join(', ')}" unless missing.empty?
+        raise TypeError, "#{opname} requires compatible attribute lists, but the right operand is missing the following attributes: #{missing.join(', ')}" unless missing.empty?
         extra = other.attrlist - self.attrlist
-        raise TypeError, "Union incompatible: missing left attributes #{extra.join(', ')}" unless extra.empty?
+        raise TypeError, "#{opname} requires compatible attribute lists, but the left operand is missing the following attributes: #{extra.join(', ')}" unless extra.empty?
       end
+    end
+
+    def union(other)
+      check_union_compatible(other, "Union")
       dup.tap{|x|
         ### attrlist stays the same
         x.predicate = self.predicate | predicate
+        x.keys      = self._keys.union(self, x, other) if knows_keys?
+      }
+    end
+
+    def minus(other)
+      check_union_compatible(other, "Minus")
+      dup.tap{|x|
+        ### attrlist stays the same
+        x.predicate = self.predicate & predicate
         x.keys      = self._keys.union(self, x, other) if knows_keys?
       }
     end
