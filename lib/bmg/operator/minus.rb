@@ -19,23 +19,17 @@ module Bmg
 
     public
 
-      def all?
-        false 
-      end
-
       def each(&bl)
         return to_enum unless block_given?
         initial = operands[0].to_a
         tuples = operands.drop(1).inject(initial) do |agg, op|
           agg - op.to_a
         end
-        tuples.each do |t|
-          yield t
-        end
+        tuples.each(&bl)
       end
 
       def to_ast
-        [ :except ] + operands.map(&:to_ast)
+        [ :minus ] + operands.map(&:to_ast)
       end
 
     end # class Union
