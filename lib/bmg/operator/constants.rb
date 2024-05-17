@@ -64,7 +64,7 @@ module Bmg
     protected ### optimization
 
       def _page(type, ordering, page_index, options)
-        attrs = ordering.map{|(k,v)| k}
+        attrs = ordering.map{|(k,v)| k }
         cs_attrs = the_constants.keys
         if (attrs & cs_attrs).empty?
           operand
@@ -73,6 +73,8 @@ module Bmg
         else
           super
         end
+      rescue UnsupportedError
+        super
       end
 
       def _restrict(type, predicate)

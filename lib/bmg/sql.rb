@@ -3,7 +3,7 @@ module Bmg
 
   module Sql
 
-    class NotSupportedError < Bmg::Error; end
+    class NotSupportedError < Bmg::NotSupportedError; end
 
   end # module Sql
 

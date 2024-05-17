@@ -1,3 +1,4 @@
+require 'sql_helper'
 module Bmg
   module Sql
     describe Relation do
@@ -32,6 +33,19 @@ module Bmg
           expect(r).to be_a(Operator::Extend)
           expect(r.send(:extension)).to eql(:pid => l)
           expect(operand(r).to_sql).to eql(%Q{SELECT DISTINCT "t1"."id", "t1"."id" AS "sid" FROM "suppliers" AS "t1"})
+        end
+      end
+
+      context '.page' do
+        it 'compiles to expected SQL' do
+          r = suppliers.page([[:id, :desc]], 1, page_size: 2)
+          expect(r.to_sql).to eql(%Q{SELECT "t1".* FROM "suppliers" AS "t1" ORDER BY "t1"."id" DESC LIMIT 2 OFFSET 0})
+        end
+
+        it 'returns a Page if not translatable to SQL' do
+          ordering = ->(t1,t2){ t1[:id] <=> t2[:id] }
+          r = suppliers.page(ordering, 1, page_size: 2)
+          expect(r).to be_a(Bmg::Operator::Page)
         end
       end
 

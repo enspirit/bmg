@@ -19,4 +19,8 @@ module Bmg
   # Raised when an operator is badly used
   class MisuseError < Error; end
 
+  # Raised when some compilation is not supported, as an indicator
+  # to backtrack to something more ruby-native.
+  class NotSupportedError < Error; end
+
 end

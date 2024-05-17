@@ -131,7 +131,7 @@ module Bmg
         else
           super
         end
-      rescue UnknownAttributesError
+      rescue UnsupportedError, UnknownAttributesError
         super
       end
 

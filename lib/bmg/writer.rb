@@ -16,7 +16,7 @@ module Bmg
       if ordering = output_preferences.tuple_ordering
         relation
           .to_a
-          .sort{|t1,t2| ordering.compare_attrs(t1, t2) }
+          .sort{|t1,t2| ordering.call(t1, t2) }
           .each_with_index(&bl)
       else
         relation.each_with_index(&bl)

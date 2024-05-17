@@ -76,6 +76,8 @@ module Bmg
           v.nil? ? rr[k] || k : [rr[k] || k, v]
         }
         operand.page(ordering, page_index, options).rename(renaming)
+      rescue UnsupportedError
+        super
       end
 
       def _restrict(type, predicate)

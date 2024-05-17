@@ -195,6 +195,8 @@ module Bmg
             .page(ordering, page_index, opts)
             .image(right, as, on, options)
         end
+      rescue UnsupportedError
+        super
       end
 
       def _project(type, attrlist)

@@ -1,3 +1,11 @@
+## 0.21.6
+
+* A native ordering, i.e. `->(t1,t2){ ... }` like usual with `Enumerable#sort`
+  is now supported in various places where ordering may be used (e.g. `page`,
+  `image`'s array option, `output_preferences`). This allows the use of complex
+  ordering implemented in pure ruby, but most of the time prevents optimization
+  and/or SQL compilation and backtracking to ruby native implementation instead.
+
 ## 0.21.5 - 2024-04-24
 
 * Add `ttl` (Time to leave) to the available options when using the bmg-redis

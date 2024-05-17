@@ -157,7 +157,7 @@ module Bmg
       builder :group_by_clause
 
       def order_by_clause(ordering, &desaliaser)
-        ordering.to_a.map{|(name,direction)|
+        ordering.map{|(name,direction)|
           name = name.to_s
           name = (desaliaser && desaliaser[name]) || column_name(name)
           [:order_by_term, name, direction ? direction.to_s : "asc"]

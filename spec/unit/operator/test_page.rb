@@ -87,6 +87,33 @@ module Bmg
         end
       end
 
+      context 'with an ordering ala ruby' do
+        let(:ordering) {
+          ->(t1,t2){ t2[:a] <=> t1[:a] }
+        }
+
+        context 'with the first page' do
+          let(:page_index){ 1 }
+
+          it 'works' do
+            expect(subject.to_a).to eql([
+              { a: 99, b: 1 },
+              { a: 98, b: 2 }
+            ])
+          end
+        end
+
+        context 'with the second page' do
+          let(:page_index){ 2 }
+
+          it 'works' do
+            expect(subject.to_a).to eql([
+              { a: 97, b: 3 },
+              { a: 96, b: 4 }
+            ])
+          end
+        end
+      end
     end
   end
 end

@@ -133,6 +133,8 @@ module Bmg
         else
           super
         end
+      rescue UnsupportedError
+        super
       end
 
       def _project(type, attrlist)

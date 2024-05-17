@@ -120,12 +120,15 @@ module Bmg
       end
 
       def _page(type, ordering, page_index, options)
+        pairs = Ordering.new(ordering).to_pairs
         limit  = options[:page_size] || Operator::Page::DEFAULT_OPTIONS[:page_size]
         offset = (page_index - 1) * limit
         expr = before_use(self.expr)
-        expr = Processor::OrderBy.new(ordering, builder).call(expr)
+        expr = Processor::OrderBy.new(pairs, builder).call(expr)
         expr = Processor::LimitOffset.new(limit, offset, builder).call(expr)
         _instance(type, builder, expr)
+      rescue Bmg::NotSupportedError
+        super
       end
 
       def _project(type, attrlist)
