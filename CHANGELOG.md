@@ -1,4 +1,4 @@
-## 0.22.0
+## 0.22.0 - 2024-05-17
 
 * Add the `minus` operation (also known as set difference, or EXCEPT in SQL).
 
