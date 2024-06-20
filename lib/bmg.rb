@@ -24,6 +24,16 @@ module Bmg
   end
   module_function :csv
 
+  def json(path, options = {}, type = Type::ANY)
+    in_memory(path.load.map{|tuple| TupleAlgebra.symbolize_keys(tuple) })
+  end
+  module_function :json
+
+  def yaml(path, options = {}, type = Type::ANY)
+    in_memory(path.load.map{|tuple| TupleAlgebra.symbolize_keys(tuple) })
+  end
+  module_function :yaml
+
   def excel(path, options = {}, type = Type::ANY)
     Reader::Excel.new(type, path, options).spied(main_spy)
   end
@@ -56,6 +66,8 @@ module Bmg
   require_relative 'bmg/relation/spied'
   require_relative 'bmg/relation/materialized'
   require_relative 'bmg/relation/proxy'
+
+  require_relative 'bmg/database'
 
   # Deprecated
   Leaf = Relation::InMemory

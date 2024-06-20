@@ -7,14 +7,27 @@ module Bmg
       }
 
       def initialize(xlsx_options, output_preferences = nil)
+        require 'write_xlsx'
         @xlsx_options = DEFAULT_OPTIONS.merge(xlsx_options)
         @output_preferences = OutputPreferences.dress(output_preferences)
       end
       attr_reader :xlsx_options, :output_preferences
 
       def call(relation, path)
-        require 'write_xlsx'
         dup._call(relation, path)
+      end
+
+      def self.to_xlsx(database, path)
+        require 'write_xlsx'
+        workbook = WriteXLSX.new(path)
+        database.each_relation_pair do |name, rel|
+          worksheet = workbook.add_worksheet(name)
+          rel.to_xlsx({
+            workbook: workbook,
+            worksheet: worksheet,
+          })
+        end
+        workbook.close
       end
 
     protected
@@ -23,6 +36,7 @@ module Bmg
       def _call(relation, path)
         @workbook = xlsx_options[:workbook] || WriteXLSX.new(path)
         @worksheet = xlsx_options[:worksheet] || workbook.add_worksheet
+        @worksheet = workbook.add_worksheet(@worksheet) if @worksheet.is_a?(String)
 
         headers = infer_headers(relation.type)
         before = nil

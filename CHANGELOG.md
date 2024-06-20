@@ -1,3 +1,13 @@
+## 0.23.0
+
+* Add `Bmg.json` and `Bmg.yaml` factory methods, to get relations on top of
+  usual data files.
+
+* Add a `Database` abstraction, with `Database.data_folder`, `Database.sequel`
+  and `Database.xlsx` factory methods and implementations, as well as
+  `Database#to_data_folder` and `Database#to_xlsx` dump methods.
+  See README for details.
+
 ## 0.22.0 - 2024-05-17
 
 * Add the `minus` operation (also known as set difference, or EXCEPT in SQL).

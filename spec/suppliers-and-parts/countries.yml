@@ -1,0 +1,7 @@
+---
+- iso: UK
+  name: United Kingdom
+- iso: FR
+  name: France
+- iso: BE
+  name: Belgium
