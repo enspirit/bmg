@@ -23,4 +23,7 @@ module Bmg
   # to backtrack to something more ruby-native.
   class NotSupportedError < Error; end
 
+  # Raised when relation (variable) is not found
+  class NotSuchRelationError < Error; end
+
 end

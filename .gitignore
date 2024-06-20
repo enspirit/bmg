@@ -5,3 +5,5 @@ Gemfile.lock
 /spec/regression/**/*.db
 /spec/unit/writer/result.xlsx
 .world
+.ruby-version
+.DS_Store

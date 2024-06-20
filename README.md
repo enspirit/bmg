@@ -15,9 +15,10 @@ further down this README.
 * [Where are base relations coming from?](#where-are-base-relations-coming-from)
   * [Memory relations](#memory-relations)
   * [Connecting to SQL databases](#connecting-to-sql-databases)
-  * [Reading files (csv, Excel, text)](#reading-files-csv-excel-text)
+  * [Reading data files](#reading-data-files-json-csv-yaml-text-xls--xlsx)
   * [Connecting to Redis databases](#connecting-to-redis-databases)
   * [Your own relations](#your-own-relations)
+* [The Database abstraction](#the-database-abstraction)
 * [List of supported operators](#supported-operators)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
@@ -117,10 +118,26 @@ Bmg.sequel(:suppliers, sequel_db)
 #   {:array=>false})
 ```
 
-### Reading files (csv, Excel, text)
+### Reading data files (json, csv, yaml, text, xls & xlsx)
 
 Bmg provides simple adapters to read files and reach Relationland as soon as
 possible.
+
+#### JSON files
+
+```ruby
+r = Bmg.json("path/to/a/file.json")
+```
+
+The json file is expected to contain tuples of same heading.
+
+#### YAML files
+
+```ruby
+r = Bmg.yaml("path/to/a/file.yaml")
+```
+
+The yaml file is expected to contain tuples of same heading.
 
 #### CSV files
 
@@ -131,19 +148,6 @@ r = Bmg.csv("path/to/a/file.csv", csv_options)
 
 Options are directly transmitted to `::CSV.new`, check Ruby's standard
 library.
-
-#### Excel files
-
-You will need to add [`roo`](https://github.com/roo-rb/roo) to your Gemfile to
-read `.xls` and `.xlsx` files with Bmg.
-
-```ruby
-roo_options = { skip: 1 }
-r = Bmg.excel("path/to/a/file.xls", roo_options)
-```
-
-Options are directly transmitted to `Roo::Spreadsheet.open`, check roo's
-documentation.
 
 #### Text files
 
@@ -172,6 +176,19 @@ r.type.attrlist
 
 In this scenario, non matching lines are skipped. The `:line` attribute keeps
 being used to have at least one candidate key (so to speak).
+
+#### Excel files
+
+You will need to add [`roo`](https://github.com/roo-rb/roo) to your Gemfile to
+read `.xls` and `.xlsx` files with Bmg.
+
+```ruby
+roo_options = { skip: 1 }
+r = Bmg.excel("path/to/a/file.xls", roo_options)
+```
+
+Options are directly transmitted to `Roo::Spreadsheet.open`, check roo's
+documentation.
 
 ### Connecting to Redis databases
 
@@ -239,6 +256,52 @@ restrictions down the tree) by overriding the underscored version of operators
 
 Have a look at `Bmg::Algebra` for the protocol and `Bmg::Sql::Relation` for an
 example. Keep in touch with the team if you need some help.
+
+## The Database abstraction
+
+The previous section focused on obtaining *relations*. In pratice you frequently have a collection of related relations hence a *database*:
+
+* A SQL database with multiple tables
+* A list of data files, all in the same folder
+* An excel file with various sheets
+
+Bmg supports a simple Datbabase abstraction that serves those relations "by name", in a simple way. A database can also be easily dumped back to a data folder of json or csv files, or as a simple xlsx files with multiple sheets.
+
+### Connecting to a SQL Database
+
+For a SQL database, connected with Sequel:
+
+```
+db = Bmg::Database.sequel(Sequel.connect('...'))
+db.suppliers # yields a Bmg::Relation over the `suppliers` table
+```
+
+### Connecting to data files in the same folder
+
+Data files all in the same folder can be seen as a very basic form of database,
+and served as such. Bmg supports `json`, `csv` and `yaml` files in this mode:
+
+```
+db = Bmg::Database.data_folder('./my-database')
+db.suppliers # yields a Bmg::Relation over the `suppliers.(json,csv,yml)` file
+```
+
+### Dumping a Database instance
+
+As a data folder:
+
+```
+db = Bmg::Database.sequel(Sequel.connect('...'))
+db.to_data_folder('path/to/folder', 'json')
+```
+
+As an .xlsx file (any existing file will be erased, we don't support modifying
+existing files):
+
+```
+require 'bmg/xlsx'
+db.to_xlsx('path/to/file.xlsx')
+```
 
 ## Supported operators
 
