@@ -8,6 +8,9 @@
   `Database#to_data_folder` and `Database#to_xlsx` dump methods.
   See README for details.
 
+* Add `Summarizer.bucketize` to distribute attribute values in a number of
+  buckets. We support :boundaries, :value_length and :distinct options.
+
 ## 0.22.0 - 2024-05-17
 
 * Add the `minus` operation (also known as set difference, or EXCEPT in SQL).

@@ -21,7 +21,7 @@ module Bmg
       end
 
       # Concatenates current memo with val.to_s
-      def _happens(memo, val) 
+      def _happens(memo, val)
         memo << options[:between].to_s unless memo.empty?
         memo << val.to_s
       end
