@@ -21,6 +21,7 @@ further down this README.
 * [The Database abstraction](#the-database-abstraction)
 * [List of supported operators](#supported-operators)
 * [List of supported predicates](#supported-predicates)
+* [List of supported summaries](#supported-summaries)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
   * [... from Alf](#-from-alf)
@@ -376,6 +377,45 @@ complete list.
 Note: predicates that implement specific Ruby algorithms or patterns are
 not compiled to SQL (and more generally not delegated to underlying database
 servers).
+
+## Supported Summaries
+
+The `summarize` operator receives a list of `attr: summarizer` pairs, e.g.
+
+```ruby
+r.summarize([:city], {
+  how_many: :count,        # same as how_many: Bmg::Summarizer.count
+  status: :max,            # same as   status: Bmg::Summarizer.max(:status)
+  min_status: Bmg::Summarizer.min(:status)
+})
+```
+
+The following summarizers are available and translated to SQL:
+
+```ruby
+Bmg::Summarizer.count                      # count the number of tuples
+Bmg::Summarizer.distinct(:a)               # collect distinct values (as an array)
+Bmg::Summarizer.distinct_count(:a)         # count of distinct values
+Bmg::Summarizer.min(:a)                    # min value for attribute :a
+Bmg::Summarizer.max(:a)                    # max value
+Bmg::Summarizer.sum(:a)                    # sum :a's values
+Bmg::Summarizer.avg(:a)                    # average
+```
+
+The following summarizers are implemented in Ruby (they are supported when
+querying SQL databases, but not compiled to SQL):
+
+```ruby
+Bmg::Summarizer.collect(:a)                # collect :a's values (as an array)
+Bmg::Summarizer.concat(:a, opts: { ... })  # concat :a's values (opts, e.g. {between: ','})
+Bmg::Summarizer.first(:a, order: ...)      # smallest seen a:'s value according to a tuple ordering
+Bmg::Summarizer.last(:a, order: ...)       # largest seen a:'s value according to a tuple ordering
+Bmg::Summarizer.variance(:a)               # variance
+Bmg::Summarizer.stddev(:a)                 # standard deviation
+Bmg::Summarizer.percentile(:a, nth)        # (continuous) nth percentile
+Bmg::Summarizer.percentile_disc(:a, nth)   # discrete nth percentile
+Bmg::Summarizer.value_by(:a, :by => :b)    # { :b => :a } as a Hash
+```
 
 ## How is this different?
 

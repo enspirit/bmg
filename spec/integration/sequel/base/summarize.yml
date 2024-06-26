@@ -131,3 +131,11 @@
       count(DISTINCT `t1`.`qty`) AS 'qty'
     FROM
       `supplies` AS 't1'
+- bmg: |-
+    supplies
+      .summarize([], :count => Bmg::Summarizer.distinct_count(:qty))
+  sqlite: |-
+    SELECT
+      count(DISTINCT `t1`.`qty`) AS 'count'
+    FROM
+      `supplies` AS 't1'
