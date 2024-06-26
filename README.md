@@ -20,6 +20,7 @@ further down this README.
   * [Your own relations](#your-own-relations)
 * [The Database abstraction](#the-database-abstraction)
 * [List of supported operators](#supported-operators)
+* [List of supported predicates](#supported-predicates)
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
   * [... from Alf](#-from-alf)
@@ -353,6 +354,28 @@ r.unwrap([:a, :b, ...])                      # merge tuple-valued attributes wit
 r.unwrap(:a)                                 # shortcut over unwrap([:a])
 r.where(predicate)                           # alias for restrict(predicate)
 ```
+
+## Supported Predicates
+
+Usual operators are supported and map to their SQL equivalent as expected:
+
+```ruby
+Predicate.eq                                 # =
+Predicate.neq                                # <>
+Predicate.lt                                 # <
+Predicate.lte                                # <=
+Predicate.gt                                 # >
+Predicate.gte                                # >=
+Predicate.in                                 # SQL's IN
+Predicate.is_null                            # SQL's IS NULL
+```
+
+See the [Predicate gem](https://github.com/enspirit/predicate) for a more
+complete list.
+
+Note: predicates that implement specific Ruby algorithms or patterns are
+not compiled to SQL (and more generally not delegated to underlying database
+servers).
 
 ## How is this different?
 
