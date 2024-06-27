@@ -1,4 +1,4 @@
-## 0.23.1
+## 0.23.1 - 2024-06-27
 
 * Optimize `summarize.restrict`. Push whatever can be pushed down the
   tree.
