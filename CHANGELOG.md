@@ -1,4 +1,4 @@
-## 0.23.0
+## 0.23.0 - 2024-06-27
 
 * Add `Bmg.json` and `Bmg.yaml` factory methods, to get relations on top of
   usual data files.
