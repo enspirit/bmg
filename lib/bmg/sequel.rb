@@ -1,3 +1,4 @@
+require 'bmg'
 require 'bmg/sql'
 require 'sequel'
 require 'predicate/sequel'

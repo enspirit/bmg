@@ -11,6 +11,8 @@
 * Add `Summarizer.bucketize` to distribute attribute values in a number of
   buckets. We support :boundaries, :value_length and :distinct options.
 
+* `require 'bmg/sequel` automatically requires `bmg` itself.
+
 ## 0.22.0 - 2024-05-17
 
 * Add the `minus` operation (also known as set difference, or EXCEPT in SQL).
