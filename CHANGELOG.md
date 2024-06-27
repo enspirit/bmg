@@ -1,3 +1,8 @@
+## 0.23.1
+
+* Optimize `summarize.restrict`. Push whatever can be pushed down the
+  tree.
+
 ## 0.23.0 - 2024-06-27
 
 * Add `Bmg.json` and `Bmg.yaml` factory methods, to get relations on top of

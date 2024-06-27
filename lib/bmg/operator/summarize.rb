@@ -20,6 +20,26 @@ module Bmg
 
       attr_reader :by, :summarization
 
+    protected # optimization
+
+      def _restrict(type, predicate)
+        return super unless type.knows_attrlist?
+
+        # bottom only uses attributes of the `by` list
+        # and can be pushed down the tree
+        summaries = type.attrlist - by
+        top, bottom = predicate.and_split(summaries)
+        if top == predicate
+          super
+        else
+          op = operand
+          op = op.restrict(bottom)
+          op = op.summarize(by, summarization)
+          op = op.restrict(top)
+          op
+        end
+      end
+
     public
 
       def each
