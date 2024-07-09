@@ -80,6 +80,24 @@ module Bmg
         end
       end
 
+      context 'when used with a Callable' do
+        let(:arg){
+          Object.new.tap{|o|
+            def o.call(v)
+              12
+            end
+          }
+        }
+
+        it 'works' do
+          expect(subject).to eql({
+            foo: 12,
+            bar: 12,
+            baz: 12
+          })
+        end
+      end
+
       context 'when used with a Hash with various transformers' do
         let(:arg){{
           :foo => :to_s,

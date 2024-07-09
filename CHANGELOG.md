@@ -1,3 +1,9 @@
+## 0.23.2
+
+* `transform` (`TupleTransformer`, actually) now support any Callable
+  (`respond_to?(:call)`) object. This allows using Enspirit's monolens
+  for instance.
+
 ## 0.23.1 - 2024-06-27
 
 * Optimize `summarize.restrict`. Push whatever can be pushed down the

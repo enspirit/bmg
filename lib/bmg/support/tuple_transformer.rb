@@ -1,6 +1,8 @@
 module Bmg
   class TupleTransformer
 
+    Callable = ->(t) { t.respond_to?(:call) }
+
     def initialize(transformation)
       @transformation = transformation
     end
@@ -26,7 +28,7 @@ module Bmg
 
       def transform_tuple(tuple, with)
         case with
-        when Symbol, Proc, Regexp
+        when Symbol, Proc, Regexp, Callable
           tuple.each_with_object({}){|(k,v),dup|
             dup[k] = transform_attr(v, with)
           }
@@ -72,7 +74,7 @@ module Bmg
           else
             raise ArgumentError, "#{with} should respond to `parse`"
           end
-        when Proc
+        when Proc, Callable
           with.call(value)
         when Hash
           with[value]
