@@ -1,4 +1,4 @@
-## 0.23.2
+## 0.23.2 - 2024-07-09
 
 * `transform` (`TupleTransformer`, actually) now support any Callable
   (`respond_to?(:call)`) object. This allows using Enspirit's monolens
