@@ -17,6 +17,11 @@ module Bmg
         expect(o.send(:to_a)).to eql([[:name, :asc],[:id, :asc]])
       end
 
+      it 'supports a strange mix (for backward compat reasons)' do
+        o = Ordering.new([:name, [:id, :desc]])
+        expect(o.send(:to_a)).to eql([[:name, :asc],[:id, :desc]])
+      end
+
       it 'supports a comparator' do
         comparator = ->(t1,t2){ 1 }
         o = Ordering.new(comparator)

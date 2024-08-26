@@ -45,10 +45,8 @@ module Bmg
       def initialize(attrs)
         @attrs = if attrs.empty?
           []
-        elsif attrs.first.is_a?(Symbol)
-          attrs.map{|a| [a, :asc] }
         else
-          attrs
+          attrs.map{|a| a.is_a?(Symbol) ? [a, :asc] : a }
         end
       end
       attr_reader :attrs

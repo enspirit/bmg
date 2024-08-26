@@ -1,3 +1,8 @@
+## 0.23.3
+
+* Fix usage of ordering strange mixes, such as `[:name, [:age, :desc]]`
+  that were supported until 0.22.0
+
 ## 0.23.2 - 2024-07-09
 
 * `transform` (`TupleTransformer`, actually) now support any Callable
