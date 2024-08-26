@@ -8,7 +8,7 @@ package: bundle
 
 tests: bundle
 	bundle exec rake test
-	cd contrib/bmg-redis && docker-compose up -d && bundle exec rake test && docker-compose down
+	cd contrib/bmg-redis && docker compose up -d && bundle exec rake test && docker compose down
 
 gem.push:
 	ls pkg/bmg-*.gem | xargs gem push
