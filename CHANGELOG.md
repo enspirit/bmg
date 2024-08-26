@@ -1,4 +1,4 @@
-## 0.23.3
+## 0.23.3 - 2024-08-26
 
 * Fix usage of ordering strange mixes, such as `[:name, [:age, :desc]]`
   that were supported until 0.22.0
