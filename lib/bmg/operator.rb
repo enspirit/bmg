@@ -17,15 +17,20 @@ module Bmg
 
     def inspect
       str = "(#{self.class.name.split('::').last.downcase}\n"
-      str << operands.map{|op| op.inspect.gsub(/^/m, "  ") }.join("\n")
-      str << "\n"
-      str << args.map{|a| a.inspect.gsub(/^/m, "  ") }.join("\n")
+      unless operands.empty?
+        str << operands.map{|op| op.inspect.gsub(/^/m, "  ") }.join("\n")
+        str << "\n"
+      end
+      unless args.empty?
+        str << args.map{|a| a.inspect.gsub(/^/m, "  ") }.join("\n")
+      end
       str << ")"
       str
     end
 
   end # module Operator
 end # module Bmg
+require_relative 'operator/shared/zeroary'
 require_relative 'operator/shared/unary'
 require_relative 'operator/shared/binary'
 require_relative 'operator/shared/nary'
@@ -51,3 +56,5 @@ require_relative 'operator/transform'
 require_relative 'operator/ungroup'
 require_relative 'operator/union'
 require_relative 'operator/unwrap'
+
+require_relative 'operator/generator'

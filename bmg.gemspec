@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "write_xlsx", "~> 1.0"
   s.add_development_dependency "sequel"
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "activesupport"
 end

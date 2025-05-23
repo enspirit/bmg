@@ -22,6 +22,7 @@ further down this README.
   * [Connecting to SQL databases](#connecting-to-sql-databases)
   * [Reading data files](#reading-data-files-json-csv-yaml-text-xls--xlsx)
   * [Connecting to Redis databases](#connecting-to-redis-databases)
+  * [The Generator](#the-generator)
   * [Your own relations](#your-own-relations)
 * [The Database abstraction](#the-database-abstraction)
 * [List of supported operators](#supported-operators)
@@ -237,6 +238,42 @@ and is optional.
 
 The redis relvars support basic algorithms for insert/update/delete.
 No optimization is currently supported.
+
+### The Generator
+
+Somewhat similar to PostgreSQL's `generate_series`, Bmg supports the generation
+of relations. Unlike PostgreSQL though, the result is a Relation that can be
+"chained" as any other relation, not a sequence of scalars :
+
+```ruby
+r = Bmg
+  .generate(1, 10, :step => 2, :as => :index)
+  .restrict(:index => 5)
+```
+
+If you don't specify the `:as` option, the attribute name will be `:i`.
+
+The step can be negative :
+
+```ruby
+Bmg.generate(10, 1, :step => -2, :as => :index)
+```
+
+The step can also be computed :
+
+```ruby
+Bmg.generate(1, 100, :step => ->(current){ current * 2 })
+```
+
+Last but not least, you can use any ordinal data type. For instance, the
+following code will work and generate all months from May to December 2025
+(under the assumption that ActiveRecord's `next_month` is available).
+
+```ruby
+min = Date.new(2025,5,1)
+max = Date.new(2025,12,1)
+Bmg.generate(min, max, :step => ->(current){ current.next_month })
+```
 
 ### Your own relations
 

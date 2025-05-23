@@ -1,3 +1,8 @@
+## 0.23.4 - 2025-05-23
+
+* Add Bmg::Relation.generate(from, to, :step => step) that somehow mimics
+  PostgreSQL's generate_series.
+
 ## 0.23.3 - 2024-08-26
 
 * Fix usage of ordering strange mixes, such as `[:name, [:age, :desc]]`

@@ -39,6 +39,11 @@ module Bmg
   end
   module_function :excel
 
+  def generate(*args, &bl)
+    Bmg::Relation.generate(*args, &bl)
+  end
+  module_function :generate
+
   def main_spy
     @main_spy
   end

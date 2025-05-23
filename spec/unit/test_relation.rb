@@ -16,6 +16,20 @@ module Bmg
 
     end
 
+    describe 'generate' do
+      subject {
+        Relation.generate(1, 5, step: 2)
+      }
+
+      it 'works as expected' do
+        expect(subject.to_a).to eql([
+          { i: 1 },
+          { i: 3 },
+          { i: 5 },
+        ])
+      end
+    end
+
     describe 'one' do
 
       it "returns the only tuple of a singleton" do

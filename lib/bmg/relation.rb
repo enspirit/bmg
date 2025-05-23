@@ -13,6 +13,11 @@ module Bmg
       Relation::Empty.new(type)
     end
 
+    def self.generate(from, to, options = {})
+      type = Type::ANY.with_attrlist([options[:as] || Operator::Generator::DEFAULT_OPTIONS[:as]])
+      Operator::Generator.new(type, from, to, options)
+    end
+
     def bind(binding)
       self
     end
