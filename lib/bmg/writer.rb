@@ -25,4 +25,5 @@ module Bmg
 
   end # module Writer
 end # module Bmg
+require_relative 'writer/text'
 require_relative 'writer/csv'

@@ -4,6 +4,9 @@
   Relation. Those methods are simply better named this way than json, yaml
   or csv.
 
+* Add Relation#to_text (migrated from Alf) that generates beautiful ASCII
+  tables.
+
 ## 0.23.4 - 2025-05-23
 
 * Add Bmg::Relation.generate(from, to, :step => step) that somehow mimics
