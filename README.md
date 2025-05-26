@@ -390,6 +390,7 @@ r.transform(:to_s)                           # all-attrs transformation
 r.transform(&:to_s)                          # similar, but Proc-driven
 r.transform(:foo => :upcase, ...)            # specific-attrs tranformation
 r.transform([:to_s, :upcase])                # chain-transformation
+r.undress()                                  # convert all values to a scalar (number, string, bool, object, array)
 r.ungroup([:a, :b, ...])                     # ungroup relation-valued attributes within parent tuple
 r.ungroup(:a)                                # shortcut over ungroup([:a])
 r.union(right)                               # set union

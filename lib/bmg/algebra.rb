@@ -184,6 +184,15 @@ module Bmg
     end
     protected :_transform
 
+    def undress(options = {})
+      _undress self.type.undress(options), options
+    end
+
+    def _undress(type, options)
+      Operator::Undress.new(type, self, options)
+    end
+    protected :_undress
+
     def ungroup(attrs)
       _ungroup self.type.ungroup(attrs), attrs
     end

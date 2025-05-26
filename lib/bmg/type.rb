@@ -201,6 +201,17 @@ module Bmg
       self
     end
 
+    def minus(other)
+      union_compatible!(other, "Minus")
+      dup.tap{|x|
+        # 1. attributes do not change
+        # 2. predicate does not change, we can't strengthen it in any way but it
+        #    does not become weaker either
+        # 3. we can safely keep all existing keys, but it's not obvious we can
+        #    gain some new ones
+      }
+    end
+
     def not_matching(right, on)
       join_compatible!(right, on) if typechecked? && knows_attrlist?
       self
@@ -278,6 +289,12 @@ module Bmg
       }
     end
 
+    def undress(options)
+      dup.tap{|x|
+        x.predicate = Predicate.tautology
+      }
+    end
+
     def ungroup(attrlist)
       known_attributes!(attrlist) if typechecked? && knows_attrlist?
       dup.tap{|x|
@@ -293,17 +310,6 @@ module Bmg
         ### attrlist stays the same
         x.predicate = self.predicate | predicate
         x.keys      = self._keys.union(self, x, other) if knows_keys?
-      }
-    end
-
-    def minus(other)
-      union_compatible!(other, "Minus")
-      dup.tap{|x|
-        # 1. attributes do not change
-        # 2. predicate does not change, we can't strengthen it in any way but it
-        #    does not become weaker either
-        # 3. we can safely keep all existing keys, but it's not obvious we can
-        #    gain some new ones
       }
     end
 
