@@ -2,20 +2,11 @@ module Bmg
   module Relation
     include Enumerable
     include Algebra
+    extend Factory
 
     def self.new(operand, type = Type::ANY)
       raise ArgumentError, "Missing type" if type.nil?
       operand.is_a?(Relation) ? operand : Bmg.in_memory(operand, type)
-    end
-
-    def self.empty(type = Type::ANY)
-      raise ArgumentError, "Missing type" if type.nil?
-      Relation::Empty.new(type)
-    end
-
-    def self.generate(from, to, options = {})
-      type = Type::ANY.with_attrlist([options[:as] || Operator::Generator::DEFAULT_OPTIONS[:as]])
-      Operator::Generator.new(type, from, to, options)
     end
 
     def bind(binding)

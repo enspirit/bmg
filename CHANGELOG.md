@@ -1,3 +1,9 @@
+## 0.23.5
+
+* Introduced Bmg#json_file, #yaml_file and #csv_file, also available on
+  Relation. Those methods are simply better named this way than json, yaml
+  or csv.
+
 ## 0.23.4 - 2025-05-23
 
 * Add Bmg::Relation.generate(from, to, :step => step) that somehow mimics
