@@ -7,6 +7,9 @@
 * Add Relation#to_text (migrated from Alf) that generates beautiful ASCII
   tables.
 
+* Add Type.for_heading and make sure Relation#transform can take it into
+  account for coercing relation data.
+
 ## 0.23.4 - 2025-05-23
 
 * Add Bmg::Relation.generate(from, to, :step => step) that somehow mimics
