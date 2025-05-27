@@ -9,6 +9,10 @@ module Bmg
 
     ANY = Type.new
 
+    def self.for_heading(heading)
+      Type.new.with_heading(heading)
+    end
+
   public ## type checking
 
     attr_writer :typechecked
@@ -39,6 +43,22 @@ module Bmg
       dup.tap{|x|
         x.predicate = predicate
       }
+    end
+
+  public ## heading
+
+    attr_accessor :heading
+    protected :heading=
+
+    def with_heading(heading)
+      dup.tap{|x|
+        x.heading = heading
+        x.attrlist = heading.keys
+      }
+    end
+
+    def knows_types?
+      !@heading.nil?
     end
 
   public ## attrlist

@@ -39,6 +39,20 @@ module Bmg
       expect(type.keys).to eq([[:id]])
     end
 
+    it 'lets specifying a heading with with_heading' do
+      type = any.with_heading(id: Integer, name: String)
+      expect(type).to be_a(Type)
+      expect(type.knows_attrlist?).to be(true)
+      expect(type.to_attrlist).to eql([:id, :name])
+    end
+
+    it 'lets building from an heading' do
+      type = Type.for_heading(id: Integer, name: String)
+      expect(type).to be_a(Type)
+      expect(type.knows_attrlist?).to be(true)
+      expect(type.to_attrlist).to eql([:id, :name])
+    end
+
     describe 'allbut' do
 
       it 'reduces the attrlist when known' do

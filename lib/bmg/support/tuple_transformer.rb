@@ -49,6 +49,11 @@ module Bmg
           with.inject(tuple){|dup,on|
             transform_tuple(dup, on)
           }
+        when Type
+          unless with.knows_types?
+            raise ArgumentError, "Heading must specify the attribute types`"
+          end
+          transform_tuple(tuple, with.heading)
         else
           raise ArgumentError, "Unexpected transformation `#{with.inspect}`"
         end
@@ -78,6 +83,18 @@ module Bmg
           with.call(value)
         when Hash
           with[value]
+        when Type
+          unless with.knows_types?
+            raise ArgumentError, "Heading must specify the attribute types`"
+          end
+          case value
+          when Hash
+            transform_tuple(value, with.heading)
+          when Enumerable
+            Relation.new(value.map{|t| transform_tuple(t, with.heading) })
+          else
+            raise ArgumentError, "Unexpected value `#{value.inspect}`"
+          end
         else
           raise ArgumentError, "Unexpected transformation `#{with.inspect}`"
         end
