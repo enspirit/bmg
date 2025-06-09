@@ -167,7 +167,8 @@ module Bmg
       def _transform(type, transformation, options)
         expr = before_use(self.expr)
         sup, unsup = Processor::Transform.split_supported(transformation){|x|
-          [String, Integer, Float, Date, DateTime].include?(x)
+          [String, Integer, Float, Date, DateTime].include?(x) || \
+          x.respond_to?(:to_sql_ast)
         }
         return super if sup.nil?
         expr = Processor::Transform.new(sup, options, builder).call(expr)
