@@ -1,4 +1,4 @@
-## 0.23.5
+## 0.23.5 - 2025-09-29
 
 * Introduced Bmg#json_file, #yaml_file and #csv_file, also available on
   Relation. Those methods are simply better named this way than json, yaml
