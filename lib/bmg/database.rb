@@ -24,11 +24,16 @@ module Bmg
     end
 
     def to_data_folder(*args)
+      require_relative 'database/data_folder'
       DataFolder.dump(self, *args)
     end
 
     def each_relation_pair
       raise NotImplementedError
+    end
+
+    def output_preferences_for(name)
+      nil
     end
 
   end # class Database

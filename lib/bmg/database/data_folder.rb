@@ -3,7 +3,8 @@ module Bmg
     class DataFolder < Database
 
       DEFAULT_OPTIONS = {
-        data_extensions: ['json', 'yml', 'yaml', 'csv']
+        data_extensions: ['json', 'yml', 'yaml', 'csv'],
+        relname_from_file: ->(file) { file.basename.rm_ext.to_sym },
       }
 
       def initialize(folder, options = {})
@@ -25,7 +26,7 @@ module Bmg
           next unless @options[:data_extensions].find {|ext|
             path.ext == ".#{ext}" || path.ext == ext
           }
-          yield(path.basename.rm_ext.to_sym, read_file(path))
+          yield(@options[:relname_from_file].call(path), read_file(path))
         end
       end
 
@@ -33,7 +34,11 @@ module Bmg
         path = Path(path)
         path.mkdir_p
         database.each_relation_pair do |name, rel|
-          (path/"#{name}.#{ext}").write(rel.public_send(:"to_#{ext}"))
+          if ext === :json
+            (path/"#{name}.#{ext}").write(JSON.pretty_generate(rel))
+          else
+            (path/"#{name}.#{ext}").write(rel.public_send(:"to_#{ext}"))
+          end
         end
         path
       end
@@ -56,8 +61,8 @@ module Bmg
       def find_file(name)
         exts = @options[:data_extensions]
         exts.each do |ext|
-          target = @folder/"#{name}.#{ext}"
-          return target if target.file?
+          target = @folder.glob("*#{name}.#{ext}")
+          return target.first if target&.first&.file?
         end
         raise NotSuchRelationError, "#{@folder}/#{name}.#{exts.join(',')}"
       end

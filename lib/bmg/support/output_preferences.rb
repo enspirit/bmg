@@ -4,6 +4,7 @@ module Bmg
     DEFAULT_PREFS = {
       attributes_ordering: nil,
       tuple_ordering: nil,
+      grouping_attributes: nil,
       extra_attributes: :after
     }
 
@@ -36,14 +37,20 @@ module Bmg
       options[:grouping_attributes]
     end
 
+    def grouping_character
+      options[:grouping_character]
+    end
+
     def erase_redundance_in_group(before, current)
       return [nil, current] unless ga = grouping_attributes
       return [current, current] unless before
 
       new_before, new_current = current.dup, current.dup
       ga.each do |attr|
-        return [new_before, new_current] unless before[attr] == current[attr]
-        new_current[attr] = nil
+        unless before[attr] == current[attr]
+          return [new_before, new_current]
+        end
+        new_current[attr] = grouping_character
       end
       [new_before, new_current]
     end

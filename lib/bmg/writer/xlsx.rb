@@ -25,7 +25,7 @@ module Bmg
           rel.to_xlsx({
             workbook: workbook,
             worksheet: worksheet,
-          })
+          }, nil, database.output_preferences_for(name))
         end
         workbook.close
       end
@@ -40,18 +40,27 @@ module Bmg
 
         headers = infer_headers(relation.type)
         before = nil
+        max_widths = Hash.new{|h,k| h[k] = 5 }
+
+        header_format = workbook.add_format(bold: true)
         each_tuple(relation) do |tuple,i|
           headers = infer_headers(tuple) if headers.nil?
           headers.each_with_index do |h,i|
-            worksheet.write_string(0, i, h)
+            worksheet.write_string(0, i, h, header_format)
+            max_widths[i] = [max_widths[i], h.to_s.size].max
           end if i == 0
           before, tuple = output_preferences.erase_redundance_in_group(before, tuple)
           headers.each_with_index do |h,j|
-            meth, *args = write_pair(tuple[h])
+            meth, args, approx_width = write_pair(tuple[h])
             worksheet.send(meth, 1+i, j, *args)
+            max_widths[j] = [max_widths[j], approx_width].max
           end
         end
 
+        max_widths.each_pair do |col, width|
+          worksheet.set_column(col, col, [1+width, 100].min)
+        end
+        worksheet.freeze_panes(1, 0)
         workbook.close unless xlsx_options[:workbook]
         path
       end
@@ -59,11 +68,11 @@ module Bmg
       def write_pair(value)
         case value
         when Numeric
-          [:write_number, value]
+          [:write_number, [value], value.to_s.size]
         when Date
-          [:write_date_time, value, date_format]
+          [:write_date_time, [value, date_format], value.to_s.size]
         else
-          [:write_string, value.to_s]
+          [:write_string, [value.to_s], value.to_s.size]
         end
       end
 

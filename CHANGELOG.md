@@ -1,3 +1,8 @@
+## 0.23.6
+
+* Improve xlsx write with a grouping character (e.g. ") and an automatic
+  column size based on the number of characters of the cell value.
+
 ## 0.23.5 - 2025-09-29
 
 * Introduced Bmg#json_file, #yaml_file and #csv_file, also available on
