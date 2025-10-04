@@ -39,16 +39,16 @@ module Bmg
         @worksheet = workbook.add_worksheet(@worksheet) if @worksheet.is_a?(String)
 
         headers = infer_headers(relation.type)
-        before = nil
         max_widths = Hash.new{|h,k| h[k] = 5 }
+        before = nil
 
-        header_format = workbook.add_format(bold: true)
+        write_headers(headers, worksheet, max_widths) unless headers.nil?
+
         each_tuple(relation) do |tuple,i|
-          headers = infer_headers(tuple) if headers.nil?
-          headers.each_with_index do |h,i|
-            worksheet.write_string(0, i, h, header_format)
-            max_widths[i] = [max_widths[i], h.to_s.size].max
-          end if i == 0
+          if headers.nil?
+            headers = infer_headers(tuple)
+            write_headers(headers, worksheet, max_widths)
+          end
           before, tuple = output_preferences.erase_redundance_in_group(before, tuple)
           headers.each_with_index do |h,j|
             meth, args, approx_width = write_pair(tuple[h])
@@ -63,6 +63,14 @@ module Bmg
         worksheet.freeze_panes(1, 0)
         workbook.close unless xlsx_options[:workbook]
         path
+      end
+
+      def write_headers(headers, worksheet, max_widths)
+        header_format = workbook.add_format(bold: true)
+        headers.each_with_index do |h,i|
+          worksheet.write_string(0, i, h, header_format)
+          max_widths[i] = [max_widths[i], h.to_s.size].max
+        end
       end
 
       def write_pair(value)

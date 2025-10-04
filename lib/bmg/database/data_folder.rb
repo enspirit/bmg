@@ -5,6 +5,7 @@ module Bmg
       DEFAULT_OPTIONS = {
         data_extensions: ['json', 'yml', 'yaml', 'csv'],
         relname_from_file: ->(file) { file.basename.rm_ext.to_sym },
+        filename_from_relname: ->(relname) { relname },
       }
 
       def initialize(folder, options = {})
@@ -30,14 +31,16 @@ module Bmg
         end
       end
 
-      def self.dump(database, path, ext = :json)
+      def self.dump(database, path, ext = :json, options = DEFAULT_OPTIONS)
+        options = DEFAULT_OPTIONS.merge(options)
         path = Path(path)
         path.mkdir_p
         database.each_relation_pair do |name, rel|
+          filename = options[:filename_from_relname].call(name)
           if ext === :json
-            (path/"#{name}.#{ext}").write(JSON.pretty_generate(rel))
+            (path/"#{filename}.#{ext}").write(JSON.pretty_generate(rel))
           else
-            (path/"#{name}.#{ext}").write(rel.public_send(:"to_#{ext}"))
+            (path/"#{filename}.#{ext}").write(rel.public_send(:"to_#{ext}"))
           end
         end
         path
