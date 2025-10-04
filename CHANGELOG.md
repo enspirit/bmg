@@ -1,4 +1,4 @@
-## 0.23.6
+## 0.23.6 - 2025-10-04
 
 * Improve xlsx reader and writer with a grouping character (e.g. ") whose
   semantics is to repeat the value from the previous row.
