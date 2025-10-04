@@ -29,6 +29,32 @@ module Bmg
         end
       end
 
+      context "with a .xlsx file having grouping chars" do
+        let(:input) {
+          Path.dir/("example-grouping-char.xlsx")
+        }
+
+        let(:options) {
+          {
+            skip: 1,
+            grouping_character: '“',
+          }
+        }
+
+        it_behaves_like "a Relation-compatible"
+
+        it 'works' do
+          expect(subject.to_a).to eql([
+            {row_num: 1, id: 1, name: "Bernard Lambeau", company: "Enspirit"},
+            {row_num: 2, id: 2, name: "Yoann Guyot", company: "Enspirit"}
+          ])
+        end
+
+        it 'knows its attributes' do
+          expect(subject.type.attrlist).to eql([:row_num, :id, :name, :company])
+        end
+      end
+
       context "when specifying the extension" do
         let(:input) {
           Path.dir/("example.excel")

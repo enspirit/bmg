@@ -6,7 +6,8 @@ module Bmg
       DEFAULT_OPTIONS = {
         sheet: 0,
         skip: 0,
-        row_num: true
+        row_num: true,
+        grouping_character: nil,
       }
 
       def initialize(type, path, options = {})
@@ -23,13 +24,16 @@ module Bmg
         headers = headers[1..-1] if generate_row_num?
         start_at = @options[:skip] + 2
         end_at = spreadsheet.last_row
+
+        previous = {}
         (start_at..end_at).each do |i|
           row = spreadsheet.row(i)
           init = init_tuple(i - start_at + 1)
           tuple = (0...headers.size).each_with_object(init){|i,t|
-            t[headers[i]] = row[i]
+            t[headers[i]] = extract_value(headers[i], row[i], previous)
           }
           yield(tuple)
+          previous = tuple
         end
       end
 
@@ -73,6 +77,12 @@ module Bmg
         return {} unless generate_row_num?
 
         { row_num_name => i }
+      end
+
+      def extract_value(attribute, value, previous)
+        return value unless c = @options[:grouping_character]
+
+        value == c ? previous[attribute] : value
       end
 
     end # class Excel

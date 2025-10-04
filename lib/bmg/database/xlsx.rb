@@ -3,12 +3,13 @@ module Bmg
     class Xlsx < Database
 
       DEFAULT_OPTIONS = {
+        reader_options: {}
       }
 
       def initialize(path, options = {})
         path = Path(path) if path.is_a?(String)
         @path = path
-        @options = options.merge(DEFAULT_OPTIONS)
+        @options = DEFAULT_OPTIONS.merge(options)
       end
 
       def method_missing(name, *args, &bl)
@@ -33,7 +34,9 @@ module Bmg
       end
 
       def rel_for(sheet_name)
-        Bmg.excel(@path, { sheet: sheet_name.to_s })
+        Bmg.excel(@path, @options[:reader_options].merge({
+          sheet: sheet_name.to_s
+        }))
       end
 
     end # class Sequel

@@ -1,7 +1,10 @@
 ## 0.23.6
 
-* Improve xlsx writer with a grouping character (e.g. ") and an automatic
-  column size based on the number of characters of the cell value.
+* Improve xlsx reader and writer with a grouping character (e.g. ") whose
+  semantics is to repeat the value from the previous row.
+
+* Improve xlsx writer : automatic column size based on the number of characters
+  of the cell value.
 
 * Improve xlsx writer : headers row is generated even when relation is empty,
   provided relation type known it's attrlist
