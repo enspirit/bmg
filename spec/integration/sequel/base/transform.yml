@@ -1,4 +1,3 @@
-
 ---
 - bmg: |-
     supplies.transform(:qty => String)

@@ -56,12 +56,14 @@ module Bmg
           }
         end
 
+        AstAble = ->(t){ t.respond_to?(:to_sql_ast) }
+
         def on_select_item(sexpr)
           as = sexpr.as_name.to_sym
           case t = transformation_for(as)
           when NilClass
             sexpr
-          when Class, Array
+          when AstAble, Class, Array
             sexpr([:select_item,
               func_call_node(sexpr, Array(t).reverse),
               sexpr[2]
@@ -83,10 +85,15 @@ module Bmg
           else
             _func_call_node(sexpr, tail.first, tail[1..-1])
           end
-          [:func_call,
-            :cast,
-            inside,
-            [ :literal, head ] ]
+          case head
+          when AstAble
+            head.to_sql_ast(self, inside)
+          when Class
+            [:func_call,
+              :cast,
+              inside,
+              [ :literal, head ] ]
+          end
         end
 
         def transformation_for(as)
