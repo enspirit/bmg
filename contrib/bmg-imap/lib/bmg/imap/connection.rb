@@ -30,7 +30,9 @@ module Bmg
       end
 
       def list_mailbox_names
-        (imap.list("", "*") || []).map(&:name)
+        (imap.list("", "*") || [])
+          .reject { |mbox| mbox.attr.include?(:Noselect) }
+          .map(&:name)
       end
 
       def close
