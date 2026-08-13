@@ -16,6 +16,7 @@ module Bmg
         @type = type
         @options = options
         @connection = options[:connection] || Connection.new(@options)
+        @provider = options[:provider] || Provider.infer_from_host(options[:host])
         @mailboxes = nil
         @search_criteria = nil
         @fetch_body = true
@@ -43,7 +44,7 @@ module Bmg
     protected
 
       def _restrict(type, predicate)
-        mailboxes, criteria, remaining = PredicateTranslator.new.call(predicate)
+        mailboxes, criteria, remaining = PredicateTranslator.new(@provider).call(predicate)
 
         # Only push IMAP search criteria when the connection supports them
         unless connection.supports_search_criteria?

@@ -29,6 +29,9 @@ module Bmg
     #   restrict(Predicate.lt(:date, d))  => ["BEFORE", "d"]
     #   restrict(Predicate.lte(:date, d)) => ["BEFORE", "d"]
     #
+    # Provider-specific intersect push-down (e.g. Gmail):
+    #   restrict(Predicate.intersect(:labels, ["x"]))  => ["X-GM-LABELS", "x"]
+    #
     # ## Limits
     #
     # - OR predicates are never pushed down (IMAP OR has different semantics)
@@ -36,6 +39,10 @@ module Bmg
     # - Predicates involving two identifiers (e.g. :from == :to) are not pushed
     # - in(...) predicates are not pushed (could be supported in the future)
     # - Date equality is not pushed (IMAP has ON but semantic mismatch with DateTime)
+    # - eq on array attributes (e.g. :labels) is not pushed (exact match
+    #   can't be expressed in IMAP SEARCH)
+    # - intersect with multiple values is not pushed (IMAP SEARCH terms are
+    #   ANDed, but intersect means "any overlap" which is OR)
     # - Unknown attributes are not pushed
     # - Anything that can't be pushed ends up in the `remaining` predicate,
     #   which bmg evaluates in-memory as usual.
@@ -43,7 +50,7 @@ module Bmg
     class PredicateTranslator
 
       # IMAP SEARCH key for attributes supporting equality push-down
-      EQ_ATTRS = {
+      CORE_EQ_ATTRS = {
         subject: "SUBJECT",
         from:    "FROM",
         to:      "TO",
@@ -54,8 +61,15 @@ module Bmg
       # Attributes supporting date comparison push-down
       DATE_ATTRS = Set[:date].freeze
 
-      # All attributes that can be pushed down (excluding mailbox)
-      PUSHABLE_ATTRS = (EQ_ATTRS.keys + DATE_ATTRS.to_a).freeze
+      # @param provider [Provider, nil] optional provider for extra search attrs
+      def initialize(provider = nil)
+        @eq_attrs = if provider
+          CORE_EQ_ATTRS.merge(provider.search_attrs)
+        else
+          CORE_EQ_ATTRS
+        end
+        @intersect_attrs = provider ? provider.intersect_attrs : {}
+      end
 
       # Translates a Predicate into [mailboxes, criteria, remaining].
       #
@@ -111,9 +125,10 @@ module Bmg
             # Multi-attribute predicate — can't push down
             remaining_parts << attr_pred
           else
-            translated = translate_attr_predicate(attr, attr_pred)
-            if translated
-              criteria.concat(translated)
+            tokens, keep = translate_attr_predicate(attr, attr_pred)
+            if tokens
+              criteria.concat(tokens)
+              remaining_parts << attr_pred if keep
             else
               remaining_parts << attr_pred
             end
@@ -126,16 +141,28 @@ module Bmg
       end
 
       # Translates a single-attribute predicate to IMAP criteria.
-      # Returns an array of IMAP tokens, or nil if not translatable.
+      # Returns [tokens, keep_as_remaining]:
+      #   - tokens: array of IMAP SEARCH tokens, or nil if not translatable
+      #   - keep_as_remaining: if true, the predicate is a pre-filter only
+      #     and must also be evaluated in-memory for exact semantics
       def translate_attr_predicate(attr, predicate)
         sexpr = predicate.sexpr
-        translate_sexpr(attr, sexpr)
+
+        # eq on an intersect attr: push as pre-filter, keep for exact match
+        if sexpr.first == :eq && @intersect_attrs[attr]
+          tokens = translate_eq_as_prefilter(attr, sexpr)
+          return [tokens, true] if tokens
+        end
+
+        [translate_sexpr(attr, sexpr), false]
       end
 
       def translate_sexpr(attr, sexpr)
         case sexpr.first
         when :eq
           translate_eq(attr, sexpr)
+        when :intersect
+          translate_intersect(attr, sexpr)
         when :and
           parts = sexpr[1..-1].map { |s| translate_sexpr(attr, s) }
           return nil if parts.any?(&:nil?)
@@ -150,13 +177,49 @@ module Bmg
       end
 
       def translate_eq(attr, sexpr)
-        imap_key = EQ_ATTRS[attr]
+        imap_key = @eq_attrs[attr]
         return nil unless imap_key
 
         value = extract_literal(sexpr)
         return nil unless value
 
         [imap_key, value.to_s]
+      end
+
+      # Translates eq(:attr, [...]) on an intersect attr as a pre-filter.
+      # Generates one IMAP SEARCH pair per array element (ANDed server-side).
+      # This narrows results but doesn't enforce exact match — the caller
+      # must also keep the predicate for in-memory evaluation.
+      #
+      # eq(:labels, ["A", "B"]) => ["X-GM-LABELS", "A", "X-GM-LABELS", "B"]
+      # eq(:labels, ["A"])      => ["X-GM-LABELS", "A"]
+      def translate_eq_as_prefilter(attr, sexpr)
+        imap_key = @intersect_attrs[attr]
+        return nil unless imap_key
+
+        value = extract_literal(sexpr)
+        return nil unless value.is_a?(Array) && !value.empty?
+
+        value.flat_map { |v| [imap_key, v.to_s] }
+      end
+
+      # Translates intersect(:attr, ["val"]) for array attributes.
+      # Only pushes down single-value intersects, because IMAP SEARCH
+      # terms are ANDed, while intersect means "any overlap" (OR).
+      #
+      # Single value:  intersect(:labels, ["Projects"])
+      #   => ["X-GM-LABELS", "Projects"]
+      #
+      # Multiple values: intersect(:labels, ["A", "B"])
+      #   => nil (can't express OR in IMAP SEARCH, falls to in-memory)
+      def translate_intersect(attr, sexpr)
+        imap_key = @intersect_attrs[attr]
+        return nil unless imap_key
+
+        values = extract_literal(sexpr)
+        return nil unless values.is_a?(Array) && values.size == 1
+
+        [imap_key, values.first.to_s]
       end
 
       def translate_date_comp(attr, sexpr, imap_op)

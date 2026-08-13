@@ -134,6 +134,54 @@ module Bmg::Imap
       end
     end
 
+    describe "labels push-down (Gmail)" do
+      let(:gmail_connection) do
+        instance_double(Connection).tap do |c|
+          allow(c).to receive(:supports_search_criteria?).and_return(true)
+        end
+      end
+
+      let(:gmail_relation) do
+        rel = Relation.new(Relation::DEFAULT_TYPE, gmail_options)
+        rel.instance_variable_set(:@connection, gmail_connection)
+        rel
+      end
+
+      it 'pushes single-value intersect on labels via host inference' do
+        allow(gmail_connection).to receive(:each_email)
+          .with(nil, ["X-GM-LABELS", "Projects"], fetch_body: true)
+          .and_yield(sample_emails[0])
+
+        pred = Predicate.intersect(:labels, ["Projects"])
+        result = gmail_relation.restrict(pred).to_a
+        expect(result.size).to eq(1)
+      end
+
+      it 'pushes intersect on labels via explicit provider option' do
+        rel = Relation.new(Relation::DEFAULT_TYPE, imap_options.merge(provider: Provider::Gmail.new))
+        rel.instance_variable_set(:@connection, connection)
+
+        allow(connection).to receive(:each_email)
+          .with(nil, ["X-GM-LABELS", "Important"], fetch_body: true)
+          .and_yield(sample_emails[0])
+
+        pred = Predicate.intersect(:labels, ["Important"])
+        result = rel.restrict(pred).to_a
+        expect(result.size).to eq(1)
+      end
+
+      it 'does not push labels intersect on unknown hosts without provider' do
+        allow(connection).to receive(:each_email)
+          .with(nil, nil, fetch_body: true)
+          .and_yield(sample_emails[0].merge(labels: ["Projects"]))
+          .and_yield(sample_emails[1].merge(labels: ["Other"]))
+
+        pred = Predicate.intersect(:labels, ["Projects"])
+        result = relation.restrict(pred).to_a
+        expect(result.size).to eq(1)
+      end
+    end
+
     describe "to_s" do
       it 'shows * when no mailbox restriction' do
         rel = Relation.new(Relation::DEFAULT_TYPE, imap_options)

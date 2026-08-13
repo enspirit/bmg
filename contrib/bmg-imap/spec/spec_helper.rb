@@ -10,7 +10,15 @@ module SpecHelpers
       username: "user@example.com",
       password: "secret",
       ssl: true,
-      mailbox: "INBOX",
+    }
+  end
+
+  def gmail_options
+    {
+      host: "imap.gmail.com",
+      username: "user@gmail.com",
+      password: "secret",
+      ssl: true,
     }
   end
 

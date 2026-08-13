@@ -30,6 +30,24 @@ module Bmg::Imap
       end
     end
 
+    describe ".infer_from_host" do
+      it 'returns Gmail for imap.gmail.com' do
+        expect(Provider.infer_from_host("imap.gmail.com")).to be_a(Provider::Gmail)
+      end
+
+      it 'returns Gmail for imap.googlemail.com' do
+        expect(Provider.infer_from_host("imap.googlemail.com")).to be_a(Provider::Gmail)
+      end
+
+      it 'returns nil for unknown hosts' do
+        expect(Provider.infer_from_host("imap.example.com")).to be_nil
+      end
+
+      it 'returns nil for nil host' do
+        expect(Provider.infer_from_host(nil)).to be_nil
+      end
+    end
+
     describe Provider::Default do
       let(:provider) { Provider::Default.new }
 
@@ -44,6 +62,14 @@ module Bmg::Imap
 
       it 'has defaults for all official extra attributes' do
         expect(provider.defaults).to eq({ labels: [] })
+      end
+
+      it 'has no search attrs' do
+        expect(provider.search_attrs).to eq({})
+      end
+
+      it 'has no intersect attrs' do
+        expect(provider.intersect_attrs).to eq({})
       end
     end
 
@@ -70,6 +96,14 @@ module Bmg::Imap
         item = double(attr: {})
         result = provider.parse_extra(item)
         expect(result).to eq({ labels: [] })
+      end
+
+      it 'declares labels as an intersect attr' do
+        expect(provider.intersect_attrs).to eq({ labels: "X-GM-LABELS" })
+      end
+
+      it 'has no eq search attrs' do
+        expect(provider.search_attrs).to eq({})
       end
     end
 

@@ -32,12 +32,29 @@ module Bmg
         Default.new
       end
 
-      # Registry of provider detection rules, checked in order.
-      # Each entry is [lambda(caps) -> bool, ProviderClass].
+      # Infers a provider from a hostname.
+      # Returns nil if no provider matches.
+      def self.infer_from_host(host)
+        return nil unless host
+        h = host.to_s.downcase
+        HOST_REGISTRY.each do |test, klass|
+          return klass.new if test.call(h)
+        end
+        nil
+      end
+
+      # Registry of provider detection rules (CAPABILITY-based), checked in order.
       REGISTRY = []
+
+      # Registry of host-based inference rules, checked in order.
+      HOST_REGISTRY = []
 
       def self.register(test, klass)
         REGISTRY << [test, klass]
+      end
+
+      def self.register_host(test, klass)
+        HOST_REGISTRY << [test, klass]
       end
 
       # Extra IMAP FETCH attributes to request (e.g. ["X-GM-LABELS"])
@@ -58,6 +75,20 @@ module Bmg
       # Used as fallback when the provider doesn't support them.
       def defaults
         { labels: [] }
+      end
+
+      # Provider-specific IMAP SEARCH keys for equality push-down.
+      # Maps official attribute name => IMAP SEARCH key string.
+      def search_attrs
+        {}
+      end
+
+      # Provider-specific IMAP SEARCH keys for intersect push-down.
+      # Used for array attributes where the IMAP SEARCH key checks
+      # membership (e.g. X-GM-LABELS "x" checks if label "x" is present).
+      # Maps official attribute name => IMAP SEARCH key string.
+      def intersect_attrs
+        {}
       end
 
       def name

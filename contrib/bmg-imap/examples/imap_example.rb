@@ -26,10 +26,12 @@ emails = Bmg::Imap::Relation.new(
 )
 
 # List recent emails (last 30 days)
-since = Date.today - 3
+since = Date.today - 30
 recent = emails
-  .restrict(mailbox: "INBOX")
+  .restrict(mailbox: "[Gmail]/All Mail")
   .restrict(Predicate.gte(:date, since))
+  .restrict(Predicate.intersect(:labels, ["dmarc"]))
+  .allbut([:body_text])
   .page([[:date,:desc]], 1, page_size: 20)
 
 puts "=== Recent emails (last 30 days) ==="

@@ -209,5 +209,88 @@ module Bmg::Imap
       end
     end
 
+    describe "provider-specific push-down (intersect)" do
+      let(:gmail_translator) { PredicateTranslator.new(Provider::Gmail.new) }
+
+      it 'pushes single-value intersect on labels' do
+        pred = Predicate.intersect(:labels, ["Projects"])
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to eq(["X-GM-LABELS", "Projects"])
+        expect(remaining).to be_nil
+      end
+
+      it 'does not push multi-value intersect (would need OR)' do
+        pred = Predicate.intersect(:labels, ["Projects", "Important"])
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to be_nil
+        expect(remaining).to eq(pred)
+      end
+
+      it 'combines intersect with other criteria' do
+        pred = Predicate.intersect(:labels, ["Projects"]) & p_eq(:from, "alice@example.com")
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to include("X-GM-LABELS", "Projects")
+        expect(criteria).to include("FROM", "alice@example.com")
+        expect(remaining).to be_nil
+      end
+
+      it 'combines intersect with mailbox' do
+        pred = p_eq(:mailbox, "INBOX") & Predicate.intersect(:labels, ["Important"])
+        mailboxes, criteria, remaining = gmail_translator.call(pred)
+        expect(mailboxes).to eq(["INBOX"])
+        expect(criteria).to eq(["X-GM-LABELS", "Important"])
+        expect(remaining).to be_nil
+      end
+
+      it 'does not push intersect without a provider' do
+        pred = Predicate.intersect(:labels, ["Projects"])
+        _, criteria, remaining = translator.call(pred)
+        expect(criteria).to be_nil
+        expect(remaining).to eq(pred)
+      end
+
+      it 'does not push intersect with Default provider' do
+        default_translator = PredicateTranslator.new(Provider::Default.new)
+        pred = Predicate.intersect(:labels, ["Projects"])
+        _, criteria, remaining = default_translator.call(pred)
+        expect(criteria).to be_nil
+        expect(remaining).to eq(pred)
+      end
+    end
+
+    describe "eq on labels (pre-filter push-down)" do
+      let(:gmail_translator) { PredicateTranslator.new(Provider::Gmail.new) }
+
+      it 'pushes eq as pre-filter and keeps as remaining' do
+        pred = p_eq(:labels, ["Projects"])
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to eq(["X-GM-LABELS", "Projects"])
+        expect(remaining).to eq(pred)
+      end
+
+      it 'pushes multi-value eq as ANDed pre-filter and keeps as remaining' do
+        pred = p_eq(:labels, ["Projects", "Important"])
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to eq(["X-GM-LABELS", "Projects", "X-GM-LABELS", "Important"])
+        expect(remaining).to eq(pred)
+      end
+
+      it 'does not push eq on labels without a provider' do
+        pred = p_eq(:labels, ["Projects"])
+        _, criteria, remaining = translator.call(pred)
+        expect(criteria).to be_nil
+        expect(remaining).to eq(pred)
+      end
+
+      it 'combines eq pre-filter with other criteria' do
+        pred = p_eq(:labels, ["Work"]) & p_eq(:from, "alice@example.com")
+        _, criteria, remaining = gmail_translator.call(pred)
+        expect(criteria).to include("X-GM-LABELS", "Work")
+        expect(criteria).to include("FROM", "alice@example.com")
+        # Only the labels eq is kept as remaining, from is fully pushed
+        expect(remaining).to eq(p_eq(:labels, ["Work"]))
+      end
+    end
+
   end
 end

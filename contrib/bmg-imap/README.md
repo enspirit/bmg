@@ -116,6 +116,26 @@ emails
 
 Opens only `INBOX` and issues `UID SEARCH FROM "alice@x.com" SINCE "14-Jul-2025"`.
 
+### Labels push-down (provider-specific)
+
+Since `:labels` is an `Array<String>`, two predicates make sense:
+
+| Predicate | Meaning | IMAP push-down (Gmail) | In-memory |
+|---|---|---|---|
+| `Predicate.intersect(:labels, ["A"])` | Has label A (among others) | `X-GM-LABELS "A"` | no |
+| `Predicate.intersect(:labels, ["A","B"])` | Has A or B | none | yes |
+| `Predicate.eq(:labels, ["A"])` | Has exactly [A] | `X-GM-LABELS "A"` (pre-filter) | + exact check |
+| `Predicate.eq(:labels, ["A","B"])` | Has exactly [A, B] | `X-GM-LABELS "A" X-GM-LABELS "B"` (pre-filter) | + exact check |
+
+`eq` pre-filtering is safe: IMAP returns a superset (all emails that have
+those labels, possibly more), then bmg enforces the exact match in-memory.
+
+Multi-value `intersect` cannot be pre-filtered because IMAP ANDs search
+terms, while intersect needs OR semantics.
+
+On servers without label support, all label predicates are evaluated
+in-memory.
+
 ### What does NOT get pushed down
 
 These predicates are evaluated in-memory by bmg after fetching:
@@ -125,6 +145,7 @@ These predicates are evaluated in-memory by bmg after fetching:
 - **Date equality** (`restrict(date: d)`) -- IMAP's `ON` has day-granularity
   which doesn't match DateTime equality
 - **`in(...)` predicates**
+- **Multi-value `intersect`** on labels (needs OR, IMAP only ANDs)
 - **Predicates on non-searchable attributes** (`:flags`, `:size`,
   `:in_reply_to`, `:message_id`, `:body_text`, `:bcc`, `:reply_to`)
 - **Two-identifier comparisons** (e.g. `:from == :to`)
