@@ -2,6 +2,9 @@
 
 * Fix fatal error when to_text is called on relations having array values.
 
+* Optimization of project.allbut ensures the operand can participate by
+  reevaluating the newly computed projection attrlist.
+
 ## 0.23.6 - 2025-10-04
 
 * Improve xlsx reader and writer with a grouping character (e.g. ") whose
