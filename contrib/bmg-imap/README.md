@@ -110,8 +110,11 @@ Notes:
   arrays, never nil. An empty array means no addresses.
 - `:body_text` is always fetched by default (the relation is complete).
   When you `project` or `allbut` it away, the IMAP backend automatically
-  skips `BODY.PEEK[TEXT]` and only fetches envelope metadata, which is
+  skips `BODY.PEEK[]` and only fetches envelope metadata, which is
   significantly faster. See [Performance](#performance-considerations).
+- For multipart messages, `:body_text` is the decoded text/plain part
+  (any transfer encoding is undone). For single-part messages it is the
+  decoded body.
 - `:labels` is populated via provider-specific extensions when available
   (see [Providers](#providers)). Returns `[]` on servers with no label support.
 - `:uid` is unique within a mailbox but not across mailboxes.
@@ -265,10 +268,11 @@ for examples.
 ## Performance considerations
 
 - **Body text fetch is automatic but optimizable.** By default, `body_text`
-  is fetched (via `BODY.PEEK[TEXT]`), making the relation complete. This can
-  be slow for large result sets. When you use `project` or `allbut` to
-  exclude `:body_text`, the IMAP fetch automatically skips body download
-  and only requests envelope metadata — which is much faster:
+  is fetched (via `BODY.PEEK[]`, then decoded to the text/plain part),
+  making the relation complete. This can be slow for large result sets.
+  When you use `project` or `allbut` to exclude `:body_text`, the IMAP
+  fetch automatically skips body download and only requests envelope
+  metadata — which is much faster:
 
   ```ruby
   # Slow: fetches body text for every email

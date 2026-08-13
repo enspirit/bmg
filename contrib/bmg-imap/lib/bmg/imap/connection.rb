@@ -204,7 +204,12 @@ module Bmg
 
       def build_fetch_items(fetch_body)
         items = ["UID", "ENVELOPE", "FLAGS", "RFC822.SIZE"]
-        items << "BODY.PEEK[TEXT]" if fetch_body
+        # Fetch the full RFC822 message rather than just BODY[TEXT] so we
+        # can hand it to Mail and extract a decoded text/plain body — for
+        # multipart messages BODY[TEXT] returns the raw multipart structure
+        # (boundaries, part headers, un-decoded quoted-printable). Headers
+        # are also fetched via ENVELOPE, so we accept a small overlap here.
+        items << "BODY.PEEK[]" if fetch_body
         items.concat(provider.extra_fetch_attrs)
         items
       end
@@ -234,7 +239,7 @@ module Bmg
           message_id:  envelope.message_id,
           flags:       item.attr["FLAGS"],
           size:        item.attr["RFC822.SIZE"],
-          body_text:   fetch_body ? item.attr["BODY[TEXT]"] : nil,
+          body_text:   fetch_body ? extract_body_text(item.attr["BODY[]"]) : nil,
         }
         tuple.merge!(provider.parse_extra(item))
         tuple
@@ -243,6 +248,22 @@ module Bmg
       def parse_date(date_str)
         return nil unless date_str
         DateTime.parse(date_str) rescue nil
+      end
+
+      # Extracts a decoded plain text body from a full RFC822 message. For
+      # multipart messages, picks the text/plain part and decodes any
+      # transfer encoding (quoted-printable, base64); for single-part
+      # messages, decodes the whole body. Mirrors MboxConnection's
+      # behavior so both backends yield the same body_text shape.
+      def extract_body_text(raw)
+        return nil unless raw
+        msg = Mail.read_from_string(raw)
+        if msg.multipart?
+          part = msg.text_part
+          part ? part.decoded : nil
+        else
+          msg.decoded rescue msg.body.to_s
+        end
       end
 
       def decode_field(value)
