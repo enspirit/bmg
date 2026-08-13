@@ -1,0 +1,6 @@
+require 'mail'
+require_relative 'imap/provider'
+require_relative 'imap/connection'
+require_relative 'imap/mbox_connection'
+require_relative 'imap/predicate_translator'
+require_relative 'imap/relation'

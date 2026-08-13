@@ -1,0 +1,48 @@
+From alice@example.com Mon Jan 13 10:00:00 2025
+From: Alice Smith <alice@example.com>
+To: Bob Jones <bob@example.com>
+Subject: Meeting tomorrow
+Date: Mon, 13 Jan 2025 10:00:00 +0000
+Message-ID: <msg001@example.com>
+Status: RO
+Content-Type: text/plain; charset=UTF-8
+
+Hi Bob,
+
+Can we meet tomorrow at 10am to discuss the project?
+
+Thanks,
+Alice
+
+From bob@example.com Mon Jan 13 14:30:00 2025
+From: Bob Jones <bob@example.com>
+To: Alice Smith <alice@example.com>
+Subject: Re: Meeting tomorrow
+Date: Mon, 13 Jan 2025 14:30:00 +0000
+Message-ID: <msg002@example.com>
+In-Reply-To: <msg001@example.com>
+Status: R
+Content-Type: text/plain; charset=UTF-8
+
+Hi Alice,
+
+Sure, 10am works for me. See you then!
+
+Bob
+
+From charlie@example.com Tue Jan 14 09:00:00 2025
+From: Charlie Davis <charlie@example.com>
+To: Alice Smith <alice@example.com>
+Cc: Bob Jones <bob@example.com>
+Subject: Project update
+Date: Tue, 14 Jan 2025 09:00:00 +0000
+Message-ID: <msg003@example.com>
+Content-Type: text/plain; charset=UTF-8
+
+Hi team,
+
+Here is the weekly project update.
+
+Best,
+Charlie
+
