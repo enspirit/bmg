@@ -62,13 +62,15 @@ module Bmg
       DATE_ATTRS = Set[:date].freeze
 
       # @param provider [Provider, nil] optional provider for extra search attrs
-      def initialize(provider = nil)
+      # @param timezone [String, nil] timezone offset (e.g. "+02:00") for date formatting
+      def initialize(provider = nil, timezone: nil)
         @eq_attrs = if provider
           CORE_EQ_ATTRS.merge(provider.search_attrs)
         else
           CORE_EQ_ATTRS
         end
         @intersect_attrs = provider ? provider.intersect_attrs : {}
+        @timezone = timezone
       end
 
       # Translates a Predicate into [mailboxes, criteria, remaining].
@@ -228,8 +230,30 @@ module Bmg
         value = extract_literal(sexpr)
         return nil unless value
 
-        date_str = value.respond_to?(:strftime) ? value.strftime("%-d-%b-%Y") : value.to_s
-        [imap_op, date_str]
+        [imap_op, format_imap_date(value)]
+      end
+
+      # Formats a date value for IMAP SEARCH (dd-Mon-yyyy).
+      # When a :timezone is configured, converts to that timezone first.
+      # Otherwise uses the value's own timezone.
+      def format_imap_date(value)
+        value = convert_to_timezone(value) if @timezone
+        if value.respond_to?(:strftime)
+          value.strftime("%-d-%b-%Y")
+        else
+          value.to_s
+        end
+      end
+
+      def convert_to_timezone(value)
+        case value
+        when DateTime
+          value.new_offset(@timezone)
+        when Time
+          value.getlocal(@timezone)
+        else
+          value
+        end
       end
 
       def extract_literal(sexpr)

@@ -44,7 +44,7 @@ module Bmg
     protected
 
       def _restrict(type, predicate)
-        mailboxes, criteria, remaining = PredicateTranslator.new(@provider).call(predicate)
+        mailboxes, criteria, remaining = PredicateTranslator.new(@provider, timezone: @options[:timezone]).call(predicate)
 
         # Only push IMAP search criteria when the connection supports them
         unless connection.supports_search_criteria?

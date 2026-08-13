@@ -132,6 +132,66 @@ module Bmg::Imap
         expect(criteria).to include("FROM", "alice@example.com")
         expect(remaining).to be_nil
       end
+
+      it 'uses DateTime date in its own timezone' do
+        # 2am March 15 in +05:00 → date is March 15 (caller's intent)
+        dt = DateTime.new(2025, 3, 15, 2, 0, 0, '+05:00')
+        _, criteria, _ = translate(p_gte(:date, dt))
+        expect(criteria).to eq(["SINCE", "15-Mar-2025"])
+      end
+
+      it 'uses Time date in its own timezone' do
+        # 11pm March 14 in -05:00 → date is March 14 (caller's intent)
+        t = Time.new(2025, 3, 14, 23, 0, 0, '-05:00')
+        _, criteria, _ = translate(p_gte(:date, t))
+        expect(criteria).to eq(["SINCE", "14-Mar-2025"])
+      end
+
+      it 'uses Date as-is' do
+        d = Date.new(2025, 3, 15)
+        _, criteria, _ = translate(p_gte(:date, d))
+        expect(criteria).to eq(["SINCE", "15-Mar-2025"])
+      end
+    end
+
+    describe "date with :timezone option" do
+      let(:tz_translator) { PredicateTranslator.new(nil, timezone: "+02:00") }
+
+      it 'converts UTC DateTime to configured timezone' do
+        # Aug 11 22:00 UTC → Aug 12 00:00 +02:00 → date is Aug 12
+        dt = DateTime.new(2026, 8, 11, 22, 0, 0, '+00:00')
+        _, criteria, _ = tz_translator.call(p_gte(:date, dt))
+        expect(criteria).to eq(["SINCE", "12-Aug-2026"])
+      end
+
+      it 'converts UTC Time to configured timezone' do
+        # Aug 11 22:00 UTC → Aug 12 00:00 +02:00
+        t = Time.new(2026, 8, 11, 22, 0, 0, '+00:00')
+        _, criteria, _ = tz_translator.call(p_gte(:date, t))
+        expect(criteria).to eq(["SINCE", "12-Aug-2026"])
+      end
+
+      it 'leaves Date unchanged (no timezone to convert)' do
+        d = Date.new(2026, 8, 12)
+        _, criteria, _ = tz_translator.call(p_gte(:date, d))
+        expect(criteria).to eq(["SINCE", "12-Aug-2026"])
+      end
+
+      it 'converts non-UTC DateTime to configured timezone' do
+        # Aug 12 03:00 +05:00 = Aug 11 22:00 UTC = Aug 12 00:00 +02:00
+        dt = DateTime.new(2026, 8, 12, 3, 0, 0, '+05:00')
+        _, criteria, _ = tz_translator.call(p_gte(:date, dt))
+        expect(criteria).to eq(["SINCE", "12-Aug-2026"])
+      end
+
+      it 'works with date range' do
+        d1 = DateTime.new(2026, 8, 11, 22, 0, 0, '+00:00')
+        d2 = DateTime.new(2026, 8, 12, 22, 0, 0, '+00:00')
+        pred = p_gte(:date, d1) & p_lt(:date, d2)
+        _, criteria, _ = tz_translator.call(pred)
+        expect(criteria).to include("SINCE", "12-Aug-2026")
+        expect(criteria).to include("BEFORE", "13-Aug-2026")
+      end
     end
 
     describe "non-pushable predicates become remaining" do
