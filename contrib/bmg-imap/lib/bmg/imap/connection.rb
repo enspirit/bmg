@@ -73,10 +73,13 @@ module Bmg
         log("  => #{uids.size} UIDs")
         return if uids.empty?
 
+        fetch_items = build_fetch_items(fetch_body)
+        log("  FETCH items: #{fetch_items.join(', ')}")
+
         fetched = 0
         uids.each_slice(100) do |uid_batch|
           tuples = timed("UID FETCH #{uid_batch.first}..#{uid_batch.last} (#{uid_batch.size} msgs)") do
-            fetch_batch(imap, uid_batch, mailbox, fetch_body)
+            fetch_batch(imap, uid_batch, mailbox, fetch_body, fetch_items)
           end
           tuples.each do |tuple|
             fetched += 1
@@ -86,11 +89,15 @@ module Bmg
         log("  => #{fetched} emails yielded from #{mailbox}")
       end
 
-      def fetch_batch(imap, uids, mailbox, fetch_body)
-        attrs = ["UID", "ENVELOPE", "FLAGS", "RFC822.SIZE"]
-        attrs << "BODY.PEEK[TEXT]" if fetch_body
-        attrs.concat(provider.extra_fetch_attrs)
-        data = imap.uid_fetch(uids, attrs)
+      def build_fetch_items(fetch_body)
+        items = ["UID", "ENVELOPE", "FLAGS", "RFC822.SIZE"]
+        items << "BODY.PEEK[TEXT]" if fetch_body
+        items.concat(provider.extra_fetch_attrs)
+        items
+      end
+
+      def fetch_batch(imap, uids, mailbox, fetch_body, fetch_items)
+        data = imap.uid_fetch(uids, fetch_items)
         return [] unless data
 
         data.map do |item|

@@ -79,6 +79,7 @@ module Bmg
         Operator::Allbut.new(type, source, butlist)
       end
 
+
     private
 
       attr_reader :connection
