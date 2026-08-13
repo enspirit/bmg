@@ -7,44 +7,32 @@ module Bmg
       def initialize(options)
         @options = options
         @logger = options[:logger]
-      end
-
-      def with_imap
-        imap = timed("CONNECT #{host}:#{port} (ssl: #{ssl?})") do
-          Net::IMAP.new(host, port: port, ssl: ssl?)
-        end
-        begin
-          timed("LOGIN #{username}") do
-            imap.login(username, password)
-          end
-          @provider = detect_provider(imap)
-          log("PROVIDER #{@provider.name}")
-          yield imap
-        ensure
-          imap.logout rescue nil
-          imap.disconnect rescue nil
-          log("DISCONNECT")
-        end
+        @imap = nil
+        @provider = nil
+        @selected_mailbox = nil
       end
 
       def each_email(mailboxes = nil, search_criteria = nil, fetch_body: true, &bl)
         return to_enum(:each_email, mailboxes, search_criteria, fetch_body: fetch_body) unless block_given?
 
-        with_imap do |imap|
-          target_mailboxes = mailboxes || list_mailbox_names(imap)
-          log("MAILBOXES #{target_mailboxes.inspect}")
-          target_mailboxes.each do |mbox|
-            fetch_mailbox_emails(imap, mbox, search_criteria, fetch_body, &bl)
-          end
+        target_mailboxes = mailboxes || list_mailbox_names
+        log("MAILBOXES #{target_mailboxes.inspect}")
+        target_mailboxes.each do |mbox|
+          fetch_mailbox_emails(mbox, search_criteria, fetch_body, &bl)
         end
       end
 
-      def list_mailbox_names(imap = nil)
-        if imap
-          (imap.list("", "*") || []).map(&:name)
-        else
-          with_imap { |i| list_mailbox_names(i) }
-        end
+      def list_mailbox_names
+        (imap.list("", "*") || []).map(&:name)
+      end
+
+      def close
+        return unless @imap
+        @imap.logout rescue nil
+        @imap.disconnect rescue nil
+        log("DISCONNECT")
+        @imap = nil
+        @selected_mailbox = nil
       end
 
       def supports_search_criteria?
@@ -52,6 +40,25 @@ module Bmg
       end
 
     private
+
+      # Returns a persistent IMAP connection, lazily initialized.
+      # Reconnects transparently if the connection was lost.
+      def imap
+        return @imap if @imap && !@imap.disconnected?
+
+        close if @imap # clean up stale connection
+        @selected_mailbox = nil
+
+        @imap = timed("CONNECT #{host}:#{port} (ssl: #{ssl?})") do
+          Net::IMAP.new(host, port: port, ssl: ssl?)
+        end
+        timed("LOGIN #{username}") do
+          @imap.login(username, password)
+        end
+        @provider = detect_provider(@imap)
+        log("PROVIDER #{@provider.name}")
+        @imap
+      end
 
       def detect_provider(imap)
         capabilities = imap.responses("CAPABILITY", &:flatten) rescue imap.capability
@@ -62,10 +69,16 @@ module Bmg
         @provider || Provider::Default.new
       end
 
-      def fetch_mailbox_emails(imap, mailbox, search_criteria, fetch_body, &bl)
+      def select_mailbox(mailbox)
+        return if @selected_mailbox == mailbox
         timed("SELECT #{mailbox}") do
           imap.select(mailbox)
         end
+        @selected_mailbox = mailbox
+      end
+
+      def fetch_mailbox_emails(mailbox, search_criteria, fetch_body, &bl)
+        select_mailbox(mailbox)
         criteria = search_criteria || ["ALL"]
         uids = timed("UID SEARCH #{criteria.inspect}") do
           imap.uid_search(criteria)
@@ -79,7 +92,7 @@ module Bmg
         fetched = 0
         uids.each_slice(100) do |uid_batch|
           tuples = timed("UID FETCH #{uid_batch.first}..#{uid_batch.last} (#{uid_batch.size} msgs)") do
-            fetch_batch(imap, uid_batch, mailbox, fetch_body, fetch_items)
+            fetch_batch(uid_batch, mailbox, fetch_body, fetch_items)
           end
           tuples.each do |tuple|
             fetched += 1
@@ -96,7 +109,7 @@ module Bmg
         items
       end
 
-      def fetch_batch(imap, uids, mailbox, fetch_body, fetch_items)
+      def fetch_batch(uids, mailbox, fetch_body, fetch_items)
         data = imap.uid_fetch(uids, fetch_items)
         return [] unless data
 

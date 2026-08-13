@@ -248,13 +248,17 @@ for examples.
   emails.restrict(mailbox: "INBOX").allbut([:body_text]).to_a
   ```
 
+- **Persistent connection.** The IMAP connection is opened lazily on
+  first use and kept open across queries. Subsequent calls reuse the
+  same session, avoiding repeated CONNECT/LOGIN overhead. The currently
+  selected mailbox is tracked; querying the same mailbox twice skips the
+  SELECT command. Call `connection.close` when done, or let GC clean up.
 - **SELECT** can be slow on large mailboxes (server-side cost, nothing
-  the client can do about it).
+  the client can do about it). But it's only issued once per mailbox
+  thanks to connection reuse.
 - **`page()` requires all matching emails** to be fetched before sorting
   and slicing. For large result sets, restrict with date ranges or other
   criteria first.
-- Each `each` / `to_a` call opens a new IMAP connection. There is no
-  connection pooling.
 
 ## Examples
 
