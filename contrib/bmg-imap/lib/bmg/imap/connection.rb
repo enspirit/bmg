@@ -29,6 +29,86 @@ module Bmg
         end
       end
 
+      # Searches for UIDs matching criteria in the given mailboxes.
+      # Returns a Hash { mailbox => [uid, ...] }.
+      def search_uids(mailboxes, search_criteria)
+        result = {}
+        target_mailboxes = mailboxes || list_mailbox_names
+        target_mailboxes.each do |mbox|
+          select_mailbox(mbox)
+          criteria = search_criteria || ["ALL"]
+          uids = timed("UID SEARCH #{criteria.inspect}") do
+            imap.uid_search(criteria)
+          end
+          log("  => #{uids.size} UIDs")
+          result[mbox] = uids unless uids.empty?
+        end
+        result
+      end
+
+      def delete_uids(mailbox, uids)
+        return if uids.empty?
+        select_mailbox(mailbox)
+        batch_size = @options[:batch_size]
+        uids.each_slice(batch_size) do |batch|
+          timed("UID STORE #{batch.first}..#{batch.last} +FLAGS (\\Deleted)") do
+            imap.uid_store(batch, "+FLAGS", [:Deleted])
+          end
+        end
+        timed("EXPUNGE") do
+          imap.expunge
+        end
+        @selected_mailbox = nil # mailbox state changed after expunge
+      end
+
+      def store_flags(mailbox, uids, flags)
+        return if uids.empty?
+        select_mailbox(mailbox)
+        batch_size = @options[:batch_size]
+        uids.each_slice(batch_size) do |batch|
+          timed("UID STORE #{batch.first}..#{batch.last} FLAGS #{flags.inspect}") do
+            imap.uid_store(batch, "FLAGS", flags)
+          end
+        end
+      end
+
+      def store_labels(mailbox, uids, labels)
+        return if uids.empty?
+        select_mailbox(mailbox)
+        batch_size = @options[:batch_size]
+        uids.each_slice(batch_size) do |batch|
+          timed("UID STORE #{batch.first}..#{batch.last} X-GM-LABELS #{labels.inspect}") do
+            imap.uid_store(batch, "X-GM-LABELS", labels)
+          end
+        end
+      end
+
+      def move_uids(source_mailbox, uids, target_mailbox)
+        return if uids.empty?
+        select_mailbox(source_mailbox)
+        batch_size = @options[:batch_size]
+        if supports_move?
+          uids.each_slice(batch_size) do |batch|
+            timed("UID MOVE #{batch.first}..#{batch.last} #{target_mailbox}") do
+              imap.uid_move(batch, target_mailbox)
+            end
+          end
+        else
+          uids.each_slice(batch_size) do |batch|
+            timed("UID COPY #{batch.first}..#{batch.last} #{target_mailbox}") do
+              imap.uid_copy(batch, target_mailbox)
+            end
+            timed("UID STORE #{batch.first}..#{batch.last} +FLAGS (\\Deleted)") do
+              imap.uid_store(batch, "+FLAGS", [:Deleted])
+            end
+          end
+          timed("EXPUNGE") do
+            imap.expunge
+          end
+        end
+        @selected_mailbox = nil
+      end
+
       def list_mailbox_names
         (imap.list("", "*") || [])
           .reject { |mbox| mbox.attr.include?(:Noselect) }
@@ -76,6 +156,13 @@ module Bmg
 
       def provider
         @provider || Provider::Default.new
+      end
+
+      def supports_move?
+        @supports_move ||= begin
+          caps = imap.responses("CAPABILITY", &:flatten) rescue imap.capability
+          caps.any? { |c| c.to_s.upcase == "MOVE" }
+        end
       end
 
       def select_mailbox(mailbox)

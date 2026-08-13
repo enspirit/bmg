@@ -32,6 +32,44 @@ module Bmg
         connection.each_email(@mailboxes, @search_criteria, fetch_body: @fetch_body, &bl)
       end
 
+      # Supported updating keys:
+      #   flags:   [:Seen, :Flagged, ...]   — replace all flags
+      #   labels:  ["Projects", ...]        — replace all labels (Gmail)
+      #   mailbox: "Archive"                — move to another mailbox
+      def update(updating, predicate = Predicate.tautology)
+        validate_updating!(updating)
+        uids_by_mailbox = resolve_uids(predicate)
+
+        if updating.key?(:mailbox)
+          target = updating[:mailbox]
+          uids_by_mailbox.each do |mbox, uids|
+            connection.move_uids(mbox, uids, target)
+          end
+        end
+
+        if updating.key?(:flags)
+          uids_by_mailbox.each do |mbox, uids|
+            connection.store_flags(mbox, uids, updating[:flags])
+          end
+        end
+
+        if updating.key?(:labels)
+          uids_by_mailbox.each do |mbox, uids|
+            connection.store_labels(mbox, uids, updating[:labels])
+          end
+        end
+
+        self
+      end
+
+      def delete(predicate = Predicate.tautology)
+        uids_by_mailbox = resolve_uids(predicate)
+        uids_by_mailbox.each do |mbox, uids|
+          connection.delete_uids(mbox, uids)
+        end
+        self
+      end
+
       def to_ast
         [ :imap, @options[:host] ]
       end
@@ -82,6 +120,35 @@ module Bmg
 
 
     private
+
+      UPDATABLE_ATTRS = Set[:flags, :labels, :mailbox].freeze
+
+      def validate_updating!(updating)
+        unknown = updating.keys.reject { |k| UPDATABLE_ATTRS.include?(k) }
+        unless unknown.empty?
+          raise Bmg::Error, "Cannot update #{unknown.join(', ')} on IMAP emails. " \
+            "Updatable attributes: #{UPDATABLE_ATTRS.to_a.join(', ')}"
+        end
+      end
+
+      # Resolves the UIDs to act on, grouped by mailbox.
+      # When predicate is tautology, uses the pushed-down mailboxes/criteria.
+      # When predicate is given, fetches and filters in-memory to collect UIDs.
+      # Returns Hash { mailbox => [uid, ...] }
+      def resolve_uids(predicate)
+        if predicate.tautology?
+          connection.search_uids(@mailboxes, @search_criteria)
+        else
+          # Must fetch tuples and filter in-memory to find matching UIDs
+          result = Hash.new { |h, k| h[k] = [] }
+          each do |tuple|
+            if predicate.evaluate(tuple)
+              result[tuple[:mailbox]] << tuple[:uid]
+            end
+          end
+          result
+        end
+      end
 
       def without_body_fetch
         dup.tap { |r| r.instance_variable_set(:@fetch_body, false) }

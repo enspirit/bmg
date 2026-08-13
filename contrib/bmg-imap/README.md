@@ -33,6 +33,36 @@ emails
   .each { |t| puts t.inspect }
 ```
 
+### Update and delete
+
+```ruby
+# Mark emails as read
+emails.restrict(mailbox: "INBOX", uid: 123).update(flags: [:Seen])
+
+# Add labels (Gmail)
+emails.restrict(mailbox: "INBOX", uid: 123).update(labels: ["Projects", "Important"])
+
+# Move to another mailbox
+emails.restrict(mailbox: "INBOX", uid: 123).update(mailbox: "Archive")
+
+# Multiple updates at once
+emails.restrict(mailbox: "INBOX", uid: 123).update(flags: [:Seen], labels: ["Done"])
+
+# Delete matching emails
+emails.restrict(mailbox: "INBOX", from: "spam@x.com").delete
+```
+
+Updatable attributes:
+
+| Attribute  | IMAP command | Notes |
+|------------|-------------|-------|
+| `:flags`   | `STORE FLAGS` | **Replaces** all flags with the given set |
+| `:labels`  | `STORE X-GM-LABELS` | Gmail only. **Replaces** all labels — existing labels not in the array are removed |
+| `:mailbox` | `MOVE` or `COPY`+`DELETE` | Uses MOVE extension when available |
+
+All other attributes (`:subject`, `:from`, `:date`, etc.) are read-only.
+Update uses **replace semantics** (like SQL `SET`), not add/remove.
+
 ### Mbox files
 
 ```ruby

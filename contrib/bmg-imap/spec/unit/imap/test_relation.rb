@@ -195,5 +195,80 @@ module Bmg::Imap
       end
     end
 
+    describe "delete" do
+      it 'deletes matching UIDs via IMAP' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], nil)
+          .and_return({ "INBOX" => [1, 2, 3] })
+        expect(connection).to receive(:delete_uids).with("INBOX", [1, 2, 3])
+
+        relation.restrict(mailbox: "INBOX").delete
+      end
+
+      it 'deletes with pushed-down search criteria' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], ["FROM", "spam@x.com"])
+          .and_return({ "INBOX" => [5] })
+        expect(connection).to receive(:delete_uids).with("INBOX", [5])
+
+        relation.restrict(mailbox: "INBOX", from: "spam@x.com").delete
+      end
+
+      it 'filters in-memory when predicate is not fully pushed' do
+        allow(connection).to receive(:each_email)
+          .with(nil, nil, fetch_body: true)
+          .and_yield(sample_emails[0].merge(mailbox: "INBOX"))
+          .and_yield(sample_emails[1].merge(mailbox: "INBOX"))
+        expect(connection).to receive(:delete_uids).with("INBOX", [1])
+
+        relation.delete(Predicate.eq(:uid, 1))
+      end
+    end
+
+    describe "update" do
+      it 'updates flags on matching UIDs' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], ["UID", "1"])
+          .and_return({ "INBOX" => [1] })
+        expect(connection).to receive(:store_flags).with("INBOX", [1], [:Seen])
+
+        relation.restrict(mailbox: "INBOX", uid: 1).update(flags: [:Seen])
+      end
+
+      it 'updates labels on matching UIDs' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], nil)
+          .and_return({ "INBOX" => [1, 2] })
+        expect(connection).to receive(:store_labels).with("INBOX", [1, 2], ["Projects"])
+
+        relation.restrict(mailbox: "INBOX").update(labels: ["Projects"])
+      end
+
+      it 'moves emails to another mailbox' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], ["UID", "1"])
+          .and_return({ "INBOX" => [1] })
+        expect(connection).to receive(:move_uids).with("INBOX", [1], "Archive")
+
+        relation.restrict(mailbox: "INBOX", uid: 1).update(mailbox: "Archive")
+      end
+
+      it 'applies multiple updates at once' do
+        allow(connection).to receive(:search_uids)
+          .with(["INBOX"], ["UID", "1"])
+          .and_return({ "INBOX" => [1] })
+        expect(connection).to receive(:store_flags).with("INBOX", [1], [:Seen])
+        expect(connection).to receive(:store_labels).with("INBOX", [1], ["Done"])
+
+        relation.restrict(mailbox: "INBOX", uid: 1).update(flags: [:Seen], labels: ["Done"])
+      end
+
+      it 'raises on non-updatable attributes' do
+        expect {
+          relation.update(subject: "New subject")
+        }.to raise_error(Bmg::Error, /Cannot update subject/)
+      end
+    end
+
   end
 end
