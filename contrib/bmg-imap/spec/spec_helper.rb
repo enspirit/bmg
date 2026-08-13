@@ -37,6 +37,7 @@ module SpecHelpers
         flags: [:Seen],
         size: 1234,
         body_text: "Hello!",
+        raw: "From: alice@example.com\r\nSubject: Hello World\r\n\r\nHello!",
       },
       {
         uid: 2,
@@ -51,6 +52,7 @@ module SpecHelpers
         flags: [],
         size: 2345,
         body_text: "Hi there!",
+        raw: "From: bob@example.com\r\nSubject: Re: Hello World\r\n\r\nHi there!",
       },
     ]
   end

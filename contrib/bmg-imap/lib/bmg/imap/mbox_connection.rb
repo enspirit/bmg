@@ -102,6 +102,7 @@ module Bmg
           flags:       extract_flags(msg),
           size:        raw.bytesize,
           body_text:   extract_body_text(msg),
+          raw:         raw,
         }
       end
 

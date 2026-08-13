@@ -7,7 +7,7 @@ module Bmg
         :uid, :mailbox, :date, :subject,
         :from, :to, :cc, :bcc, :reply_to,
         :in_reply_to, :message_id,
-        :labels, :flags, :size, :body_text,
+        :labels, :flags, :size, :body_text, :raw,
       ].freeze
 
       DEFAULT_TYPE = Type::ANY.with_attrlist(ATTRLIST)
@@ -108,13 +108,17 @@ module Bmg
         end
       end
 
+      # Body attributes derived from BODY.PEEK[]. If NONE of them is kept
+      # by the caller, the fetch skips the message body entirely.
+      BODY_ATTRS = [:body_text, :raw].freeze
+
       def _project(type, attrlist)
-        source = attrlist.include?(:body_text) ? self : without_body_fetch
+        source = (attrlist & BODY_ATTRS).empty? ? without_body_fetch : self
         Operator::Project.new(type, source, attrlist)
       end
 
       def _allbut(type, butlist)
-        source = butlist.include?(:body_text) ? without_body_fetch : self
+        source = (BODY_ATTRS - butlist).empty? ? without_body_fetch : self
         Operator::Allbut.new(type, source, butlist)
       end
 

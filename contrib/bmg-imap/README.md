@@ -104,17 +104,23 @@ Every email is represented as a tuple (Hash) with the following attributes:
 | `:flags`       | Array\<Symbol\>  | IMAP flags (e.g. `[:Seen, :Flagged]`)            |
 | `:size`        | Integer          | Message size in bytes                            |
 | `:body_text`   | String or nil    | Plain text body                                  |
+| `:raw`         | String or nil    | Full RFC822 message (headers + body)             |
 
 Notes:
 - Address fields (`:from`, `:to`, `:cc`, `:bcc`, `:reply_to`) are always
   arrays, never nil. An empty array means no addresses.
-- `:body_text` is always fetched by default (the relation is complete).
-  When you `project` or `allbut` it away, the IMAP backend automatically
-  skips `BODY.PEEK[]` and only fetches envelope metadata, which is
-  significantly faster. See [Performance](#performance-considerations).
+- `:body_text` and `:raw` are both derived from `BODY.PEEK[]` (a single
+  fetch, no marginal cost when both are kept). By default both are
+  present (the relation is complete). If you `project` or `allbut` away
+  *both* of them, the IMAP backend skips the body fetch entirely and
+  only requests envelope metadata, which is significantly faster. See
+  [Performance](#performance-considerations).
 - For multipart messages, `:body_text` is the decoded text/plain part
   (any transfer encoding is undone). For single-part messages it is the
   decoded body.
+- `:raw` carries the full RFC822 message exactly as returned by the
+  server — useful for feeding a downstream MIME parser (rich rendering,
+  attachment extraction, ...) rather than reimplementing one.
 - `:labels` is populated via provider-specific extensions when available
   (see [Providers](#providers)). Returns `[]` on servers with no label support.
 - `:uid` is unique within a mailbox but not across mailboxes.
@@ -267,21 +273,25 @@ for examples.
 
 ## Performance considerations
 
-- **Body text fetch is automatic but optimizable.** By default, `body_text`
-  is fetched (via `BODY.PEEK[]`, then decoded to the text/plain part),
-  making the relation complete. This can be slow for large result sets.
-  When you use `project` or `allbut` to exclude `:body_text`, the IMAP
-  fetch automatically skips body download and only requests envelope
-  metadata — which is much faster:
+- **Body fetch is automatic but optimizable.** By default, both
+  `:body_text` and `:raw` are fetched — `BODY.PEEK[]` is issued once and
+  both are derived from it (`:body_text` is the decoded text/plain part,
+  `:raw` the whole RFC822 message). The relation is complete but this
+  can be slow for large result sets. When you use `project` or `allbut`
+  to exclude **both** `:body_text` and `:raw`, the IMAP fetch skips the
+  body download and only requests envelope metadata — much faster:
 
   ```ruby
-  # Slow: fetches body text for every email
+  # Slow: fetches full body for every email
   emails.restrict(mailbox: "INBOX").to_a
 
   # Fast: only fetches envelope metadata
   emails.restrict(mailbox: "INBOX").project([:date, :from, :subject]).to_a
 
-  # Also fast: allbut body_text
+  # Also fast: allbut both body attributes
+  emails.restrict(mailbox: "INBOX").allbut([:body_text, :raw]).to_a
+
+  # NOT fast: :raw still triggers the body fetch
   emails.restrict(mailbox: "INBOX").allbut([:body_text]).to_a
   ```
 

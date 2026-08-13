@@ -240,6 +240,7 @@ module Bmg
           flags:       item.attr["FLAGS"],
           size:        item.attr["RFC822.SIZE"],
           body_text:   fetch_body ? extract_body_text(item.attr["BODY[]"]) : nil,
+          raw:         fetch_body ? item.attr["BODY[]"] : nil,
         }
         tuple.merge!(provider.parse_extra(item))
         tuple

@@ -80,7 +80,7 @@ module Bmg::Imap
     end
 
     describe "project" do
-      it 'skips body fetch when body_text is not projected' do
+      it 'skips body fetch when neither body_text nor raw is projected' do
         allow(connection).to receive(:each_email)
           .with(nil, nil, fetch_body: false)
           .and_yield(sample_emails[0])
@@ -98,19 +98,47 @@ module Bmg::Imap
         result = relation.project([:subject, :body_text]).to_a
         expect(result.first.keys).to eq([:subject, :body_text])
       end
+
+      it 'keeps body fetch when raw is projected' do
+        allow(connection).to receive(:each_email)
+          .with(nil, nil, fetch_body: true)
+          .and_yield(sample_emails[0])
+
+        result = relation.project([:subject, :raw]).to_a
+        expect(result.first.keys).to eq([:subject, :raw])
+      end
     end
 
     describe "allbut" do
-      it 'skips body fetch when body_text is excluded' do
+      it 'skips body fetch only when both body_text and raw are excluded' do
         allow(connection).to receive(:each_email)
           .with(nil, nil, fetch_body: false)
+          .and_yield(sample_emails[0])
+
+        result = relation.allbut([:body_text, :raw]).to_a
+        expect(result.first).not_to have_key(:body_text)
+        expect(result.first).not_to have_key(:raw)
+      end
+
+      it 'keeps body fetch when only body_text is excluded (raw still needed)' do
+        allow(connection).to receive(:each_email)
+          .with(nil, nil, fetch_body: true)
           .and_yield(sample_emails[0])
 
         result = relation.allbut([:body_text]).to_a
         expect(result.first).not_to have_key(:body_text)
       end
 
-      it 'keeps body fetch when body_text is not excluded' do
+      it 'keeps body fetch when only raw is excluded (body_text still needed)' do
+        allow(connection).to receive(:each_email)
+          .with(nil, nil, fetch_body: true)
+          .and_yield(sample_emails[0])
+
+        result = relation.allbut([:raw]).to_a
+        expect(result.first).not_to have_key(:raw)
+      end
+
+      it 'keeps body fetch when neither body_text nor raw is excluded' do
         allow(connection).to receive(:each_email)
           .with(nil, nil, fetch_body: true)
           .and_yield(sample_emails[0])
