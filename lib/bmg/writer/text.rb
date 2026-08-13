@@ -67,7 +67,7 @@ module Bmg
           elsif value.empty?
             "[]"
           else
-            values = value.map{|x| Cell.new(x).text_rendering}
+            values = value.map{|x| Cell.new(@renderer, x).text_rendering}
             if values.inject(0){|memo,s| memo + s.size} < 20
               "[" + values.join(", ") + "]"
             else
