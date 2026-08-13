@@ -22,6 +22,7 @@ module Bmg
         @fetch_body = true
       end
       attr_accessor :type
+      attr_reader :connection
 
     public
 
@@ -81,8 +82,6 @@ module Bmg
 
 
     private
-
-      attr_reader :connection
 
       def without_body_fetch
         dup.tap { |r| r.instance_variable_set(:@fetch_body, false) }

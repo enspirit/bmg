@@ -4,9 +4,14 @@ module Bmg
   module Imap
     class Connection
 
+      DEFAULT_OPTIONS = {
+        batch_size: 100,
+        limit: nil,
+      }.freeze
+
       def initialize(options)
-        @options = options
-        @logger = options[:logger]
+        @options = DEFAULT_OPTIONS.merge(options)
+        @logger = @options[:logger]
         @imap = nil
         @provider = nil
         @selected_mailbox = nil
@@ -17,8 +22,10 @@ module Bmg
 
         target_mailboxes = mailboxes || list_mailbox_names
         log("MAILBOXES #{target_mailboxes.inspect}")
+        remaining = @options[:limit]
         target_mailboxes.each do |mbox|
-          fetch_mailbox_emails(mbox, search_criteria, fetch_body, &bl)
+          remaining = fetch_mailbox_emails(mbox, search_criteria, fetch_body, remaining, &bl)
+          break if remaining == 0
         end
       end
 
@@ -77,20 +84,23 @@ module Bmg
         @selected_mailbox = mailbox
       end
 
-      def fetch_mailbox_emails(mailbox, search_criteria, fetch_body, &bl)
+      # Returns the remaining limit (nil = unlimited, 0 = stop)
+      def fetch_mailbox_emails(mailbox, search_criteria, fetch_body, remaining, &bl)
         select_mailbox(mailbox)
         criteria = search_criteria || ["ALL"]
         uids = timed("UID SEARCH #{criteria.inspect}") do
           imap.uid_search(criteria)
         end
         log("  => #{uids.size} UIDs")
-        return if uids.empty?
+        return remaining if uids.empty?
 
+        uids = uids.first(remaining) if remaining
         fetch_items = build_fetch_items(fetch_body)
         log("  FETCH items: #{fetch_items.join(', ')}")
 
+        batch_size = @options[:batch_size]
         fetched = 0
-        uids.each_slice(100) do |uid_batch|
+        uids.each_slice(batch_size) do |uid_batch|
           tuples = timed("UID FETCH #{uid_batch.first}..#{uid_batch.last} (#{uid_batch.size} msgs)") do
             fetch_batch(uid_batch, mailbox, fetch_body, fetch_items)
           end
@@ -100,6 +110,7 @@ module Bmg
           end
         end
         log("  => #{fetched} emails yielded from #{mailbox}")
+        remaining ? remaining - fetched : nil
       end
 
       def build_fetch_items(fetch_body)

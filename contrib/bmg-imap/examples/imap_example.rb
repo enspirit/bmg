@@ -25,21 +25,23 @@ emails = Bmg::Imap::Relation.new(
   logger:   ->(msg) { $stderr.puts msg },
 )
 
-# List recent emails (last 30 days)
-since = Date.today - 30
-recent = emails
-  .restrict(mailbox: "[Gmail]/All Mail")
-  .restrict(Predicate.gte(:date, since))
-  .restrict(Predicate.intersect(:labels, ["dmarc"]))
-  .allbut([:body_text])
-  .page([[:date,:desc]], 1, page_size: 20)
+puts "COUCOU :: " << emails.connection.list_mailbox_names.inspect
 
-puts "=== Recent emails (last 30 days) ==="
-# recent.each do |tuple|
-#   puts "#{tuple[:date]}  #{tuple[:from]&.first}  #{tuple[:subject]}"
-# end
-puts JSON.pretty_generate(recent)
-puts
+# List recent emails (last 30 days)
+# since = Date.today - 30
+# recent = emails
+#   .restrict(mailbox: "[Gmail]/All Mail")
+#   .restrict(Predicate.gte(:date, since))
+#   .restrict(Predicate.intersect(:labels, ["dmarc"]))
+#   .allbut([:body_text])
+#   .page([[:date,:desc]], 1, page_size: 20)
+
+# puts "=== Recent emails (last 30 days) ==="
+# # recent.each do |tuple|
+# #   puts "#{tuple[:date]}  #{tuple[:from]&.first}  #{tuple[:subject]}"
+# # end
+# puts JSON.pretty_generate(recent)
+# puts
 
 # Count emails per mailbox
 # puts "=== Email count ==="

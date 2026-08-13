@@ -197,6 +197,9 @@ Output:
 | `:password`  | required | Login password (use app passwords for Gmail) |
 | `:ssl`       | `true`   | Use SSL/TLS                             |
 | `:port`      | 993 (ssl) / 143 | IMAP port                        |
+| `:timezone`  | `nil`    | Timezone offset for date formatting (e.g. `"+02:00"`) |
+| `:limit`     | `nil`    | Max total emails to fetch (nil = unlimited) |
+| `:batch_size`| `100`    | Number of emails per IMAP FETCH round-trip |
 | `:logger`    | `nil`    | Lambda for protocol tracing             |
 | `:connection`| `nil`    | Provide your own connection (e.g. `MboxConnection`) |
 
