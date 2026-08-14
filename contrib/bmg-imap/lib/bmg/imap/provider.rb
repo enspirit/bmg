@@ -18,6 +18,9 @@ module Bmg
     # |------------|-----------------|---------------------|---------|
     # | :labels    | Array<String>   | X-GM-LABELS         | []      |
     #
+    # Providers can also override strategy hooks — currently only
+    # `delete_uids` (see Gmail's move-to-Trash override).
+    #
     class Provider
 
       # Detects the provider from IMAP capabilities.
@@ -89,6 +92,14 @@ module Bmg
       # Maps official attribute name => IMAP SEARCH key string.
       def intersect_attrs
         {}
+      end
+
+      # Deletion strategy. The default is the standard IMAP recipe —
+      # STORE \Deleted on the message + EXPUNGE the mailbox. Providers
+      # whose server ignores \Deleted (Gmail with Auto-Expunge off, ...)
+      # should override to move the messages to a trash mailbox instead.
+      def delete_uids(connection, mailbox, uids)
+        connection.expunge_uids(mailbox, uids)
       end
 
       def name

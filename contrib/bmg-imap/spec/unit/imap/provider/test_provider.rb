@@ -71,6 +71,14 @@ module Bmg::Imap
       it 'has no intersect attrs' do
         expect(provider.intersect_attrs).to eq({})
       end
+
+      describe '#delete_uids' do
+        it 'delegates to connection.expunge_uids (standard IMAP recipe)' do
+          connection = instance_double(Connection)
+          expect(connection).to receive(:expunge_uids).with("INBOX", [1, 2, 3])
+          provider.delete_uids(connection, "INBOX", [1, 2, 3])
+        end
+      end
     end
 
     describe Provider::Gmail do
@@ -104,6 +112,47 @@ module Bmg::Imap
 
       it 'has no eq search attrs' do
         expect(provider.search_attrs).to eq({})
+      end
+
+      describe '#delete_uids' do
+        let(:connection) { instance_double(Connection) }
+
+        it 'moves to Trash discovered via SPECIAL-USE' do
+          allow(connection).to receive(:find_special_use_mailbox).with(:Trash)
+            .and_return("[Gmail]/Bin")
+          expect(connection).to receive(:move_uids).with("INBOX", [1, 2], "[Gmail]/Bin")
+          provider.delete_uids(connection, "INBOX", [1, 2])
+        end
+
+        it 'falls back to a well-known Gmail trash name when SPECIAL-USE is unavailable' do
+          allow(connection).to receive(:find_special_use_mailbox).with(:Trash).and_return(nil)
+          allow(connection).to receive(:list_mailbox_names)
+            .and_return(["INBOX", "[Gmail]/Trash", "[Gmail]/Sent Mail"])
+          expect(connection).to receive(:move_uids).with("INBOX", [1], "[Gmail]/Trash")
+          provider.delete_uids(connection, "INBOX", [1])
+        end
+
+        it 'expunges in place when the source mailbox is already the trash' do
+          allow(connection).to receive(:find_special_use_mailbox).with(:Trash)
+            .and_return("[Gmail]/Bin")
+          expect(connection).to receive(:expunge_uids).with("[Gmail]/Bin", [1, 2])
+          provider.delete_uids(connection, "[Gmail]/Bin", [1, 2])
+        end
+
+        it 'expunges in place when no trash mailbox can be resolved' do
+          allow(connection).to receive(:find_special_use_mailbox).with(:Trash).and_return(nil)
+          allow(connection).to receive(:list_mailbox_names).and_return(["INBOX", "Archive"])
+          expect(connection).to receive(:expunge_uids).with("INBOX", [3])
+          provider.delete_uids(connection, "INBOX", [3])
+        end
+
+        it 'caches the resolved trash mailbox across calls' do
+          expect(connection).to receive(:find_special_use_mailbox).with(:Trash)
+            .once.and_return("[Gmail]/Bin")
+          allow(connection).to receive(:move_uids)
+          provider.delete_uids(connection, "INBOX", [1])
+          provider.delete_uids(connection, "INBOX", [2])
+        end
       end
     end
 

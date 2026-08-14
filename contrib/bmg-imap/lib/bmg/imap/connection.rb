@@ -46,7 +46,19 @@ module Bmg
         result
       end
 
+      # Entry point for message deletion — dispatches to the provider's
+      # strategy (see Provider#delete_uids). Providers may call back into
+      # `expunge_uids` and `move_uids` on this connection.
       def delete_uids(mailbox, uids)
+        return if uids.empty?
+        imap # ensure @provider is populated via detect_provider
+        provider.delete_uids(self, mailbox, uids)
+      end
+
+      # Standard IMAP deletion: STORE \Deleted on each message then
+      # EXPUNGE the mailbox. This is what most servers do; Gmail with
+      # Auto-Expunge off silently ignores it (see Provider::Gmail).
+      def expunge_uids(mailbox, uids)
         return if uids.empty?
         select_mailbox(mailbox)
         batch_size = @options[:batch_size]
@@ -59,6 +71,12 @@ module Bmg
           imap.expunge
         end
         @selected_mailbox = nil # mailbox state changed after expunge
+      end
+
+      # Finds the mailbox with the given RFC 6154 SPECIAL-USE attribute
+      # (e.g. :Trash, :Sent, :Drafts). Returns its name or nil.
+      def find_special_use_mailbox(attr)
+        (imap.list("", "*") || []).find { |mbox| mbox.attr.include?(attr) }&.name
       end
 
       def store_flags(mailbox, uids, flags)

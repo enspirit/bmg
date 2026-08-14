@@ -63,6 +63,18 @@ Updatable attributes:
 All other attributes (`:subject`, `:from`, `:date`, etc.) are read-only.
 Update uses **replace semantics** (like SQL `SET`), not add/remove.
 
+Deletion is provider-aware:
+
+| Provider | `.delete` behavior |
+|----------|-------------------|
+| Default  | `STORE +FLAGS \Deleted` + `EXPUNGE` (standard IMAP) |
+| Gmail    | `MOVE` to the Trash mailbox (Gmail ignores `\Deleted` on non-Trash mailboxes when Auto-Expunge is off). Messages already in Trash fall back to `STORE + EXPUNGE`. |
+
+The Gmail Trash mailbox is discovered via RFC 6154 SPECIAL-USE
+(so localized names like `[Gmail]/Bin` work), with a fallback to
+well-known Gmail names (`[Gmail]/Trash`, `[Gmail]/Bin`, `[Google
+Mail]/Trash`, `[Google Mail]/Bin`).
+
 ### Mbox files
 
 ```ruby
