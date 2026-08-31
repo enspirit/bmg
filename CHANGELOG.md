@@ -1,3 +1,10 @@
+## 0.24.0
+
+* Compile Hash value mapping transforms to SQL CASE expressions.
+  `r.transform(a: { "foo" => 1, "bar" => 2 })` now compiles to
+  `CASE a WHEN 'foo' THEN 1 WHEN 'bar' THEN 2 END` instead of
+  falling back to in-memory evaluation.
+
 ## 0.23.6 - 2025-10-04
 
 * Improve xlsx reader and writer with a grouping character (e.g. ") whose

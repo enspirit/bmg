@@ -36,3 +36,13 @@
       date(CAST(`t1`.`qty` AS varchar(255))) AS 'qty'
     FROM
       `supplies` AS 't1'
+- bmg: |-
+    suppliers.transform(:city => { "London" => "UK", "Paris" => "FR", "Athens" => "GR" })
+  sqlite: |-
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      (CASE `t1`.`city` WHEN 'London' THEN 'UK' WHEN 'Paris' THEN 'FR' WHEN 'Athens' THEN 'GR' ELSE NULL END) AS 'city',
+      `t1`.`status`
+    FROM
+      `suppliers` AS 't1'

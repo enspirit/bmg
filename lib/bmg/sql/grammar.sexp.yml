@@ -81,6 +81,9 @@ rules:
     - summarizer
     - func_call
     - literal
+    - case_when
+  case_when:
+    - [ scalar_exp, literal+ ]
   a_name:
     - qualified_name
     - column_name

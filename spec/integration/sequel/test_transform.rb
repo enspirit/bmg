@@ -20,6 +20,13 @@ module Bmg
       expect(got.send(:operand)).to be_a(Sequel::Relation)
     end
 
+    it 'does compile Hash value mapping transformation' do
+      got = db.suppliers
+        .transform(:city => { "London" => "UK", "Paris" => "FR", "Athens" => "GR" })
+      expect(got).to be_a(Sequel::Relation)
+      expect(got.to_a.map{|t| t[:city] }.sort).to eql(["FR","FR","GR","UK","UK"])
+    end
+
     it 'is able to split supported and unsupported transformations' do
       t = { :sid => ->(sid){ sid.downcase }, :qty => String}
       got = db.supplies.transform(t)

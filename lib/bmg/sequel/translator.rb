@@ -70,11 +70,19 @@ module Bmg
         case kind = sexpr.left.first
         when :qualified_name
           left.column == right.value ? left : ::Sequel.as(left, right)
-        when :literal, :summarizer, :func_call
+        when :literal, :summarizer, :func_call, :case_when
           ::Sequel.as(left, right)
         else
           raise NotImplementedError, "Unexpected select item `#{kind}`"
         end
+      end
+
+      def on_case_when(sexpr)
+        operand = apply(sexpr[1])
+        mapping = sexpr[2..-1].each_slice(2).each_with_object({}){|(w, t), h|
+          h[w.last] = t.last
+        }
+        ::Sequel.case(mapping, nil, operand)
       end
 
       def on_func_call(sexpr)

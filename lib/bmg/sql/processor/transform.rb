@@ -66,6 +66,11 @@ module Bmg
               func_call_node(sexpr, Array(t).reverse),
               sexpr[2]
             ])
+          when Hash
+            sexpr([:select_item,
+              case_when_node(sexpr, t),
+              sexpr[2]
+            ])
           else
             raise NotSupportedError
           end
@@ -87,6 +92,15 @@ module Bmg
             :cast,
             inside,
             [ :literal, head ] ]
+        end
+
+        def case_when_node(sexpr, mapping)
+          node = [:case_when, sexpr[1]]
+          mapping.each do |when_val, then_val|
+            node << [:literal, when_val]
+            node << [:literal, then_val]
+          end
+          node
         end
 
         def transformation_for(as)
