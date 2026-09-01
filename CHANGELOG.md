@@ -1,4 +1,4 @@
-## 0.24.0
+## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries
   its own SQL — a Sequel expression, or any object following the predicate
