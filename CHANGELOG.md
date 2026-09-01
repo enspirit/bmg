@@ -1,5 +1,11 @@
 ## 0.24.0
 
+* Compile SQL-able transform values to SQL. A transform value that carries
+  its own SQL — a Sequel expression, or any object following the predicate
+  gem's `:sql`/`:sql_literal` convention — now compiles into the query
+  (e.g. `r.transform(d: Sequel.function(:date_trunc, "month", :d))` →
+  `date_trunc('month', d)`) instead of falling back to in-memory evaluation.
+
 * Compile Hash value mapping transforms to SQL CASE expressions.
   `r.transform(a: { "foo" => 1, "bar" => 2 })` now compiles to
   `CASE a WHEN 'foo' THEN 1 WHEN 'bar' THEN 2 END` instead of

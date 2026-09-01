@@ -27,6 +27,14 @@ module Bmg
       expect(got.to_a.map{|t| t[:city] }.sort).to eql(["FR","FR","GR","UK","UK"])
     end
 
+    it 'does compile an SQL-literal (Sequel expression) transformation' do
+      got = db.suppliers
+        .transform(:name => ::Sequel.function(:upper, :name))
+      expect(got).to be_a(Sequel::Relation)
+      expect(got.to_a.map{|t| t[:name] }.sort)
+        .to eql(db.suppliers.to_a.map{|t| t[:name].upcase }.sort)
+    end
+
     it 'is able to split supported and unsupported transformations' do
       t = { :sid => ->(sid){ sid.downcase }, :qty => String}
       got = db.supplies.transform(t)

@@ -50,6 +50,14 @@ module Bmg
           SplitSupported.split_supported(*args, &bl)
         end
 
+        # An SQL-able element the transform can emit verbatim: an object that
+        # carries its own SQL (the predicate gem's `:sql`/`:sql_literal`
+        # convention) or a Sequel expression (rendered through `Sequel.expr`).
+        def self.sql_expr?(x)
+          x.respond_to?(:sql_literal) || x.respond_to?(:sql) ||
+            (defined?(::Sequel::SQL::Expression) && x.is_a?(::Sequel::SQL::Expression))
+        end
+
         def on_select_list(sexpr)
           sexpr.each_with_index.map{|child,index|
             index == 0 ? child : apply(child)
@@ -72,7 +80,11 @@ module Bmg
               sexpr[2]
             ])
           else
-            raise NotSupportedError
+            # An SQL-able value (e.g. a Sequel expression) carries its own SQL
+            # — including the column reference — so it rides through as a
+            # literal, which the Sequel translator emits verbatim.
+            raise NotSupportedError unless Transform.sql_expr?(t)
+            sexpr([:select_item, [:literal, t], sexpr[2]])
           end
         end
 
