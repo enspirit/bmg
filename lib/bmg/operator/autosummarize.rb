@@ -5,9 +5,6 @@ module Bmg
     #
     # Autosummarize helps structuring the results of a big flat join.
     #
-    # This operator is still largely experimental and should be used with
-    # care...
-    #
     class Autosummarize
       include Operator::Unary
 
