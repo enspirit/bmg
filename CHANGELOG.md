@@ -1,5 +1,11 @@
 ## 1.0.0
 
+Bmg is now 1.0 and follows [semantic versioning](https://semver.org). The
+README has a new "Stability and versioning" section stating what the public
+API is, and what is deliberately left out of it: the underscored optimization
+hooks, the shape of `to_ast`, the SQL actually generated for a given query
+tree, and everything under `Bmg::Sql`.
+
 * BREAKING: removed `Bmg::Leaf`, a long-deprecated alias for
   `Bmg::Relation::InMemory`. Use the latter, or `Bmg.in_memory`.
 

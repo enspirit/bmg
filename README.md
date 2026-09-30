@@ -31,6 +31,7 @@ further down this README.
 * [How is this different?](#how-is-this-different)
   * [... from similar libraries](#-from-similar-libraries)
   * [... from Alf](#-from-alf)
+* [Stability and versioning](#stability-and-versioning)
 * [Contribute](#contribute)
 * [License](#license)
 
@@ -535,6 +536,38 @@ probably never be.
 8. Bmg optimizes queries and compiles them to SQL on the fly, while Alf was
    building an AST internally first. Strictly speaking this makes Bmg less
    powerful than Alf since optimizations cannot be turned off for now.
+
+## Stability and versioning
+
+As of 1.0, Bmg follows [semantic versioning](https://semver.org). Breaking
+changes to the API described below only happen on a major version.
+
+The following is public, and covered by that promise:
+
+* the factory methods on `Bmg` and `Bmg::Relation` (`in_memory`, `sequel`,
+  `csv`, `json`, `yaml`, `excel`, `text_file`, `generate`, `mutable`, ...);
+* the relational operators listed under [Supported
+  operators](#supported-operators), their arguments and their documented
+  options;
+* the predicates and summarizers listed under [Supported
+  predicates](#supported-predicates) and [Supported
+  summaries](#supported-summaries);
+* `Bmg::Relation` as an interface to include, with `each` yielding symbolized
+  tuples, as shown in [Your own relations](#your-own-relations);
+* `Bmg::Type`, `Bmg::Database`, and the reader/writer output preferences.
+
+The following is explicitly *not* covered, and may change in a minor version:
+
+* the underscored optimization hooks (`_restrict`, `_project`, ...). They are
+  documented in [Your own relations](#your-own-relations) because adapters
+  need them, but the protocol evolves as new optimizations are added. If you
+  override them, pin a minor version and read the CHANGELOG.
+* the shape of the ASTs returned by `to_ast`, and the SQL actually generated
+  for a given query tree. Both are observable, and both are expected to
+  change as the compiler improves; only the *semantics* of a relation is
+  guaranteed.
+* anything under `Bmg::Sql`, `Bmg::Sequel::Translator` and the sexpr grammar,
+  which are compiler internals.
 
 ## Contribute
 
