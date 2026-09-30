@@ -202,7 +202,7 @@ documentation.
 
 ### Connecting to Redis databases
 
-Bmg currently requires `bmg-redis` and `redis >= 4.6` to connect
+Bmg currently requires `bmg-redis` and `redis >= 4.0` to connect
 to Redis databases. You also need to require `bmg/redis`.
 
 ```Gemfile
