@@ -1,4 +1,7 @@
-## 0.25.0
+## 1.0.0
+
+* BREAKING: removed `Bmg::Leaf`, a long-deprecated alias for
+  `Bmg::Relation::InMemory`. Use the latter, or `Bmg.in_memory`.
 
 * Ruby 3.4 and 4.0 are now part of the build matrix, next to 2.7 and 3.2.
   `ostruct`, no longer a default gem as of ruby 3.5/4.0, became an explicit

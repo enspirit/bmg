@@ -36,7 +36,4 @@ module Bmg
 
   # Add all factory methods
   extend Factory
-
-  # Deprecated
-  Leaf = Relation::InMemory
 end

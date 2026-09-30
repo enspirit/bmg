@@ -8,7 +8,7 @@ module Bmg
 
     describe 'new' do
 
-      it "accepts arrays but enclosed them as Leafs" do
+      it "accepts arrays but encloses them as in-memory relations" do
         tuple = { a: 1, b: 2 }
         rel = Relation.new([tuple])
         expect(rel).to be_a(Relation::InMemory)
