@@ -1,3 +1,9 @@
+## 0.25.0
+
+* Ruby 3.4 and 4.0 are now part of the build matrix, next to 2.7 and 3.2.
+  `ostruct`, no longer a default gem as of ruby 3.5/4.0, became an explicit
+  development dependency.
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries

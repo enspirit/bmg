@@ -24,4 +24,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sequel"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "activesupport"
+  # No longer a default gem as of ruby 3.5/4.0, but still used by the specs
+  s.add_development_dependency "ostruct"
 end
