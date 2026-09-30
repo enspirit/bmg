@@ -1,4 +1,4 @@
-## 1.0.0
+## 1.0.0 - 2026-09-30
 
 Bmg is now 1.0 and follows [semantic versioning](https://semver.org). The
 README has a new "Stability and versioning" section stating what the public
@@ -22,7 +22,8 @@ tree, and everything under `Bmg::Sql`.
   `ostruct`, no longer a default gem as of ruby 3.5/4.0, became an explicit
   development dependency.
 
-* bmg-redis now accepts redis-rb 5.x and 6.x (it was pinned to 4.x).
+* bmg-redis now accepts redis-rb 5.x and 6.x in addition to 4.x. Only the
+  ceiling moved; the >= 4.0 floor is unchanged.
 
 * The in-memory operators used to test attribute membership against an Array
   once per attribute and per tuple. `join`, `matching`, `not_matching`,
