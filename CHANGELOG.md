@@ -15,6 +15,10 @@
   `TupleAlgebra.project` and `.allbut` accept anything answering `include?`,
   so this is not a breaking change for external callers.
 
+* Fix a quadratic behaviour in `Autosummarize::YsByX`, which called `uniq!`
+  on the accumulated list on every single append. It now deduplicates once,
+  at the end.
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries

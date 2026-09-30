@@ -294,10 +294,11 @@ module Bmg
           v = v.reject{|tuple| tuple[@x].nil? }
           v = v.sort(&@sorter) if @sorter
           v.each do |tuple|
-            h[tuple[@x]] ||= []
-            h[tuple[@x]] << tuple[@y]
-            h[tuple[@x]].uniq!
+            (h[tuple[@x]] ||= []) << tuple[@y]
           end
+          # deduplicating once at the end, instead of on every append,
+          # keeps this linear in the number of observed `y`s
+          h.each_value(&:uniq!)
           h
         end
 
