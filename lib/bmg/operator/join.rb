@@ -27,13 +27,14 @@ module Bmg
       def each
         return to_enum unless block_given?
         index = Hash.new
+        on = on_index
         right.each_with_object(index) do |t, index|
-          key = tuple_project(t, on)
+          key = TupleAlgebra.project(t, on)
           index[key] ||= []
           index[key] << t
         end
         left.each do |tuple|
-          key = tuple_project(tuple, on)
+          key = TupleAlgebra.project(tuple, on)
           if to_join = index[key]
             to_join.each do |right|
               yield right.merge(tuple)
@@ -113,8 +114,8 @@ module Bmg
 
     private
 
-      def tuple_project(tuple, on)
-        TupleAlgebra.project(tuple, on)
+      def on_index
+        @on_index ||= TupleAlgebra.membership(on)
       end
 
     end # class Join

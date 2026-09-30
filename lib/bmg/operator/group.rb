@@ -34,6 +34,7 @@ module Bmg
       def each(&bl)
         return to_enum unless block_given?
         index = Hash.new{|h,k| h[k] = k.merge(as => empty_group) }
+        attrs = attrs_index
         operand.each do |tuple|
           key = TupleAlgebra.allbut(tuple, attrs)
           sub = TupleAlgebra.project(tuple, attrs)
@@ -75,6 +76,10 @@ module Bmg
       end
 
     private
+
+      def attrs_index
+        @attrs_index ||= TupleAlgebra.membership(attrs)
+      end
 
       def empty_group
         Relation::InMemory.new(group_type, Set.new)

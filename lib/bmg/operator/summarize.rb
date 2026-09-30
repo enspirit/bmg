@@ -51,8 +51,9 @@ module Bmg
           }]
         }
         # iterate each tuple
+        by_index = TupleAlgebra.membership(@by)
         @operand.each do |tuple|
-          key = TupleAlgebra.project(tuple, @by)
+          key = TupleAlgebra.project(tuple, by_index)
           # apply them all and create a new memo
           result[key] = Hash[@summarization.map{|k,v|
             [ k, v.happens(result[key][k], tuple) ]

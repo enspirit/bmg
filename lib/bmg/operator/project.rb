@@ -80,7 +80,8 @@ module Bmg
     private
 
       def tuple_project(tuple)
-        tuple.dup.delete_if{|k,_| !@attrlist.include?(k) }
+        attrs = (@attrs_index ||= TupleAlgebra.membership(@attrlist))
+        tuple.dup.delete_if{|k,_| !attrs.include?(k) }
       end
 
       def valid_tuple!(tuple)

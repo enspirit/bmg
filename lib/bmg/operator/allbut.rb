@@ -103,7 +103,7 @@ module Bmg
     private
 
       def tuple_allbut(tuple)
-        TupleAlgebra.allbut(tuple, @butlist)
+        TupleAlgebra.allbut(tuple, @butlist_index ||= TupleAlgebra.membership(@butlist))
       end
 
       def valid_tuple!(tuple)

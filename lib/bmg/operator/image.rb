@@ -34,6 +34,8 @@ module Bmg
 
       }
 
+      EMPTY_BUTLIST = [].freeze
+
       def initialize(type, left, right, as, on, options = {})
         @type = type
         @left = left
@@ -91,8 +93,9 @@ module Bmg
         index = build_right_index(right_rel)
 
         # each left with image from right index
+        on = on_index
         left_rel.each do |tuple|
-          key = tuple_project(tuple, on)
+          key = TupleAlgebra.project(tuple, on)
           image = index[key] || (options[:array] ? [] : empty_image)
           yield tuple.merge(as => image)
         end
@@ -100,10 +103,11 @@ module Bmg
 
       def build_right_index(right)
         index = Hash.new{|h,k| h[k] = empty_image }
-        butlist = options[:preserve] ? [] : on
+        on = on_index
+        butlist = options[:preserve] ? EMPTY_BUTLIST : on
         right.each_with_object(index) do |t, index|
-          key = tuple_project(t, on)
-          index[key].operand << tuple_allbut(t, butlist)
+          key = TupleAlgebra.project(t, on)
+          index[key].operand << TupleAlgebra.allbut(t, butlist)
         end
         if opt = options[:array]
           sorter = to_sorter(opt)
@@ -252,12 +256,8 @@ module Bmg
 
     private
 
-      def tuple_project(tuple, on)
-        TupleAlgebra.project(tuple, on)
-      end
-
-      def tuple_allbut(tuple, butlist)
-        TupleAlgebra.allbut(tuple, butlist)
+      def on_index
+        @on_index ||= TupleAlgebra.membership(on)
       end
 
       def image_type

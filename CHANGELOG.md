@@ -6,6 +6,15 @@
 
 * bmg-redis now accepts redis-rb 5.x and 6.x (it was pinned to 4.x).
 
+* The in-memory operators used to test attribute membership against an Array
+  once per attribute and per tuple. `join`, `matching`, `not_matching`,
+  `image`, `group`, `summarize`, `project` and `allbut` now index their
+  attribute list once, through `TupleAlgebra.membership`, and hoist it out
+  of their tuple loop. Lists shorter than three attributes — most join keys
+  — are left as Arrays, which are faster than Sets at that size.
+  `TupleAlgebra.project` and `.allbut` accept anything answering `include?`,
+  so this is not a breaking change for external callers.
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries
