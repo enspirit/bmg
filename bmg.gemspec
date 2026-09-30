@@ -26,4 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "activesupport"
   # No longer a default gem as of ruby 3.5/4.0, but still used by the specs
   s.add_development_dependency "ostruct"
+  s.add_development_dependency "benchmark-ips", "~> 2.14"
 end

@@ -19,6 +19,9 @@
   on the accumulated list on every single append. It now deduplicates once,
   at the end.
 
+* Added `bench/`, a small benchmark suite covering the in-memory operators
+  and the SQL compiler.
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries

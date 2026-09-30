@@ -542,6 +542,16 @@ Please use github issues and pull requests for all questions, bug reports,
 and contributions. Don't hesitate to get in touch with us with an early code
 spike if you plan to add non trivial features.
 
+The `bench/` folder holds benchmarks for the in-memory operators and for the
+SQL compiler. Run one with `bundle exec ruby bench/operators.rb`. To compare
+two versions of the code, point `BMG_LIB` at another checkout and alternate
+between the two — benchmarking both in one batch, then the other, mostly
+measures how busy your machine was:
+
+```
+BMG_LIB=/path/to/other/lib bundle exec ruby bench/operators.rb
+```
+
 ## Licence
 
 This software is distributed by Enspirit SRL under a MIT Licence. Please
