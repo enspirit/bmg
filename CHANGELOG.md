@@ -4,6 +4,8 @@
   `ostruct`, no longer a default gem as of ruby 3.5/4.0, became an explicit
   development dependency.
 
+* bmg-redis now accepts redis-rb 5.x and 6.x (it was pinned to 4.x).
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries
