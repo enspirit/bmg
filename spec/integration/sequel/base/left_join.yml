@@ -153,3 +153,32 @@
     WHERE (
       `t3`.`qty` = 50
     )
+# The restriction of the right operand stays with it, inside the derived table:
+# in the WHERE of the result it would also have to hold of the tuples the left
+# join fills with nulls, which is an inner join.
+- bmg: |-
+    suppliers
+      .left_join(supplies.restrict(qty: 50), [:sid])
+  sqlite: |-
+    WITH `t3` AS (
+      SELECT
+        `t2`.`sid`,
+        `t2`.`pid`,
+        `t2`.`qty`
+      FROM
+        `supplies` AS 't2'
+      WHERE (
+        `t2`.`qty` = 50
+      )
+    )
+    SELECT
+      `t1`.`sid`,
+      `t1`.`name`,
+      `t1`.`city`,
+      `t1`.`status`,
+      `t3`.`pid`,
+      `t3`.`qty`
+    FROM
+      `suppliers` AS 't1'
+    LEFT JOIN
+      `t3` ON (`t1`.`sid` = `t3`.`sid`)
