@@ -15,7 +15,7 @@ module Bmg
         def call(sexpr)
           if unjoinable?(sexpr)
             call(builder.from_self(sexpr))
-          elsif unjoinable?(right)
+          elsif unjoinable?(right) || left_join_over_restricted_right?
             Join.new(builder.from_self(right), on, options, builder).call(sexpr)
           else
             super(sexpr)
@@ -35,6 +35,20 @@ module Bmg
 
         def unjoinable?(sexpr)
           sexpr.set_operator? or sexpr.limit_or_offset? or sexpr.group_by?
+        end
+
+        # A restriction carried by the right operand of a left join may not be
+        # merged into the WHERE of the whole expression: there it would also
+        # have to hold of the tuples the left join fills with nulls, which is an
+        # inner join and loses exactly what the left join is for. Kept inside a
+        # derived table instead, where it applies to the right operand alone.
+        #
+        # The join condition would hold it just as well, and with less SQL, but
+        # it is the one place a restriction may be anything -- `>`, `IN`, a
+        # negation -- while the from clause orderer models a join condition as
+        # equalities between two qualified names.
+        def left_join_over_restricted_right?
+          left_join? && !right.select_exp.predicate.nil?
         end
 
         def join_set_quantifiers(left, right)

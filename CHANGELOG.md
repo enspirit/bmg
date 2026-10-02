@@ -1,3 +1,11 @@
+## 0.24.1 - 2026-10-02
+
+* Fix a left join whose right operand carries a restriction of its own being
+  compiled as an inner join. The restriction reached the WHERE clause of the
+  result, where it also had to hold of the tuples the left join fills with
+  nulls, so those tuples were dropped. The right operand is now compiled to a
+  derived table, which keeps the restriction to itself.
+
 ## 0.24.0 - 2026-09-01
 
 * Compile SQL-able transform values to SQL. A transform value that carries
